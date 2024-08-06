@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         minLength: [8, "Password must contain at least 8 Characters"],
         maxLength: [16, "Password must contain at most 32 Characters"],
+        select: false
     },
     resume:{
         public_id: String,
@@ -54,5 +55,26 @@ const userSchema = new mongoose.Schema({
         default: Date.now()
     }
 });
+
+userSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) {
+      next();
+    }
+    this.password = await bcrypt.hash(this.password, 10);
+  });
+  
+  userSchema.methods.comparePassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+  };
+  
+
+userSchema.methods.getJWTToken = function(){
+    return jwt.sign({
+        id: this._id,
+        // role: this.role,
+        }, process.env.JWT_SECRET, {
+            expiresIn: process.env.JWT_EXPIRE
+    })
+}
 
 export const User = mongoose.model("User", userSchema)

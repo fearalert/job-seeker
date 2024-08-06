@@ -2,6 +2,7 @@ import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import ErrorHandler from "../middlewares/error.js";
 import { User } from "../models/userSchema.js";
 import { v2 as cloudinary } from "cloudinary";
+import { sendjwtToken } from "../utils/sendjwtToken.js";
 
 export const register = catchAsyncError(async (req, res, next) => {
   try {
@@ -69,7 +70,30 @@ export const register = catchAsyncError(async (req, res, next) => {
       }
     }
     const user = await User.create(userData);
+    sendjwtToken(user, 201, res, "User Registered Successfully.")
   } catch (error) {
     next(error);
   }
 });
+
+
+
+export const login = () => {catchAsyncError(async (req, res, next) => {
+  const { role, email, password } = req.body;
+  const user = await User.findOne({ email }).select("+password");
+  if ( !role || !email || !password){
+    new ErrorHandler("Email, password and role are required.", 400)
+  }
+  if (!user) {
+    return next(new ErrorHandler("Invalid Email or Password", 401));
+    }
+    const isPasswordMatched = await user.comparePassword(password);
+    if (!isPasswordMatched) {
+      return next(new ErrorHandler("Invalid email or password.", 400));
+    }
+    if (user.role !== role) {
+      return next(new ErrorHandler("Invalid user role.", 400));
+    }
+    sendToken(user, 200, res, "User logged in successfully.");
+  });
+}
