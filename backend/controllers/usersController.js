@@ -108,7 +108,7 @@ export const login = catchAsyncError(async (req, res, next) => {
 });
 
 
-export const logout= catchAsyncError(async (req, res, next) => {
+export const logout = catchAsyncError(async (req, res, next) => {
   res.status(200).cookie("token", "", {
     expires: new Date(Date.now()),
     httpOnly: true,
@@ -116,4 +116,147 @@ export const logout= catchAsyncError(async (req, res, next) => {
     success: true,
     message: "Logged out successfully",
   })
-})
+});
+
+
+export const getUser = catchAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  res.status(200).json({
+    success: true,
+    user,
+    message: "User Details",
+  })
+});
+
+export const updateProfile = catchAsyncError(async (req, res, next) => {
+    const {
+      name,
+      email,
+      phone,
+      address,
+      firstNiche,
+      secondNiche,
+      thirdNiche,
+      fourthNiche,
+      coverLetter,
+    } = req.body;
+  
+    const newUserData = {
+      name,
+      email,
+      phone,
+      address,
+      niches: {
+        firstNiche,
+        secondNiche,
+        thirdNiche,
+        fourthNiche,
+      },
+      coverLetter,
+    };
+  
+    if (req.user.role === "Job Seeker" && (!firstNiche || !secondNiche || !thirdNiche || !fourthNiche)) {
+      return next(new ErrorHandler("Please provide all the preferred niches.", 400));
+    }
+  
+    if (req.files && req.files.resume) {
+      const { resume } = req.files;
+  
+      if (resume) {
+        const currentResumeId = req.user.resume?.public_id;
+  
+        if (currentResumeId) {
+          await cloudinary.uploader.destroy(currentResumeId);
+        }
+  
+        const newResume = await cloudinary.uploader.upload(resume.tempFilePath, {
+          folder: "Users_Resume",
+        });
+  
+        if (!newResume || newResume.error) {
+          return next(new ErrorHandler("Failed to upload resume to cloud server.", 500));
+        }
+  
+        newUserData.resume = {
+          public_id: newResume.public_id,
+          url: newResume.secure_url,
+        };
+      }
+    }
+  
+    const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+      new: true,
+      runValidators: true,
+    });
+  
+    if (!user) {
+      return next(new ErrorHandler("User not found.", 404));
+    }
+  
+    res.status(200).json({
+      success: true,
+      user,
+      message: "Profile Updated Successfully.",
+    });
+  });
+
+
+export const updatePassword = catchAsyncError( async (req, res, next) => {
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+  const user = await User.findById(req.user.id).select("+password");
+  if (!user) {
+    return next(new ErrorHandler("User not found.", 404));
+    }
+    const isPasswordMatch = await user.comparePassword(oldPassword);
+    if(!isPasswordMatch){
+      return next(new ErrorHandler("Your old password is incorrect.", 400));
+    }
+    if(newPassword !== confirmPassword){
+      return next(new ErrorHandler("Password does not match.", 400));
+    }
+    user.password = newPassword;
+    await user.save();
+
+    sendjwtToken(user, 200, res, "Password Updated Successfully.");
+});
+
+
+export const forgotPassword = catchAsyncError(async (req, res, next) => {
+  const { email } = req.body;
+
+  // Check if user exists
+  const user = await User.findOne({ email });
+  if (!user) {
+    return next(new ErrorHandler("User not found.", 404));
+  }
+
+  // Generate reset token
+  const resetToken = user.getResetPasswordToken();
+  await user.save({ validateBeforeSave: false });
+
+  // Create reset URL
+  const resetUrl = `${req.protocol}://${req.get('host')}/password/reset/${resetToken}`;
+
+  // Email message
+  const message = `You are receiving this email because you (or someone else) have requested a password reset. Please make a put request to: \n\n ${resetUrl}`;
+
+  try {
+    // Send email
+    await sendEmail({
+      email: user.email,
+      subject: 'Password Reset Token',
+      message,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Email sent to ${user.email}`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return next(new ErrorHandler("Email could not be sent.", 500));
+  }
+});

@@ -77,4 +77,13 @@ userSchema.methods.getJWTToken = function(){
     })
 }
 
+// Generate and hash password reset token
+userSchema.methods.getResetPasswordToken = function () {
+    const resetToken = bcrypt.genSaltSync(10);
+    this.resetPasswordToken = resetToken;
+    this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+  
+    return resetToken;
+  };
+
 export const User = mongoose.model("User", userSchema)
