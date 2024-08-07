@@ -76,22 +76,33 @@ export const register = catchAsyncError(async (req, res, next) => {
   }
 });
 
-export const login = () => {catchAsyncError(async (req, res, next) => {
+export const login = catchAsyncError(async (req, res, next) => {
   const { role, email, password } = req.body;
-  const user = await User.findOne({ email }).select("+password");
-  if ( !role || !email || !password){
-    new ErrorHandler("Email, password and role are required.", 400)
+
+  // Check if all required fields are provided
+  if (!role || !email || !password) {
+    return next(new ErrorHandler("Email, password, and role are required.", 400));
   }
+
+  const user = await User.findOne({ email }).select("+password");
+
+  // Check if user exists
   if (!user) {
-    return next(new ErrorHandler("Invalid Email or Password", 401));
-    }
-    const isPasswordMatched = await user.comparePassword(password);
-    if (!isPasswordMatched) {
-      return next(new ErrorHandler("Invalid email or password.", 400));
-    }
-    if (user.role !== role) {
-      return next(new ErrorHandler("Invalid user role.", 400));
-    }
-    sendToken(user, 200, res, "User logged in successfully.");
-  });
-}
+    return next(new ErrorHandler("Invalid email or password.", 401));
+  }
+
+  const isPasswordMatched = await user.comparePassword(password);
+
+  // Check if password matches
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Invalid email or password.", 400));
+  }
+
+  // Check if role matches
+  if (user.role !== role) {
+    return next(new ErrorHandler("Invalid user role.", 400));
+  }
+
+  // Send token
+  sendjwtToken(user, 200, res, "User logged in successfully.");
+});
