@@ -21,12 +21,12 @@ const jobSchema = new mongoose.Schema({
     jobIntroduction:{
         type: String
     },
-    jobResponsibilites:{
-        type: String,
+    jobResponsibilities:{
+        type: [String],
         required: true
     },
     salary:{
-        type: Number,
+        type: String,
         required: true
     },
     jobPostedOn:{
@@ -35,21 +35,25 @@ const jobSchema = new mongoose.Schema({
     },
     jobValidThrough:{
         type: Date,
-        default: Date.now() + 21,
-        required: true
+        default: () => Date.now() + 21 * 24 * 60 * 60 * 1000, // Valid for 21 days in Default
     },
+    
     jobBenefits:{
-        type: String,
+        type: [String],
     },
     jobQualifications:{
-        type: String,
+        type: [String],
         required: true
     },
+    // hiringMultipleCandidates: {
+    //     type: String,
+    //     default: "No",
+    //     enum: ["Yes", "No"],
+    //   },
     hiringMultipleCandidates: {
-        type: String,
-        default: "No",
-        enum: ["Yes", "No"],
-      },
+        type: Boolean,
+        default: false,
+    },
       personalWebsite: {
         title: String,
         url: String

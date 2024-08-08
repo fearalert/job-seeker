@@ -1,25 +1,27 @@
-import { catchAsyncError } from "../middlewares/catchAsyncError";
+import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+import ErrorHandler from "../middlewares/error.js";
+import { Job } from "../models/jobSchema.js";
 
+export const postJob = catchAsyncError(async (req, res, next) => {
+  const {
+    jobTitle,
+    jobType,
+    location,
+    organizationName,
+    organizationType,
+    jobIntroduction,
+    jobResponsibilities,
+    jobQualifications,
+    salary,
+    jobBenefits,
+    hiringMultipleCandidates,
+    personalWebsiteTitle,
+    personalWebsiteUrl,
+    jobNiche,
+    jobValidThrough,
+    howToApply
+  } = req.body;
 
-const postJob = catchAsyncError(async (req, res, next) => {
-    const {
-        jobTitle,
-        jobType,
-        location,
-        organizationName,
-        organizationType,
-        jobIntroduction,
-        jobResponsibilites,
-        jobQualifications,
-        salary,
-        jobBenefits,
-        hiringMultipleCandidates,
-        personalWebsiteTitle,
-        personalWebsiteUrl,
-        jobNiche,
-        jobValidThrough,
-        howToApply
-      } = req.body;
 
       if (
         !jobTitle ||
@@ -28,12 +30,12 @@ const postJob = catchAsyncError(async (req, res, next) => {
         !organizationName ||
         !organizationType ||
         !jobIntroduction ||
-        !jobResponsibilites ||
+        !jobResponsibilities ||
         !jobQualifications ||
         !salary ||
         !jobNiche ||
-        !howToApply ||
-        !jobValidThrough
+        !howToApply 
+        // !jobValidThrough
       ) {
         return next(new ErrorHandler("Please provide full job details.", 400));
       }
@@ -57,7 +59,7 @@ const postJob = catchAsyncError(async (req, res, next) => {
         organizationName,
         organizationType,
         jobIntroduction,
-        jobResponsibilites,
+        jobResponsibilities,
         jobQualifications,
         salary,
         jobBenefits,
@@ -79,7 +81,7 @@ const postJob = catchAsyncError(async (req, res, next) => {
       });
 });
 
-export const deleteJob = catchAsyncErrors(async (req, res, next) => {
+export const deleteJob = catchAsyncError(async (req, res, next) => {
     const { id } = req.params;
     const job = await Job.findById(id);
     if (!job) {
