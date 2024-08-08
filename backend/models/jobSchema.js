@@ -5,6 +5,11 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    jobType:{
+        type: String,
+        required: true,
+        enum: ["Full-time", "Part-time", "Internship", "Contract", "Remote"],
+    },
     organizationType:{
         type: String,
         required: true
@@ -22,11 +27,7 @@ const jobSchema = new mongoose.Schema({
     },
     salary:{
         type: Number,
-    },
-    jobType:{
-        type: String,
-        required: true,
-        enum: ["Full-time", "Part-time", "Internship", "Contract", "Remote"],
+        required: true
     },
     jobPostedOn:{
         type: Date,
@@ -61,15 +62,15 @@ const jobSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
       },
-      postedBy: {
+      howToApply: {
+        type: String,
+        required: true
+     },
+     postedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
       },
-      howToApply: {
-        type: String,
-        required: true
-    },
 });
 
 export const Job = mongoose.model("Job", jobSchema);
