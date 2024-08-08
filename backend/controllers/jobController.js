@@ -116,3 +116,39 @@ export const deleteJob = catchAsyncError(async (req, res, next) => {
         job
     });
 });
+
+
+export const getAllJobs = catchAsyncError(async (req, res, next) => {
+  const jobs = await Job.find();
+
+  res.status(200).json({
+      success: true,
+      count: jobs.length,
+      jobs,
+  });
+});
+
+export const getSingleJob = catchAsyncError(async (req, res, next) => {
+  const { id } = req.params;
+
+  const job = await Job.findById(id);
+  if (!job) {
+      return next(new ErrorHandler("Job not found.", 404));
+  }
+
+  res.status(200).json({
+      success: true,
+      job,
+  });
+});
+
+
+export const getMyPostedJobs = catchAsyncError(async (req, res, next) => {
+  const jobs = await Job.find({ postedBy: req.user._id });
+
+  res.status(200).json({
+      success: true,
+      count: jobs.length,
+      jobs,
+  });
+});
