@@ -68,7 +68,7 @@ userSchema.pre("save", async function (next) {
   };
   
 
-userSchema.methods.getJWTToken = function(){
+userSchema.methods.getJWTToken = function() {
     return jwt.sign({
         id: this._id,
         // role: this.role,

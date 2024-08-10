@@ -10,6 +10,10 @@ const jobSchema = new mongoose.Schema({
         required: true,
         enum: ["Full-time", "Part-time", "Internship", "Contract", "Remote"],
     },
+    organizationName:{
+        type: String,
+        required: true
+    },
     organizationType:{
         type: String,
         required: true

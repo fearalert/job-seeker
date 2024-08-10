@@ -3,6 +3,7 @@ import ErrorHandler from "../middlewares/error.js";
 import { User } from "../models/userSchema.js";
 import { v2 as cloudinary } from "cloudinary";
 import { sendjwtToken } from "../utils/sendjwtToken.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export const register = catchAsyncError(async (req, res, next) => {
   try {
@@ -229,7 +230,7 @@ export const forgotPassword = catchAsyncError(async (req, res, next) => {
 
   const resetUrl = `${req.protocol}://${req.get('host')}/password/reset/${resetToken}`;
 
-  const message = `You are receiving this email because you (or someone else) have requested a password reset. Please make a put request to: \n\n ${resetUrl}`;
+  const message = `You are receiving this email because you (or someone else) have requested a password reset. Please enter the following link to put the new password.\n The link expires in 10 minutes: \n\n ${resetUrl}`;
 
   try {
     await sendEmail({
@@ -243,6 +244,8 @@ export const forgotPassword = catchAsyncError(async (req, res, next) => {
       message: `Email sent to ${user.email}`,
     });
   } catch (error) {
+    console.error("Error sending email:", error); 
+
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save({ validateBeforeSave: false });
