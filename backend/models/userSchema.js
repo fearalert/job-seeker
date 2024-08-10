@@ -41,10 +41,10 @@ const userSchema = new mongoose.Schema({
         public_id: String,
         url: String,
     },
-    coverLetter:{
-        public_id: String,
-        url: String,
-    },
+    coverLetter: {
+        type: String,
+        required: true,
+      },
     role:{
         type: String,
         required: true,

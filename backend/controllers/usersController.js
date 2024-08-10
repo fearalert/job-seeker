@@ -79,31 +79,26 @@ export const register = catchAsyncError(async (req, res, next) => {
 export const login = catchAsyncError(async (req, res, next) => {
   const { role, email, password } = req.body;
 
-  // Check if all required fields are provided
   if (!role || !email || !password) {
     return next(new ErrorHandler("Email, password, and role are required.", 400));
   }
 
   const user = await User.findOne({ email }).select("+password");
 
-  // Check if user exists
   if (!user) {
     return next(new ErrorHandler("Invalid email or password.", 401));
   }
 
   const isPasswordMatched = await user.comparePassword(password);
 
-  // Check if password matches
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password.", 400));
   }
 
-  // Check if role matches
   if (user.role !== role) {
     return next(new ErrorHandler("Invalid user role.", 400));
   }
 
-  // Send token
   sendjwtToken(user, 200, res, "User logged in successfully.");
 });
 
@@ -224,24 +219,19 @@ export const updatePassword = catchAsyncError( async (req, res, next) => {
 export const forgotPassword = catchAsyncError(async (req, res, next) => {
   const { email } = req.body;
 
-  // Check if user exists
   const user = await User.findOne({ email });
   if (!user) {
     return next(new ErrorHandler("User not found.", 404));
   }
 
-  // Generate reset token
   const resetToken = user.getResetPasswordToken();
   await user.save({ validateBeforeSave: false });
 
-  // Create reset URL
   const resetUrl = `${req.protocol}://${req.get('host')}/password/reset/${resetToken}`;
 
-  // Email message
   const message = `You are receiving this email because you (or someone else) have requested a password reset. Please make a put request to: \n\n ${resetUrl}`;
 
   try {
-    // Send email
     await sendEmail({
       email: user.email,
       subject: 'Password Reset Token',
