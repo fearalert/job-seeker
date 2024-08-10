@@ -128,6 +128,46 @@ export const getAllJobs = catchAsyncError(async (req, res, next) => {
   });
 });
 
+export const searchAllJobs = catchAsyncError(async (req, res, next) => {
+  const { city, niche, searchKeyword, minSalary, maxSalary } = req.query;
+  const query = {};
+
+  if (city) {
+    query.location = { $regex: city, $options: 'i' }; // case-insensitive search
+  }
+
+  if (niche) {
+    query.jobNiche = { $regex: niche, $options: 'i' }; // case-insensitive search
+  }
+
+  if (searchKeyword) {
+    const keywordQuery = [
+      { jobTitle: { $regex: searchKeyword, $options: "i" } },
+      { organizationName: { $regex: searchKeyword, $options: "i" } },
+      { jobIntroduction: { $regex: searchKeyword, $options: "i" } },
+    ];
+    query.$or = keywordQuery;
+  }
+
+  if (minSalary || maxSalary) {
+    query.salary = {};
+    if (minSalary) {
+      query.salary.$gte = minSalary;
+    }
+    if (maxSalary) {
+      query.salary.$lte = maxSalary;
+    }
+  }
+
+  const jobs = await Job.find(query);
+
+  res.status(200).json({
+    success: true,
+    jobs,
+    count: jobs.length,
+  });
+});
+
 export const getSingleJob = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { deleteJob, getAllJobs, getMyPostedJobs, getSingleJob, postJob, updateJob } from "../controllers/jobController.js";
+import { deleteJob, getAllJobs, getMyPostedJobs, getSingleJob, postJob, searchAllJobs, updateJob } from "../controllers/jobController.js";
 import { isAuthenticated, isAuthorized } from "../middlewares/authentication.js";
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.put("/update/:id", isAuthenticated, isAuthorized("Employer"), updateJob);
 router.get("/getalljobs", getAllJobs);
 router.get("/getmyjobs", isAuthenticated, isAuthorized("Employer"), getMyPostedJobs);
 router.get("/getsinglejob/:id", getSingleJob);
+router.get("/searchalljobs", searchAllJobs);
 
 export default router;
 
