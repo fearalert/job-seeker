@@ -98,16 +98,14 @@ export const deleteJob = catchAsyncError(async (req, res, next) => {
   export const updateJob = catchAsyncError(async (req, res, next) => {
     const { id } = req.params;
 
-    // Find the job by ID
     let job = await Job.findById(id);
     if (!job) {
       return next(new ErrorHandler("Job not found. Please check the ID and try again.", 404));
     }
 
-    // Update the job with the new data
     job = await Job.findByIdAndUpdate(id, req.body, {
-        new: true, // return the updated job
-        runValidators: true // validate the updated fields
+        new: true,
+        runValidators: true
     });
 
     res.status(200).json({
@@ -133,11 +131,11 @@ export const searchAllJobs = catchAsyncError(async (req, res, next) => {
   const query = {};
 
   if (city) {
-    query.location = { $regex: city, $options: 'i' }; // case-insensitive search
+    query.location = { $regex: city, $options: 'i' }; 
   }
 
   if (niche) {
-    query.jobNiche = { $regex: niche, $options: 'i' }; // case-insensitive search
+    query.jobNiche = { $regex: niche, $options: 'i' };
   }
 
   if (searchKeyword) {
