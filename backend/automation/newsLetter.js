@@ -18,12 +18,12 @@ export const newsLetterCron = () => {
               ],
             });
             for (const user of filteredUsers) {
-              const subject = `Hot Job Alert: ${job.jobTitle} in ${job.jobNiche} Available Now`;
+              const subject = `Hot Job Alert: ${job.jobTitle} in ${job.organizationName} Available Now`;
               const message = `Hello ${user.name},\n\nExciting news! A new job that matches your profile has just been posted.
               The role is for a ${job.jobTitle} at ${job.organizationName}, and they are looking to hire as soon as possible.
-              \n\nJob Details:\n- **Position:** ${job.jobTitle}\n- **Company:** ${job.organizationName}\n- **Location:** ${job.location}\n- 
-              **Salary:** ${job.salary}\n\nAct quickly—opportunities like this don't last long. \n\n
-              We're here to assist you in your job search. Best of luck!\n\nBest Regards,\nThe NicheNest Team`;
+              \n\nJob Details:\n- **Position:** ${job.jobTitle}\n- **Company:** ${job.organizationName}\n- **Location:** ${job.location}
+              \n- **Salary:** ${job.salary}\n\nAct quickly—opportunities like this don't last long. \n\n
+              We're here to assist you in your job search. Best of luck!\n\nBest Regards,\nThe Jobseverywhere Team`;
               sendEmail({
                 email: user.email,
                 subject,

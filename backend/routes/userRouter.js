@@ -16,4 +16,3 @@ router.get("/forgotpassword", forgotPassword);
 export default router;
 
 export const userRouter = router;
-
