@@ -90,14 +90,5 @@ userSchema.methods.getResetPasswordToken = function () {
   return resetToken;
 };
 
-// Generate refresh token
-userSchema.methods.getRefreshToken = function () {
-  const refreshToken = jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
-  });
-  // Store the refresh token
-  this.refreshToken = refreshToken; 
-  return refreshToken;
-};
 
 export const User = mongoose.model("User", userSchema);

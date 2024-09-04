@@ -130,20 +130,20 @@ export const login = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Invalid user role.", 400));
   }
 
-  const { accessToken, refreshToken } = generateTokens(user);
+  // const { accessToken, refreshToken } = generateTokens(user);
 
-  user.refreshToken = refreshToken;
-  await user.save();
+  // user.refreshToken = refreshToken;
+  // await user.save();
 
-  // Set refresh token as a secure, HTTP-only cookie
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'Strict',
-    maxAge: 10 * 60 * 1000,
-  });
+  // // Set refresh token as a secure, HTTP-only cookie
+  // res.cookie('refreshToken', refreshToken, {
+  //   httpOnly: true,
+  //   secure: process.env.NODE_ENV === 'production',
+  //   sameSite: 'Strict',
+  //   maxAge: 10 * 60 * 1000,
+  // });
 
-  sendjwtToken(user, 200, res, "User logged in successfully.", accessToken);
+  sendjwtToken(user, 200, res, "User logged in successfully.");
 });
 
 
