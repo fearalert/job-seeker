@@ -78,34 +78,6 @@ export const register = catchAsyncError(async (req, res, next) => {
   }
 });
 
-export const refreshToken = catchAsyncError(async (req, res, next) => {
-  const { refreshToken } = req.cookies;
-
-  if (!refreshToken) {
-    return next(new ErrorHandler("Refresh token is required.", 401));
-  }
-
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
-    if (err) {
-      return next(new ErrorHandler("Invalid refresh token.", 403));
-    }
-
-    const user = await User.findOne({ refreshToken });
-
-    if (!user) {
-      return next(new ErrorHandler("Invalid refresh token.", 403));
-    }
-
-    const { accessToken } = generateTokens(user);
-
-    res.status(200).json({
-      success: true,
-      accessToken,
-      message: "Access token refreshed successfully.",
-    });
-  });
-});
-
 
 export const login = catchAsyncError(async (req, res, next) => {
   const { role, email, password } = req.body;
@@ -130,52 +102,48 @@ export const login = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Invalid user role.", 400));
   }
 
-  // const { accessToken, refreshToken } = generateTokens(user);
-
-  // user.refreshToken = refreshToken;
-  // await user.save();
-
-  // // Set refresh token as a secure, HTTP-only cookie
-  // res.cookie('refreshToken', refreshToken, {
-  //   httpOnly: true,
-  //   secure: process.env.NODE_ENV === 'production',
-  //   sameSite: 'Strict',
-  //   maxAge: 10 * 60 * 1000,
-  // });
-
   sendjwtToken(user, 200, res, "User logged in successfully.");
 });
 
 
-export const logout = catchAsyncError(async (req, res, next) => {
-  const { refreshToken } = req.cookies;
+// export const logout = catchAsyncError(async (req, res, next) => {
+//   const { refreshToken } = req.cookies;
 
-  if (refreshToken) {
-    const user = await User.findOne({ refreshToken });
+//   if (refreshToken) {
+//     const user = await User.findOne({ refreshToken });
 
-    if (user) {
-      user.refreshToken = undefined;
-      await user.save();
-    }
-  }
+//     if (user) {
+//       user.refreshToken = undefined;
+//       await user.save();
+//     }
+//   }
 
-  res.status(200)
-    .cookie("token", "", {
-      expires: new Date(Date.now()),
-      httpOnly: true,
-    })
-    .cookie("refreshToken", "", {
-      expires: new Date(Date.now()),
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict',
-    })
-    .json({
-      success: true,
-      message: "Logged out successfully",
-    });
-});
+//   res.status(200)
+//     .cookie("token", "", {
+//       expires: new Date(Date.now()),
+//       httpOnly: true,
+//     })
+//     .cookie("refreshToken", "", {
+//       expires: new Date(Date.now()),
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === 'production',
+//       sameSite: 'Strict',
+//     })
+//     .json({
+//       success: true,
+//       message: "Logged out successfully",
+//     });
+// });
 
+export const logout= catchAsyncError(async (req, res, next) => {
+  res.status(200).cookie("token", "", {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  }).json({
+    success: true,
+    message: "Logged out successfully",
+  })
+})
 
 export const getUser = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user.id);
