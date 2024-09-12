@@ -4,7 +4,6 @@ import { User } from "../models/userSchema.js";
 import { v2 as cloudinary } from "cloudinary";
 import { sendjwtToken } from "../utils/sendjwtToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
-import { generateTokens } from "../utils/generaterefreshToken.js";
 
 export const register = catchAsyncError(async (req, res, next) => {
   try {

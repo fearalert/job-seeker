@@ -1,6 +1,6 @@
 import express from "express";
 
-import { forgotPassword, getUser, login, logout, register, updatePassword, updateProfile, refreshToken } from "../controllers/usersController.js";
+import { forgotPassword, getUser, login, logout, register, updatePassword, updateProfile } from "../controllers/usersController.js";
 import { isAuthenticated } from "../middlewares/authentication.js";
 
 const router = express.Router();
@@ -12,7 +12,6 @@ router.post("/profile", isAuthenticated, getUser);
 router.put("/update/profile", isAuthenticated, updateProfile);
 router.put("/update/password", isAuthenticated, updatePassword);
 router.get("/forgotpassword", forgotPassword);
-router.post('/refresh-token', isAuthenticated, refreshToken);
 
 export default router;
 
