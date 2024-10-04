@@ -1,4 +1,3 @@
-import './App.css'
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Jobs from './pages/jobs/Jobs';
 import Home from './pages/home/Home';
@@ -7,12 +6,15 @@ import Dashboard from './pages/dashboard/Dashboard';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
 import NotFound from './pages/notfound/NotFound';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 function App() {
 
   return (
     <>
      <Router>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/jobs" element={<Jobs />} />
@@ -22,6 +24,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Footer />
      </Router>
     </>
   )
