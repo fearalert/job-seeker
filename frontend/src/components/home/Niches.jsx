@@ -1,4 +1,5 @@
 import { Box, Typography, Card, CardContent, Grid } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const jobs = [
   {
@@ -44,16 +45,27 @@ const jobs = [
 ];
 
 const JobList = () => {
+  const theme = useTheme();
+
   return (
-    <Box sx={{ py: 6 }}>
-      <Typography variant="h4" align="center" gutterBottom>Available Jobs</Typography>
-      <Grid container spacing={3}>
+    <Box sx={{ py: 12, backgroundColor: theme.palette.background.default }}>
+      <Typography variant="h4" align="center" fontWeight="bold" gutterBottom color={theme.palette.primary.main}>
+        Available Niches
+      </Typography>
+      <Grid container spacing={3} >
         {jobs.map((job) => (
           <Grid item xs={12} sm={6} md={4} key={job.id}>
-            <Card>
+            <Card variant="outlined" sx={{ boxShadow: 0.5, height: 150, textAlign:"center", backgroundColor: theme.palette.background.default, '&:hover' : {
+              backgroundColor: theme.palette.background.paper,
+            }}} >
               <CardContent>
-                <Typography variant="h6">{job.service}</Typography>
-                <Typography variant="body2" color="textSecondary">{job.description}</Typography>
+                <Typography variant="h6" color={theme.palette.primary.main}>
+                  {job.service}
+                </Typography>
+                <br />
+                <Typography variant="body2" color="textSecondary">
+                  {job.description}
+                </Typography>
               </CardContent>
             </Card>
           </Grid>

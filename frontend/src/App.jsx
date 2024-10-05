@@ -8,25 +8,26 @@ import Register from './pages/register/Register';
 import NotFound from './pages/notfound/NotFound';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import { Container } from "@mui/material";
 
 function App() {
 
   return (
-    <>
      <Router>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/jobs" element={<Jobs />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/post/application/:JobId" element={<PostApplication />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Container variant="main">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/post/application/:JobId" element={<PostApplication />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Container>
         <Footer />
      </Router>
-    </>
   )
 }
 
