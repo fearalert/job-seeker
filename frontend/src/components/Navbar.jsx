@@ -89,7 +89,7 @@ function Navbar() {
   ];
 
   return (
-    <Box marginBottom={20}>
+    <Box marginBottom={10}>
       <AppBar color='primary' elevation={10} position='fixed'>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>

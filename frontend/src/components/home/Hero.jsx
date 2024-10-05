@@ -13,6 +13,7 @@ const Hero = () => {
       alignItems: 'center',
       p: 4, 
       backgroundColor: theme.palette.background.default,
+      mt: 16,
     }}>
       <Typography variant="h3" fontWeight="bold" color={theme.palette.primary.main}>
         Find the Best Job that Fits Your Career
