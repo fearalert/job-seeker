@@ -99,19 +99,20 @@ export const theme = createTheme({
             props: { variant: 'overall' },
             style: {
               backgroundColor: '#F9F9F9',
-              minHeight: 'calc(100vh - 20px)',
+              flex: '1 0 auto',
               width: '100%',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
+              overflow:'auto',
             },
           },
         {
           props: { variant: 'main' },
           style: {
             backgroundColor: '#F9F9F9',
-            minHeight: '100vh',
+            flex: '1 0 auto',
             display: 'flex',
             width: '100%',
             flexDirection: 'column',

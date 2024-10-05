@@ -15,7 +15,7 @@ function App() {
   return (
      <Router>
         <Navbar />
-        <Container variant="main">
+        <Container variant="main" >
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/jobs" element={<Jobs />} />
