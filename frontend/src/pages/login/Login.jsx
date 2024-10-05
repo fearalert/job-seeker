@@ -23,7 +23,7 @@ const LoginContainer = styled(Container)(({ theme }) => ({
   margin: 0,
   backgroundColor: theme.palette.background.paper,
   maxWidth: '100%!important',
-  height: '420px', // Fixed height
+  height: '420px',
 }));
 
 const LeftPanel = styled(Box)(({ theme }) => ({
@@ -57,7 +57,7 @@ const LoginForm = styled(Paper)(({ theme }) => ({
 }));
 
 const SocialButton = styled(IconButton)(({ theme }) => ({
-  border: `1px solid ${theme.palette.grey[300]}`,
+  border: `1px solid ${theme.palette.primary.light}`,
   borderRadius: 8,
   padding: theme.spacing(0.5),
   margin: theme.spacing(0, 1)
