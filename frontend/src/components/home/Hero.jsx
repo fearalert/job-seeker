@@ -28,7 +28,7 @@ const Hero = () => {
           mt: 2,
           padding: 4,
           border: `1px solid rgba(0, 0, 0, 0.1)`, 
-          backgroundColor: theme.palette.primary.light,
+          backgroundColor: theme.palette.primary.main,
           borderRadius: 2,
           boxShadow: `0px 4px 20px rgba(0, 0, 0, 0.15)`,
           width: { xs: '90%', sm: '70%', md: '50%' },

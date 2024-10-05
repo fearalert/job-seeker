@@ -20,7 +20,7 @@ export const theme = createTheme({
     tertiary: {
       main: '#B0E298',
       contrastText: '#0C0C1D',
-      dark: '#61BF36',
+      dark: '#021400',
       light: '#B5E4A0',
     },
   },
@@ -31,6 +31,7 @@ export const theme = createTheme({
           props: { variant: 'contained' },
           style: {
             backgroundColor: '#3D3B8E',
+            height: '40px',
             color: '#fff',
             '&:hover': {
               backgroundColor: '#716FC3',
@@ -100,7 +101,6 @@ export const theme = createTheme({
             style: {
               backgroundColor: '#F9F9F9',
               flex: '1 0 auto',
-              width: '100%',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
@@ -114,7 +114,6 @@ export const theme = createTheme({
             backgroundColor: '#F9F9F9',
             flex: '1 0 auto',
             display: 'flex',
-            width: '100%',
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',

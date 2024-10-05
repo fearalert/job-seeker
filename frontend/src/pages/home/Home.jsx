@@ -7,7 +7,7 @@ const Home = () => {
     <>
       <Hero />
       <Niches />
-      <Working />      
+      <Working />
     </>
   )
 }

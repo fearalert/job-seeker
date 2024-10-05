@@ -9,13 +9,14 @@ import {
   Grid,
   IconButton,
   Paper,
-  Link
+  Link,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import AppleIcon from '@mui/icons-material/Apple';
 import { theme } from '../../themes/theme';
+import { useState } from 'react';
 
 const LoginContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -34,7 +35,7 @@ const LeftPanel = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'center',
   position: 'relative',
-  overflow: 'hidden'
+  overflow: 'hidden',
 }));
 
 const RightPanel = styled(Box)(({ theme }) => ({
@@ -43,7 +44,7 @@ const RightPanel = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: theme.spacing(3)
+  padding: theme.spacing(3),
 }));
 
 const LoginForm = styled(Paper)(({ theme }) => ({
@@ -53,17 +54,56 @@ const LoginForm = styled(Paper)(({ theme }) => ({
   borderRadius: 16,
   boxShadow: 'none',
   height: '100%',
-  overflowY: 'auto'
+  overflowY: 'auto',
 }));
 
 const SocialButton = styled(IconButton)(({ theme }) => ({
   border: `1px solid ${theme.palette.primary.light}`,
   borderRadius: 8,
   padding: theme.spacing(0.5),
-  margin: theme.spacing(0, 1)
+  margin: theme.spacing(0, 1),
 }));
 
 const LoginPage = () => {
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    rememberMe: false,
+    emailError: '',
+    passwordError: '',
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { email, password } = form;
+    setForm((prev) => ({ ...prev, emailError: '', passwordError: '' }));
+    let hasError = false;
+
+    if (!email) {
+      setForm((prev) => ({ ...prev, emailError: 'Email is required' }));
+      hasError = true;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setForm((prev) => ({ ...prev, emailError: 'Email is not valid' }));
+      hasError = true;
+    }
+
+    if (!password) {
+      setForm((prev) => ({ ...prev, passwordError: 'Password is required' }));
+      hasError = true;
+    } else if (password.length < 6) {
+      setForm((prev) => ({ ...prev, passwordError: 'Password must be at least 6 characters' }));
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    console.log('Email:', email);
+    console.log('Password:', password);
+    console.log('Remember Me:', form.rememberMe);
+
+    setForm({ email: '', password: '', rememberMe: false, emailError: '', passwordError: '' });
+  };
+
   return (
     <LoginContainer>
       <LeftPanel>
@@ -79,14 +119,14 @@ const LoginPage = () => {
           </Typography>
         </Box>
       </LeftPanel>
-      
+
       <RightPanel>
         <LoginForm elevation={0}>
           <Typography variant="h5" align="center" sx={{ mb: 2, color: theme.palette.primary.main }}>
-           Login
+            Login
           </Typography>
 
-          <Box component="form" sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="dense"
               required
@@ -97,6 +137,10 @@ const LoginPage = () => {
               autoComplete="email"
               autoFocus
               size="small"
+              value={form.email}
+              onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
+              error={!!form.emailError}
+              helperText={form.emailError}
               sx={{ mb: 1 }}
             />
             <TextField
@@ -108,13 +152,24 @@ const LoginPage = () => {
               type="password"
               id="password"
               autoComplete="current-password"
-              size="small" 
+              size="small"
+              value={form.password}
+              onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
+              error={!!form.passwordError}
+              helperText={form.passwordError}
               sx={{ mb: 1 }}
             />
-            
+
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" size="small" />}
+                control={
+                  <Checkbox
+                    checked={form.rememberMe}
+                    color="primary"
+                    size="small"
+                    onChange={(e) => setForm((prev) => ({ ...prev, rememberMe: e.target.checked }))}
+                  />
+                }
                 label={<Typography variant="body2">Remember me</Typography>}
               />
               <Link href="#" variant="body2" color="primary">
@@ -123,6 +178,7 @@ const LoginPage = () => {
             </Box>
 
             <Button
+              type="submit"
               fullWidth
               variant="contained"
               size="small"
@@ -158,7 +214,7 @@ const LoginPage = () => {
             <Box sx={{ mt: 2, textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">
                 Dont Have an account?{' '}
-                <Link href="#" color="primary" sx={{ textDecoration: 'none' }}>
+                <Link href="/register" color="primary" sx={{ textDecoration: 'none' }}>
                   Create Account
                 </Link>
               </Typography>
