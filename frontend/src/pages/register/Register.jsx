@@ -23,7 +23,11 @@ const RegisterContainer = styled(Container)(({ theme }) => ({
   margin: 0,
   backgroundColor: theme.palette.background.paper,
   maxWidth: '100%!important',
-  height: 'auto',
+  height: '420px',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    height: 'auto',
+  },
 }));
 
 const LeftPanel = styled(Box)(({ theme }) => ({
@@ -35,6 +39,9 @@ const LeftPanel = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   position: 'relative',
   overflow: 'hidden',
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
 }));
 
 const RightPanel = styled(Box)(({ theme }) => ({

@@ -50,7 +50,7 @@ const JobList = () => {
   return (
     <Box sx={{ py: 12, backgroundColor: theme.palette.background.default }}>
       <Typography variant="h4" align="center" fontWeight="bold" gutterBottom color={theme.palette.primary.main}>
-        Available Niches
+        Top Niches
       </Typography>
       <Grid container spacing={3} >
         {jobs.map((job) => (

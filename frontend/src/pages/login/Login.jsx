@@ -6,7 +6,6 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
-  Grid,
   IconButton,
   Paper,
   Link,
@@ -25,6 +24,10 @@ const LoginContainer = styled(Container)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   maxWidth: '100%!important',
   height: '420px',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    height: 'auto',
+  },
 }));
 
 const LeftPanel = styled(Box)(({ theme }) => ({
@@ -36,6 +39,9 @@ const LeftPanel = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   position: 'relative',
   overflow: 'hidden',
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
 }));
 
 const RightPanel = styled(Box)(({ theme }) => ({
@@ -109,13 +115,13 @@ const LoginPage = () => {
       <LeftPanel>
         <Box sx={{ position: 'relative', zIndex: 1 }}>
           <Typography variant="h3" color="white" sx={{ mb: 1, fontWeight: 'bold' }}>
-            Begin
+            Welcome
           </Typography>
           <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
-            Journey here
+            Back
           </Typography>
           <Typography variant="subtitle1" color="white">
-            Create an account to Join Our Job Search Portal
+           Login to your account to find the Job for you.
           </Typography>
         </Box>
       </LeftPanel>
@@ -193,23 +199,17 @@ const LoginPage = () => {
               <Box sx={{ flex: 1, borderBottom: 1, borderColor: 'grey.300' }} />
             </Box>
 
-            <Grid container justifyContent="center" spacing={1}>
-              <Grid item>
-                <SocialButton size="small">
-                  <GoogleIcon fontSize="small" />
-                </SocialButton>
-              </Grid>
-              <Grid item>
-                <SocialButton size="small">
-                  <FacebookIcon fontSize="small" />
-                </SocialButton>
-              </Grid>
-              <Grid item>
-                <SocialButton size="small">
-                  <AppleIcon fontSize="small" />
-                </SocialButton>
-              </Grid>
-            </Grid>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+              <SocialButton size="small">
+                <GoogleIcon fontSize="small" />
+              </SocialButton>
+              <SocialButton size="small">
+                <FacebookIcon fontSize="small" />
+              </SocialButton>
+              <SocialButton size="small">
+                <AppleIcon fontSize="small" />
+              </SocialButton>
+            </Box>
 
             <Box sx={{ mt: 2, textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">
