@@ -11,7 +11,6 @@ import Footer from './components/Footer';
 import { Container } from "@mui/material";
 
 function App() {
-
   return (
      <Router>
         <Navbar />

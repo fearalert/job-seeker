@@ -56,7 +56,7 @@ export const fetchJobs = (filters) => async (dispatch) => {
   try {
     const { city, niche, searchKeyword, minSalary, maxSalary } = filters;
     const isSearch = !!(city || niche || searchKeyword || minSalary || maxSalary);
-    dispatch(requestForAllJobs({ isSearch }));
+    dispatch(jobSlice.actions.requestForAllJobs({ isSearch }));
 
     let link = `${hostname}/api/v1/job/`;
 
@@ -88,11 +88,11 @@ export const fetchJobs = (filters) => async (dispatch) => {
 };
 
 export const clearAllJobsError = () => (dispatch) => {
-  dispatch(clearAllError());
+  dispatch(jobSlice.actions.clearAllError());
 };
 
 export const resetJobs = () => (dispatch) => {
-  dispatch(resetJobSlice());
+  dispatch(jobSlice.actions.resetJobSlice());
 };
 
 export default jobSlice.reducer;

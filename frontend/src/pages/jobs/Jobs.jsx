@@ -24,7 +24,7 @@ const Jobs = () => {
   const [selectedNiche, setSelectedNiche] = useState("");
   const [salaryRange, setSalaryRange] = useState([0, 10000000]);
 
-  const { jobs, loading, error } = useSelector((state) => state.jobReducer);
+  const { jobs, loading, error } = useSelector((state) => state.jobs);
   const dispatch = useDispatch();
 
   useEffect(() => {
