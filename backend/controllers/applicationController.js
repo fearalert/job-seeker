@@ -1,6 +1,6 @@
 import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import ErrorHandler from "../middlewares/error.js";
-import { ApplicationSchema } from "../models/applicationSChema.js";
+import { ApplicationSchema } from "../models/applicationSchema.js";
 import { Job } from "../models/jobSchema.js";
 import { v2 as cloudinary } from "cloudinary";
 
