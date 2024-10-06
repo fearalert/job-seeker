@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { hostname } from "../../hostname";
 
 const jobSlice = createSlice({
   name: "jobs",
@@ -57,7 +58,7 @@ export const fetchJobs = (filters) => async (dispatch) => {
     const isSearch = !!(city || niche || searchKeyword || minSalary || maxSalary);
     dispatch(requestForAllJobs({ isSearch }));
 
-    let link = "http://localhost:4000/api/v1/job/";
+    let link = `${hostname}/api/v1/job/`;
 
     if (isSearch) {
       link += "searchalljobs?";
