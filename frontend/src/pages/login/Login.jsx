@@ -6,14 +6,11 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
-  IconButton,
+  // IconButton,
   Paper,
   Link,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import GoogleIcon from '@mui/icons-material/Google';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import AppleIcon from '@mui/icons-material/Apple';
 import { theme } from '../../themes/theme';
 import { useState } from 'react';
 
@@ -63,12 +60,12 @@ const LoginForm = styled(Paper)(({ theme }) => ({
   overflowY: 'auto',
 }));
 
-const SocialButton = styled(IconButton)(({ theme }) => ({
-  border: `1px solid ${theme.palette.primary.light}`,
-  borderRadius: 8,
-  padding: theme.spacing(0.5),
-  margin: theme.spacing(0, 1),
-}));
+// const SocialButton = styled(IconButton)(({ theme }) => ({
+//   border: `1px solid ${theme.palette.primary.light}`,
+//   borderRadius: 8,
+//   padding: theme.spacing(0.5),
+//   margin: theme.spacing(0, 1),
+// }));
 
 const LoginPage = () => {
   const [form, setForm] = useState({
@@ -193,7 +190,7 @@ const LoginPage = () => {
               Login
             </Button>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            {/* <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <Box sx={{ flex: 1, borderBottom: 1, borderColor: 'grey.300' }} />
               <Typography variant="body2" sx={{ px: 2, color: 'text.secondary' }}>or</Typography>
               <Box sx={{ flex: 1, borderBottom: 1, borderColor: 'grey.300' }} />
@@ -209,7 +206,7 @@ const LoginPage = () => {
               <SocialButton size="small">
                 <AppleIcon fontSize="small" />
               </SocialButton>
-            </Box>
+            </Box> */}
 
             <Box sx={{ mt: 2, textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">

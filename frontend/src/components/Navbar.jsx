@@ -3,7 +3,6 @@ import { AppBar, Toolbar, Typography, Button, Box, IconButton, Drawer, List, Lis
 import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-
 import PropTypes from 'prop-types';
 
 const MenuButton = ({ item }) => {
@@ -47,7 +46,7 @@ const DrawerMenu = ({ menuItems }) => {
             textDecoration: 'none',
             color: theme.palette.primary.dark,
             '&.active': {
-              backgroundColor: theme.palette.primary.light,
+              backgroundColor: theme.palette.primary.dark,
               color: theme.palette.primary.contrastText,
             },
           }}
@@ -72,6 +71,7 @@ DrawerMenu.propTypes = {
 };
 
 function Navbar() {
+  const theme = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const toggleDrawer = (open) => (event) => {
     if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -84,20 +84,28 @@ function Navbar() {
     { title: 'Home', path: '/' },
     { title: 'Jobs', path: '/jobs' },
     { title: 'Dashboard', path: '/dashboard' },
-    { title: 'Post Application', path: '/post/application/:JobId' },
-    { title: 'Register', path: '/register' },
   ];
 
   return (
     <Box marginBottom={10}>
-      <AppBar color='primary' elevation={10} position='fixed'>
+      <AppBar elevation={10} position='fixed' sx={{backgroundColor: theme.palette.primary.dark}}>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             JobScan
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
-            {menuItems.map(item => <MenuButton key={item.index} item={item} />)}
+            {menuItems.map(item => (
+              <MenuButton key={item.title} item={item} />
+            ))}
           </Box>
+          <Button 
+            variant="register"
+            sx={{ display: { xs: 'none', md: 'block' }, ml: 2 }}
+            component={NavLink} 
+            to="/register"
+          >
+            Register
+          </Button>
           <Button 
             variant="outlined" 
             sx={{ display: { xs: 'none', md: 'block' }, ml: 2 }}

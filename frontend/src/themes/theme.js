@@ -41,12 +41,26 @@ export const theme = createTheme({
         {
             props: { variant: 'outlined' },
             style: {
+              textAlign: 'center',
+              height: '40px',
               borderColor: '#716FC3',
               color: '#716FC3',
               '&:hover': {
                 backgroundColor: '#716FC3',
                 borderColor: '#716FC3',
                 color: '#fff',
+              },
+            },
+          },
+          {
+            props: { variant: 'register' },
+            style: {
+              textAlign: 'center',
+              backgroundColor: '#716FC3',
+              height: '40px',
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: '#716FC3',
               },
             },
           },
