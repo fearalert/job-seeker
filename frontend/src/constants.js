@@ -37,6 +37,15 @@ export const NICHE_OPTIONS = [
     resume: null
   };
   
+  export const INITIAL_LOGIN_STATE = {
+    email: '',
+    password: '',
+    rememberMe: false,
+    role: '',
+    emailError: '',
+    passwordError: '',
+  };
+
   export const ROLES = {
     EMPLOYER: 'Employer',
     JOB_SEEKER: 'Job Seeker'

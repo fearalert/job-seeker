@@ -1,142 +1,266 @@
-import { useState, useCallback, useMemo, useRef } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { debounce } from 'lodash-es';
 import { 
+  Box,
   Container,
   Typography,
+  TextField,
   Button,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
+  Paper,
   Grid,
   Link,
-  Alert,
-  Box
+  styled,
+  IconButton,
+  InputAdornment,
+  Alert
 } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { register } from '../../store/slices/userSlice';
-import { INITIAL_REGISTER_FORM_STATE, ROLES } from '../../constants';
-import { validateForm } from './utils';
-import { FormSection, StyledPaper, WelcomeSection } from '../../components/register/Styles';
-import FormField from '../../components/register/FormField';
-import NicheSelect from '../../components/register/NicheSelect';
+import {NICHE_OPTIONS} from '../../constants';
 
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  display: 'flex',
+  padding: 0,
+  margin: theme.spacing(2),
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: theme.shadows[3],
+  flexDirection: 'row',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+  },
+}));
+
+const WelcomeSection = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.dark,
+  color: 'white',
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(3),
+  },
+}));
+
+const FormSection = styled(Box)(({ theme }) => ({
+  flex: 1,
+  padding: theme.spacing(4),
+  margin: theme.spacing(2),
+  overflowY: 'auto',
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(1),
+  },
+}))
 
 const Register = () => {
   const dispatch = useDispatch();
-  const dispatchRef = useRef(dispatch);
   const { loading, error } = useSelector((state) => state.user);
-  
-  const [formData, setFormData] = useState(INITIAL_REGISTER_FORM_STATE);
+
+  const [formData, setFormData] = useState({
+    role: '',
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    password: '',
+    confirmPassword: '', // New field
+    firstNiche: '',
+    secondNiche: '',
+    thirdNiche: '',
+    fourthNiche: '',
+    coverLetter: '',
+    resume: null,
+  });
+
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const validateForm = () => {
+    const errors = {};
 
-  const debouncedValidation = useRef(
-    debounce((newFormData) => {
-      const errors = validateForm(newFormData);
-      setFormErrors(errors);
-    }, 300)
-  ).current;
-  
+    // Existing validations...
+    if (!formData.role) errors.role = 'Role is required';
+    if (!formData.name) errors.name = 'Name is required';
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Email is invalid';
+    }
+    if (!formData.phone) errors.phone = 'Phone is required';
+    if (!formData.address) errors.address = 'Address is required';
+    if (!formData.password) {
+      errors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
 
-  const handleChange = useCallback((e) => {
+    // Confirm password validation
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+    }
+
+    if (formData.role === 'Job Seeker') {
+      if (!formData.firstNiche) errors.firstNiche = 'Primary niche is required';
+      if (!formData.coverLetter) errors.coverLetter = 'Cover letter is required';
+      if (!formData.resume) errors.resume = 'Resume is required';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => {
-      const newFormData = { ...prev, [name]: value };
-      debouncedValidation(newFormData);
-      return newFormData;
-    });
-  }, [debouncedValidation]);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({
+        ...prev,
+        [name]: '',
+      }));
+    }
+  };
 
-  const handleFileChange = useCallback((e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData(prev => ({ ...prev, resume: file }));
-      setFormErrors(prev => ({ ...prev, resume: '' }));
-    }
-  }, []);
-
-  const debouncedSubmit = useRef(
-    debounce(async (submitData) => {
-      await dispatchRef.current(register(submitData));
-    }, 1000, { leading: true, trailing: false })
-  ).current;
-
-
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      const errors = validateForm(formData);
-      
-      if (Object.keys(errors).length === 0 && !loading) {
-        const submitData = new FormData();
-        Object.entries(formData).forEach(([key, value]) => {
-          if (value) submitData.append(key, value);
-        });
-        debouncedSubmit(submitData);
-        setIsSubmitted(true);
-      } else {
-        setFormErrors(errors);
+      setFormData((prev) => ({
+        ...prev,
+        resume: file,
+      }));
+      if (formErrors.resume) {
+        setFormErrors((prev) => ({
+          ...prev,
+          resume: '',
+        }));
       }
-    },
-    [formData, loading, debouncedSubmit]
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      if (!loading) {
+        const submitData = new FormData();
+        Object.keys(formData).forEach((key) => {
+          // Do not send confirmPassword to the backend
+          if (key !== 'confirmPassword') {
+            submitData.append(key, formData[key]);
+          }
+        });
+        await dispatch(register(submitData));
+      }
+    }
+  };
+
+  const renderTextField = (name, label, type = 'text', multiline = false, rows = 1, showPassword = false, setShowPassword = () => {}) => (
+    <TextField
+      margin="dense"
+      required
+      fullWidth
+      id={name}
+      label={label}
+      name={name}
+      type={type === 'password' ? (showPassword ? 'text' : 'password') : type}
+      autoComplete={name}
+      size="small"
+      value={formData[name]}
+      onChange={handleChange}
+      error={!!formErrors[name]}
+      helperText={formErrors[name]}
+      multiline={multiline}
+      rows={rows}
+      sx={{ mb: 0 }}
+      InputProps={type === 'password' ? {
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton
+              onClick={() => setShowPassword(!showPassword)}
+              edge="end"
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          </InputAdornment>
+        )
+      } : {}}
+    />
   );
   
-  const takenNiches = useMemo(() => {
-    return Object.entries(formData)
-      .filter(([key, value]) => key.includes('Niche') && value)
-      // eslint-disable-next-line no-unused-vars
-      .map(([_key, value]) => value);
-  }, [formData]);
-
-  const togglePassword = useCallback(() => {
-    setShowPassword(prev => !prev);
-  }, []);
+  const renderNicheSelect = (nicheNumber, label) => (
+    <FormControl 
+      fullWidth 
+      size="small" 
+      error={!!formErrors[nicheNumber]}
+      sx={{ mb: 1 }}
+    >
+      <InputLabel>{label}</InputLabel>
+      <Select
+        name={nicheNumber}
+        value={formData[nicheNumber]}
+        onChange={handleChange}
+        label={label}
+      >
+        <MenuItem value="">Select {label}</MenuItem>
+        {NICHE_OPTIONS.map((niche) => (
+          <MenuItem 
+            key={`${nicheNumber}-${niche}`} 
+            value={niche}
+            disabled={Object.entries(formData)
+              .filter(([key, value]) => key.includes('Niche') && value === niche)
+              .length > 0 && formData[nicheNumber] !== niche
+            }
+          >
+            {niche}
+          </MenuItem>
+        ))}
+      </Select>
+      {formErrors[nicheNumber] && (
+        <Typography variant="caption" color="error">
+          {formErrors[nicheNumber]}
+        </Typography>
+      )}
+    </FormControl>
+  );
 
   return (
     <Container maxWidth="lg">
       <StyledPaper elevation={3}>
-        <WelcomeSection>
-          <Typography variant="h3" component="h1" gutterBottom>
-            Welcome
+        <WelcomeSection sx={{ backgroundColor: "primary.dark"}}>
+          <Typography variant="h4" color="white" sx={{ mb: 1, fontWeight: 'bold' }}>
+            Welcome to Job Scan
           </Typography>
-          <Typography variant="h4" gutterBottom>
-            Join Us
-          </Typography>
-          <Typography variant="subtitle1">
-            Create your account to access job opportunities
+          <Typography variant="body2" sx={{ opacity: 0.8 }}>
+            Register as a Job Seeker or Employer
           </Typography>
         </WelcomeSection>
-
         <FormSection>
-          <Typography variant="h4" gutterBottom color="primary">
+        <Typography variant="h5" align="center" sx={{ mb: 2, color: "primary.main", fontWeight: "bold" }}>
             Register
           </Typography>
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <FormControl 
-                  fullWidth 
-                  size="small"
-                  error={!!formErrors.role}
-                >
-                  <InputLabel>Register As</InputLabel>
+                <FormControl fullWidth size="small" required>
+                  <InputLabel>Role</InputLabel>
                   <Select
                     name="role"
                     value={formData.role}
                     onChange={handleChange}
-                    label="Register As"
+                    label="Role"
                   >
-                    <MenuItem value="" disabled={true}>Select Role</MenuItem>
-                    <MenuItem value={ROLES.EMPLOYER}>Register as an Employer</MenuItem>
-                    <MenuItem value={ROLES.JOB_SEEKER}>Register as a Job Seeker</MenuItem>
+                    <MenuItem value="" disabled>Select Role</MenuItem>
+                    <MenuItem value="Job Seeker">Job Seeker</MenuItem>
+                    <MenuItem value="Employer">Employer</MenuItem>
                   </Select>
                   {formErrors.role && (
                     <Typography variant="caption" color="error">
@@ -145,125 +269,62 @@ const Register = () => {
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
-                <FormField
-                  name="name"
-                  label="Full Name"
-                  value={formData.name}
-                  error={formErrors.name}
-                  onChange={handleChange}
-                  showErrors={isSubmitted} 
-                />
+              <Grid item xs={12} sm={6}>
+                {renderTextField('name', 'Full Name')}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {renderTextField('email', 'Email')}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {renderTextField('phone', 'Phone Number')}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {renderTextField('address', 'Address')}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {renderTextField('password', 'Password', 'password',  false,
+                  1,
+                  showPassword,
+                  setShowPassword)}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {renderTextField(
+                  'confirmPassword',
+                  'Confirm Password',
+                  'password',
+                  false,
+                  1,
+                  showConfirmPassword,
+                  setShowConfirmPassword
+                )}
               </Grid>
 
-              <Grid item xs={12} md={6}>
-                <FormField
-                  name="email"
-                  label="Email"
-                  type="email"
-                  value={formData.email}
-                  error={formErrors.email}
-                  onChange={handleChange}
-                  showErrors={isSubmitted} 
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <FormField
-                  name="phone"
-                  label="Phone"
-                  type="tel"
-                  value={formData.phone}
-                  error={formErrors.phone}
-                  onChange={handleChange}
-                  showErrors={isSubmitted} 
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <FormField
-                  name="password"
-                  label="Password"
-                  type="password"
-                  value={formData.password}
-                  error={formErrors.password}
-                  onChange={handleChange}
-                  showPassword={showPassword}
-                  togglePassword={togglePassword}
-                  showErrors={isSubmitted} 
-                />
-              </Grid>
-
-              {formData.role === ROLES.JOB_SEEKER && (
+              {formData.role === 'Job Seeker' && (
                 <>
                   <Grid item xs={12}>
-                    <Typography variant="h6" gutterBottom color="primary.main">
+                    <Typography variant="h6" gutterBottom color="primary.main" sx={{ mt: 2 }}>
                       Professional Details
                     </Typography>
                   </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <NicheSelect
-                        nicheNumber="firstNiche"
-                        label="Primary Niche"
-                        value={formData.firstNiche}
-                        error={formErrors.firstNiche}
-                        onChange={handleChange}
-                        takenNiches={takenNiches}
-                        showErrors={isSubmitted}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <NicheSelect
-                        nicheNumber="secondNiche"
-                        label="Secondary Niche"
-                        value={formData.secondNiche}
-                        error={formErrors.secondNiche}
-                        onChange={handleChange}
-                        takenNiches={takenNiches}
-                        showErrors={isSubmitted}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <NicheSelect
-                        nicheNumber="thirdNiche"
-                        label="Third Niche"
-                        value={formData.thirdNiche}
-                        error={formErrors.thirdNiche}
-                        onChange={handleChange}
-                        takenNiches={takenNiches}
-                        showErrors={isSubmitted}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <NicheSelect
-                        nicheNumber="fourthNiche"
-                        label="Fourth Niche"
-                        value={formData.fourthNiche}
-                        error={formErrors.fourthNiche}
-                        onChange={handleChange}
-                        takenNiches={takenNiches}
-                        showErrors={isSubmitted}
-                      />
-                    </Grid>
+                  
+                  <Grid item xs={12} md={6}>
+                    {renderNicheSelect('firstNiche', 'Primary Niche')}
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    {renderNicheSelect('secondNiche', 'Secondary Niche')}
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    {renderNicheSelect('thirdNiche', 'Third Niche')}
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    {renderNicheSelect('fourthNiche', 'Fourth Niche')}
+                  </Grid>
 
                   <Grid item xs={12}>
-                    <FormField
-                      name="coverLetter"
-                      label="Cover Letter"
-                      multiline
-                      rows={4}
-                      value={formData.coverLetter}
-                      error={formErrors.coverLetter}
-                      onChange={handleChange}
-                      showErrors={isSubmitted} 
-                    />
+                    {renderTextField('coverLetter', 'Cover Letter', 'text', true, 4)}
                   </Grid>
                   <Grid item xs={12}>
-                    <Button
+                  <Button
                       variant="outlined"
                       component="label"
                       fullWidth
@@ -277,11 +338,6 @@ const Register = () => {
                         accept=".pdf,.doc,.docx"
                       />
                     </Button>
-                    {formData.resume && (
-                      <Typography variant="caption" display="block" sx={{ mt: 1 }}>
-                        Selected file: {formData.resume.name}
-                      </Typography>
-                    )}
                     {formErrors.resume && (
                       <Typography variant="caption" color="error">
                         {formErrors.resume}
@@ -290,31 +346,34 @@ const Register = () => {
                   </Grid>
                 </>
               )}
-
               <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
+                <Button 
+                  variant="contained" 
+                  type="submit" 
+                  disabled={loading} 
                   fullWidth
-                  size="large"
-                  sx={{ mt: 2 }}
-                  disabled={loading}
                 >
                   {loading ? 'Registering...' : 'Register'}
                 </Button>
               </Grid>
-
-              <Box sx={{ mt: 2, textAlign: 'center', flex: 1 }}>
-                <Typography variant="body2" color="text.secondary">
-                  Already Have an account?{' '}
-                  <Link href="/login" color="primary" sx={{ textDecoration: 'none' }}>
-                    Login
-                  </Link>
-                </Typography>
-              </Box>
             </Grid>
           </form>
+          {error && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
+          <Typography variant="body2" align="center" sx={{ mt: 2, mb: 2}}>
+            Already have an account? 
+            <br/>
+            <Link href="/login/employer" variant="body2" color="primary.main" sx={{ ml: 0.5 }}>
+              Sign In As Employeer
+            </Link>
+            <br />
+            <Link href="/login/job-seeker" variant="body2" color="primary.main" sx={{ ml: 0.5 }}>
+              Sign In As Job Seeker
+            </Link>
+          </Typography>
         </FormSection>
       </StyledPaper>
     </Container>

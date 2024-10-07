@@ -93,15 +93,15 @@ const userSlice = createSlice({
 export const register = (data) => async(dispatch) => {
     dispatch(userSlice.actions.registerRequest());
     try {
-        const response = await axios.post(`${hostname}/api/v1/user/register`,
-            data,
-            {
-                withCredentials: true,
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            }
-        );
+      const response = await axios.post(`${hostname}/api/v1/user/register`, data, {
+        withCredentials: true,
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
+    
+    console.log("Registration response:", response);
+    
     dispatch(userSlice.actions.registerSuccess(response.data));
     dispatch(userSlice.actions.clearAllErrors());
   } catch (error) {

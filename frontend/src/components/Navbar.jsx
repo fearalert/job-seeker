@@ -1,5 +1,18 @@
 import { useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
@@ -32,7 +45,7 @@ MenuButton.propTypes = {
   }).isRequired,
 };
 
-const DrawerMenu = ({ menuItems }) => {
+const DrawerMenu = ({ menuItems, onClose }) => {
   const theme = useTheme();
   return (
     <List>
@@ -50,13 +63,11 @@ const DrawerMenu = ({ menuItems }) => {
               color: theme.palette.primary.contrastText,
             },
           }}
+          onClick={onClose}
         >
           <ListItemText primary={item.title} />
         </ListItem>
       ))}
-      <ListItem button component={NavLink} to="/login">
-        <ListItemText primary="Login" />
-      </ListItem>
     </List>
   );
 };
@@ -68,16 +79,30 @@ DrawerMenu.propTypes = {
       path: PropTypes.string.isRequired,
     })
   ).isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 function Navbar() {
   const theme = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [showLoginOptions, setShowLoginOptions] = useState(false);
+
   const toggleDrawer = (open) => (event) => {
     if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
     setDrawerOpen(open);
+  };
+
+  const handleLoginClick = (event) => {
+    setShowLoginOptions(!showLoginOptions);
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setShowLoginOptions(false); // Close login options
   };
 
   const menuItems = [
@@ -88,7 +113,7 @@ function Navbar() {
 
   return (
     <Box marginBottom={10}>
-      <AppBar elevation={10} position='fixed' sx={{backgroundColor: theme.palette.primary.dark}}>
+      <AppBar elevation={10} position='fixed' sx={{ backgroundColor: theme.palette.primary.dark }}>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             JobScan
@@ -108,12 +133,23 @@ function Navbar() {
           </Button>
           <Button 
             variant="outlined" 
-            sx={{ display: { xs: 'none', md: 'block' }, ml: 2 }}
-            component={NavLink} 
-            to="/login"
+            onClick={handleLoginClick}
+            sx={{ display: { xs: 'block', md: 'block' }, ml: 2 }}
           >
             Login
           </Button>
+          <Menu
+            anchorEl={anchorEl}
+            open={showLoginOptions}
+            onClose={handleClose}
+          >
+            <MenuItem component={NavLink} to="/login/job-seeker" onClick={handleClose}>
+              Job Seeker
+            </MenuItem>
+            <MenuItem component={NavLink} to="/login/employer" onClick={handleClose}>
+              Employer
+            </MenuItem>
+          </Menu>
           <IconButton
             edge="end"
             color="inherit"
@@ -127,7 +163,10 @@ function Navbar() {
       </AppBar>
       <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
         <Box role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)} sx={{ width: 250 }}>
-          <DrawerMenu menuItems={menuItems} toggleDrawer={toggleDrawer} />
+          <DrawerMenu menuItems={menuItems} onClose={toggleDrawer(false)} />
+          <ListItem button component={NavLink} to="/register" onClick={toggleDrawer(false)}>
+            <ListItemText primary="Register" />
+          </ListItem>
         </Box>
       </Drawer>
     </Box>

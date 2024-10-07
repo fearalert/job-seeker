@@ -54,7 +54,7 @@ const Working = () => {
           flexDirection: 'column',
           gap: 4,
           borderRadius: 2,
-          p: 8,
+          p: 4,
           backgroundColor: theme.palette.primary.main,
         }}>
         {steps.map((step, index) => (
