@@ -69,7 +69,7 @@ const Register = () => {
     phone: '',
     address: '',
     password: '',
-    confirmPassword: '', // New field
+    confirmPassword: '',
     firstNiche: '',
     secondNiche: '',
     thirdNiche: '',
@@ -85,7 +85,6 @@ const Register = () => {
   const validateForm = () => {
     const errors = {};
 
-    // Existing validations...
     if (!formData.role) errors.role = 'Role is required';
     if (!formData.name) errors.name = 'Name is required';
     if (!formData.email) {
@@ -101,7 +100,6 @@ const Register = () => {
       errors.password = 'Password must be at least 6 characters';
     }
 
-    // Confirm password validation
     if (formData.password !== formData.confirmPassword) {
       errors.confirmPassword = 'Passwords do not match';
     }
