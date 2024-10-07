@@ -4,11 +4,11 @@ import Home from './pages/home/Home';
 import PostApplication from './pages/postapplication/PostApplication';
 import Dashboard from './pages/dashboard/Dashboard';
 import Login from './pages/login/Login';
-import Register from './pages/register/Register';
 import NotFound from './pages/notfound/NotFound';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Container } from "@mui/material";
+import Register from "./pages/register";
 
 function App() {
   return (

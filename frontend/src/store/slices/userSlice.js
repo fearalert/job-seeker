@@ -113,4 +113,24 @@ export const clearAllUserError = () => (dispatch) => {
     dispatch(userSlice.actions.clearAllErrors());
   };
   
+export const login = (data) => async (dispatch) => {
+    dispatch(userSlice.actions.loginRequest());
+    try {
+      const response = await axios.post(
+        `${hostname}/api/v1/user/login`,
+        data,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      dispatch(userSlice.actions.loginSuccess(response.data));
+      dispatch(userSlice.actions.clearAllErrors());
+    } catch (error) {
+      dispatch(userSlice.actions.loginFailed(error.response.data.message));
+    }
+  };
+  
+
+
   export default userSlice.reducer;
