@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   Box,
-  Container,
   Typography,
   TextField,
   Button,
@@ -25,7 +24,7 @@ import {NICHE_OPTIONS} from '../../constants';
 const StyledPaper = styled(Paper)(({ theme }) => ({
   display: 'flex',
   padding: 0,
-  margin: theme.spacing(2),
+  margin: 0,
   backgroundColor: theme.palette.background.paper,
   boxShadow: theme.shadows[3],
   flexDirection: 'row',
@@ -233,7 +232,6 @@ const Register = () => {
   );
 
   return (
-    <Container maxWidth="lg">
       <StyledPaper elevation={3}>
         <WelcomeSection sx={{ backgroundColor: "primary.dark"}}>
           <Typography variant="h4" color="white" sx={{ mb: 1, fontWeight: 'bold' }}>
@@ -376,7 +374,6 @@ const Register = () => {
           </Typography>
         </FormSection>
       </StyledPaper>
-    </Container>
   );
 };
 

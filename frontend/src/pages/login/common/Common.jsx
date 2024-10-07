@@ -4,6 +4,7 @@ export const LoginContainer = styled(Paper)(({ theme }) => ({
     display: 'flex',
     padding: 0,
     margin: 0,
+    marginBottom: 2,
     backgroundColor: theme.palette.background.paper,
     maxWidth: '100%!important',
     height: '420px',
