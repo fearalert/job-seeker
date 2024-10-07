@@ -52,23 +52,27 @@ const JobList = () => {
       <Typography variant="h4" align="center" fontWeight="bold" gutterBottom color={theme.palette.primary.main}>
         Top Niches
       </Typography>
-      <Grid container spacing={3} >
-        {jobs.map((job) => (
+        <Grid container spacing={3} >
+          {jobs.map((job) => (
           <Grid item xs={12} sm={6} md={4} key={job.id}>
-            <Card variant="outlined" sx={{ boxShadow: 0.5, height: 150, textAlign:"center", backgroundColor: theme.palette.background.default, '&:hover' : {
+          <Card variant="outlined" sx={{ 
+            boxShadow: 0.5, 
+            minHeight: 130,
+            textAlign: "center", 
+            backgroundColor: theme.palette.background.default, 
+            '&:hover': {
               backgroundColor: theme.palette.background.paper,
             }}} >
-              <CardContent>
-                <Typography variant="h6" color={theme.palette.primary.main}>
-                  {job.service}
-                </Typography>
-                <br />
-                <Typography variant="body2" color="textSecondary">
-                  {job.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+            <CardContent>
+              <Typography variant="h6" color={theme.palette.primary.main}>
+                {job.service}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                {job.description}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
         ))}
       </Grid>
     </Box>

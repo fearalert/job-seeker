@@ -38,66 +38,64 @@ const steps = [
 const Working = () => {
   const theme = useTheme();
   return (
-    <Container sx={{ my: 5, p: 2 }}>
-      <Typography
-        variant="h4"
-        align="center"
-        fontWeight="bold"
-        gutterBottom
-        color={theme.palette.primary.main}
-        marginBottom={4}
-      >
-        How Does It Work
-      </Typography>
-      <Container  sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
-          borderRadius: 2,
-          p: 4,
-          backgroundColor: theme.palette.primary.main,
-        }}>
-        {steps.map((step, index) => (
-           <Paper
-           key={index}
-           elevation={3}
-           sx={{
-             p: 3,
-             textAlign: "left",
-             backgroundColor: 'background.default',
-             transition: 'background-color 0.3s ease',
-             '&:hover': {
-               backgroundColor: theme.palette.tertiary.dark,
-               color: theme.palette.background.default,
-             },
-           }}
-         >
-             <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: 56,
-                height: 56,
-                borderRadius: '50%',
-                backgroundColor: 'primary.light',
-                mb: 2,
-              }}
-            >
-              <IconButton variant="outlined" sx={{ color: theme.palette.background.paper }}>
-                {step.icon}
-              </IconButton>
-            </Box>
-            <Typography variant="h5" sx={{ mb: 1, fontWeight:"bold" }}>
-              {step.title}
-            </Typography>
-            <Typography variant="body2">
-              {step.description}
-            </Typography>
-          </Paper>
-        ))}
-      </Container>
-    </Container>
+    <Container sx={{ my: theme.spacing(5), p: theme.spacing(2) }}>
+  <Typography
+    variant="h4"
+    align="center"
+    fontWeight="bold"
+    gutterBottom
+    color={theme.palette.primary.main}
+    marginBottom={theme.spacing(4)}
+  >
+    How Does It Work
+  </Typography>
+  <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: theme.spacing(4),
+      borderRadius: 2,
+      p: theme.spacing(4),
+      backgroundColor: theme.palette.primary.main,
+    }}>
+    {steps.map((step, index) => (
+       <Paper
+         key={index}
+         elevation={3}
+         sx={{
+           p: theme.spacing(3),
+           textAlign: "left",
+           backgroundColor: theme.palette.background.default,
+           transition: 'background-color 0.3s ease',
+           '&:hover': {
+             backgroundColor: theme.palette.tertiary.dark,
+             color: theme.palette.background.default,
+           },
+         }}
+       >
+         <Box sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: 56,
+              height: 56,
+              borderRadius: '50%',
+              backgroundColor: theme.palette.primary.light,
+              mb: theme.spacing(2),
+            }}>
+          <IconButton sx={{ color: theme.palette.background.paper }}>
+            {step.icon}
+          </IconButton>
+         </Box>
+         <Typography variant="h5" sx={{ mb: theme.spacing(1), fontWeight: "bold" }}>
+           {step.title}
+         </Typography>
+         <Typography variant="body2">
+           {step.description}
+         </Typography>
+       </Paper>
+    ))}
+  </Box>
+  </Container>
   );
 };
 

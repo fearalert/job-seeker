@@ -11,9 +11,11 @@ const Hero = () => {
       textAlign: 'center', 
       justifyContent: 'center',
       alignItems: 'center',
-      p: 4, 
+      p: theme.spacing(4), 
       backgroundColor: theme.palette.background.default,
-      mt: 16,
+      mt: theme.spacing(8),
+      maxWidth: '100%',
+      overflowX: 'hidden',
     }}>
       <Typography variant="h3" fontWeight="bold" color={theme.palette.primary.main}>
         Find the Best Job that Fits Your Career
