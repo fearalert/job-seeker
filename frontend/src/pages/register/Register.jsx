@@ -18,7 +18,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { register } from '../../store/slices/userSlice';
 import { NICHE_OPTIONS, ROLES } from '../../constants';
 import { useNavigate } from 'react-router-dom';
-import { validateRegisterForm } from './utils';
+import { createFormData, validateForm } from './utils';
 import { FormSection, StyledPaper, WelcomeSection } from './Sytles';
 
 const Register = () => {
@@ -78,12 +78,12 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = validateRegisterForm(formData);
+    const errors = validateForm(formData);
     setFormErrors(errors);
 
     if (Object.keys(errors).length === 0) {
       if (!loading) {
-        const submitData = validateRegisterForm(formData);
+        const submitData = createFormData(formData);
         await dispatch(register(submitData));
 
         if (isAuthenticated) {

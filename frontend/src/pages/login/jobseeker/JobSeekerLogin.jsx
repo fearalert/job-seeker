@@ -20,7 +20,7 @@ const JobSeekerLogin = () => {
   const [form, setForm] = useState({
     email: '',
     password: '',
-    role: ROLES.EMPLOYER,
+    role: ROLES.JOB_SEEKER,
     rememberMe: false,
     emailError: '',
     passwordError: '',
@@ -46,7 +46,6 @@ const JobSeekerLogin = () => {
       return;
     }
 
-    // Dispatch login action
     dispatch(login({ email, password, role: form.role }));
   };
 

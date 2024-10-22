@@ -39,7 +39,7 @@ export const isValidPassword = (password) => {
  * @param {Object} formData 
  * @returns {Object} Error messages for each invalid field
  */
-export const validateRegisterForm = (formData) => {
+export const validateForm = (formData) => {
   const errors = {};
 
   // Required fields validation
@@ -106,27 +106,4 @@ export const createFormData = (formData) => {
     }
   });
   return submitData;
-};
-
-/**
- * Handles API errors and returns appropriate error messages
- * @param {Error} error 
- * @returns {string}
- */
-export const handleApiError = (error) => {
-  if (error.response) {
-    switch (error.response.status) {
-      case 400:
-        return 'Please check your input and try again';
-      case 401:
-        return 'Authentication failed. Please try again';
-      case 409:
-        return 'An account with this email already exists';
-      case 422:
-        return 'Invalid data provided. Please check your input';
-      default:
-        return 'An error occurred. Please try again later';
-    }
-  }
-  return 'Network error. Please check your connection';
 };
