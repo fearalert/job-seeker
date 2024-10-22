@@ -17,6 +17,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 const MenuButton = ({ item }) => {
   const theme = useTheme();
@@ -87,6 +88,7 @@ function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [showLoginOptions, setShowLoginOptions] = useState(false);
+  const { isAuthenticated } = useSelector((state) => state.user);
 
   const toggleDrawer = (open) => (event) => {
     if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -102,13 +104,15 @@ function Navbar() {
 
   const handleClose = () => {
     setAnchorEl(null);
-    setShowLoginOptions(false); // Close login options
+    setShowLoginOptions(false);
   };
 
   const menuItems = [
     { title: 'Home', path: '/' },
     { title: 'Jobs', path: '/jobs' },
-    { title: 'Dashboard', path: '/dashboard' },
+    ...(isAuthenticated
+      ? [{ title: 'Dashboard', path: '/dashboard' }]
+      : []),
   ];
 
   return (
@@ -123,6 +127,7 @@ function Navbar() {
               <MenuButton key={item.title} item={item} />
             ))}
           </Box>
+          {!isAuthenticated &&
           <Button 
             variant="register"
             sx={{ display: { xs: 'none', md: 'block' }, ml: 2 }}
@@ -131,6 +136,8 @@ function Navbar() {
           >
             Register
           </Button>
+          }
+          {!isAuthenticated &&
           <Button 
             variant="outlined" 
             onClick={handleLoginClick}
@@ -138,6 +145,7 @@ function Navbar() {
           >
             Login
           </Button>
+          }
           <Menu
             anchorEl={anchorEl}
             open={showLoginOptions}
@@ -165,7 +173,9 @@ function Navbar() {
         <Box role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)} sx={{ width: 250 }}>
           <DrawerMenu menuItems={menuItems} onClose={toggleDrawer(false)} />
           <ListItem button component={NavLink} to="/register" onClick={toggleDrawer(false)}>
-            <ListItemText primary="Register" />
+            {!isAuthenticated &&
+              <ListItemText primary="Register" />
+            }
           </ListItem>
         </Box>
       </Drawer>
