@@ -14,8 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import MenuIcon from "@mui/icons-material/Menu";
-import LuMoveRight from "@mui/icons-material/ArrowForwardIos";
-import { clearAllUserError, logout } from "../../store/slices/userSlice";
+import { clearAllUserError, logout, fetchUser } from "../../store/slices/userSlice";
 import MyProfile from "../../components/sidebar/MyProfile";
 import UpdateProfile from "../../components/sidebar/UpdateProfile";
 import JobPost from "../../components/sidebar/employer/JobPost";
@@ -27,7 +26,7 @@ const Dashboard = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [componentName, setComponentName] = useState("My Profile");
 
-  const { loading, isAuthenticated, error, user } = useSelector(
+  const {isAuthenticated, error, user } = useSelector(
     (state) => state.user
   );
 
@@ -40,14 +39,24 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    // Check if the user is authenticated based on token
+    const token = localStorage.getItem("userToken");
+    if (token && !isAuthenticated) {
+      // Fetch user information if the token exists
+      dispatch(fetchUser());
+    }
+    
+    // Handle errors
     if (error) {
       toast.error(error);
       dispatch(clearAllUserError());
     }
+
+    // Redirect to home if not authenticated
     if (!isAuthenticated) {
       navigateTo("/");
     }
-  }, [dispatch, error, loading, isAuthenticated, navigateTo]);
+  }, [dispatch, error, isAuthenticated, navigateTo]);
 
   const sidebarItems = [
     { label: "My Profile", component: <MyProfile /> },
@@ -124,13 +133,6 @@ const Dashboard = () => {
         component="main"
         sx={{ flexGrow: 1, p: 3, marginTop: "64px" }}
       >
-        <IconButton
-          onClick={() => setShowSidebar(!showSidebar)}
-          sx={{ mb: 2 }}
-          color="primary"
-        >
-          <LuMoveRight />
-        </IconButton>
         {(() => {
           const activeItem = sidebarItems.find(
             (item) => item.label === componentName

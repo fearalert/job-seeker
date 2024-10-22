@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { clearAllJobsError, fetchJobs } from "../../store/slices/jobSlice";
+import {  clearAllJobErrors, fetchJobs } from "../../store/slices/jobSlice";
 import {
   Container,
   TextField,
@@ -32,7 +32,7 @@ const Jobs = () => {
 
     if (error) {
       toast.error(error);
-      dispatch(clearAllJobsError());
+      dispatch(clearAllJobErrors());
     }
   }, [dispatch, error]);
 

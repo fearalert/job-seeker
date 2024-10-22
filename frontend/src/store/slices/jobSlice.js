@@ -87,11 +87,68 @@ export const fetchJobs = (filters) => async (dispatch) => {
   }
 };
 
-export const clearAllJobsError = () => (dispatch) => {
-  dispatch(jobSlice.actions.clearAllError());
+export const fetchSingleJob = (jobId) => async (dispatch) => {
+  dispatch(jobSlice.actions.requestForSingleJob());
+  try {
+    const response = await axios.get(
+      `${hostname}/api/v1/job/get/${jobId}`,
+      { withCredentials: true }
+    );
+    dispatch(jobSlice.actions.successForSingleJob(response.data.job));
+    dispatch(jobSlice.actions.clearAllErrors());
+  } catch (error) {
+    dispatch(jobSlice.actions.failureForSingleJob(error.response.data.message));
+  }
 };
 
-export const resetJobs = () => (dispatch) => {
+export const postJob = (data) => async (dispatch) => {
+  dispatch(jobSlice.actions.requestForPostJob());
+  try {
+    const response = await axios.post(
+      `${hostname}/api/v1/job/post`,
+      data,
+      { withCredentials: true, headers: { "Content-Type": "application/json" } }
+    );
+    dispatch(jobSlice.actions.successForPostJob(response.data.message));
+    dispatch(jobSlice.actions.clearAllErrors());
+  } catch (error) {
+    dispatch(jobSlice.actions.failureForPostJob(error.response.data.message));
+  }
+};
+
+export const getMyJobs = () => async (dispatch) => {
+  dispatch(jobSlice.actions.requestForMyJobs());
+  try {
+    const response = await axios.get(
+      `${hostname}/api/v1/job/getmyjobs`,
+      { withCredentials: true }
+    );
+    dispatch(jobSlice.actions.successForMyJobs(response.data.myJobs));
+    dispatch(jobSlice.actions.clearAllErrors());
+  } catch (error) {
+    dispatch(jobSlice.actions.failureForMyJobs(error.response.data.message));
+  }
+};
+
+export const deleteJob = (id) => async (dispatch) => {
+  dispatch(jobSlice.actions.requestForDeleteJob());
+  try {
+    const response = await axios.delete(
+      `${hostname}/api/v1/job/delete/${id}`,
+      { withCredentials: true }
+    );
+    dispatch(jobSlice.actions.successForDeleteJob(response.data.message));
+    dispatch(clearAllJobErrors());
+  } catch (error) {
+    dispatch(jobSlice.actions.failureForDeleteJob(error.response.data.message));
+  }
+};
+
+export const clearAllJobErrors = () => (dispatch) => {
+  dispatch(jobSlice.actions.clearAllErrors());
+};
+
+export const resetJobSlices = () => (dispatch) => {
   dispatch(jobSlice.actions.resetJobSlice());
 };
 
