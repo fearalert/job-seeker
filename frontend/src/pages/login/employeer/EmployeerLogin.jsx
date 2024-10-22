@@ -8,11 +8,13 @@ import {
     Link,
   } from '@mui/material';
   import { theme } from '../../../themes/theme';
-  import { useState } from 'react';
+  import { useEffect, useState } from 'react';
   import { validateLoginForm } from '../utils';
   import { LeftPanel, LoginContainer, LoginForm, RightPanel } from '../common/Common';
-import { ROLES } from '../../../constants';
-  
+  import { ROLES } from '../../../constants';
+  import { useNavigate } from 'react-router-dom';
+  import { clearAllUserError, login } from '../../../store/slices/userSlice';
+  import { useDispatch, useSelector } from 'react-redux';
   
   const EmployeerLogin = () => {
     const [form, setForm] = useState({
@@ -24,6 +26,13 @@ import { ROLES } from '../../../constants';
       passwordError: '',
     });
   
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
+    // Get loading, error, and isAuthenticated state from Redux store
+    const { loading, error, isAuthenticated } = useSelector((state) => state.user);
+  
+    // Handle form submit
     const handleSubmit = (e) => {
       e.preventDefault();
       const { email, password } = form;
@@ -33,7 +42,6 @@ import { ROLES } from '../../../constants';
   
       // Validate form data
       const errors = validateLoginForm({ email, password });
-      
       if (Object.keys(errors).length > 0) {
         // Set the error messages if validation fails
         setForm((prev) => ({
@@ -43,15 +51,30 @@ import { ROLES } from '../../../constants';
         return;
       }
   
-      setForm({ email: '', password: '', role: ROLES.EMPLOYER, rememberMe: false, emailError: '', passwordError: '' });
+      // Dispatch login action
+      dispatch(login({ email, password, role: form.role }));
     };
+  
+    // Redirect to dashboard if authenticated
+    useEffect(() => {
+      if (isAuthenticated) {
+        navigate('/dashboard');
+      }
+    }, [isAuthenticated, navigate]);
+  
+    // Clear error messages on unmount
+    useEffect(() => {
+      return () => {
+        dispatch(clearAllUserError());
+      };
+    }, [dispatch]);
   
     return (
       <LoginContainer>
         <LeftPanel>
           <Box sx={{ position: 'relative', zIndex: 1 }}>
             <Typography variant="h3" color="white" sx={{ mb: 1, fontWeight: 'bold' }}>
-              Welcome Employeer
+              Welcome Employer
             </Typography>
             <Typography variant="subtitle1" color="white">
               Login to your account to find the employees for you.
@@ -99,6 +122,12 @@ import { ROLES } from '../../../constants';
                 sx={{ mb: 1 }}
               />
   
+              {error && (
+                <Typography variant="body2" color="error" sx={{ mb: 1 }}>
+                  {error}
+                </Typography>
+              )}
+  
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                 <FormControlLabel
                   control={
@@ -122,8 +151,9 @@ import { ROLES } from '../../../constants';
                 variant="contained"
                 size="small"
                 sx={{ mb: 2 }}
+                disabled={loading}
               >
-                Login
+                {loading ? 'Logging in...' : 'Login'}
               </Button>
   
               <Box sx={{ mt: 2, textAlign: 'center' }}>
@@ -142,4 +172,3 @@ import { ROLES } from '../../../constants';
   };
   
   export default EmployeerLogin;
-  

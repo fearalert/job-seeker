@@ -82,13 +82,11 @@ const userSlice = createSlice({
       state.user = action.payload.user;
       state.error = action.payload;
     },
-    clearAllErrors(state, action) {
+    clearAllErrors(state) {
       state.error = null;
-      state.user = action.payload.user;
     },
   },
 });
-
 
 export const register = (data) => async(dispatch) => {
     dispatch(userSlice.actions.registerRequest());
@@ -128,6 +126,22 @@ export const login = (data) => async (dispatch) => {
       dispatch(userSlice.actions.clearAllErrors());
     } catch (error) {
       dispatch(userSlice.actions.loginFailed(error.response.data.message));
+    }
+  };
+
+  export const logout = () => async (dispatch) => {
+    try {
+      const response = await axios.post(
+        `${hostname}/api/v1/user/logout`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response.data);
+      dispatch(userSlice.actions.logoutSuccess());
+      dispatch(userSlice.actions.clearAllErrors());
+    } catch (error) {
+      dispatch(userSlice.actions.logoutFailed(error.response.data.message));
     }
   };
   

@@ -1,11 +1,10 @@
+import { ROLES } from "../../constants";
+
 /**
  * Validates email format
  * @param {string} email 
  * @returns {boolean}
  */
-
-import { ROLES } from "../../constants";
-
 export const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -22,16 +21,30 @@ export const isValidPhone = (phone) => {
 };
 
 /**
+ * Validates password format
+ * @param {string} password 
+ * @returns {boolean}
+ */
+export const isValidPassword = (password) => {
+  return (
+    password.length >= 6 && 
+    /[a-z]/.test(password) && 
+    /[A-Z]/.test(password) && 
+    /\d/.test(password)
+  );
+};
+
+/**
  * Validates form data and returns error messages
  * @param {Object} formData 
  * @returns {Object} Error messages for each invalid field
  */
-export const validateForm = (formData) => {
+export const validateRegisterForm = (formData) => {
   const errors = {};
-  
+
   // Required fields validation
-  const requiredFields = ['role', 'name', 'email', 'phone', 'password'];
-  requiredFields.forEach(field => {
+  const requiredFields = ['role', 'name', 'email', 'phone', 'address', 'password', 'confirmPassword'];
+  requiredFields.forEach((field) => {
     if (!formData[field]) {
       errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
     }
@@ -48,12 +61,12 @@ export const validateForm = (formData) => {
   }
 
   // Password validation
-  if (formData.password) {
-    if (formData.password.length < 8) {
-      errors.password = 'Password must be at least 8 characters long';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      errors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
-    }
+  if (formData.password && !isValidPassword(formData.password)) {
+    errors.password = 'Password must be at least 6 characters and contain uppercase, lowercase, and a number';
+  }
+
+  if (formData.password !== formData.confirmPassword) {
+    errors.confirmPassword = 'Passwords do not match';
   }
 
   // Job Seeker specific validations
