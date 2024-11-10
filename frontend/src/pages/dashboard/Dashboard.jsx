@@ -33,7 +33,7 @@ import MyApplications from "../../components/sidebar/user/MyApplications";
 import { DashboardRounded } from "@mui/icons-material";
 import DashboardHome from "../../components/sidebar/DashHome";
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [componentName, setComponentName] = useState("My Profile");
 
@@ -161,4 +161,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

@@ -4,7 +4,7 @@ import NotFound from './pages/notfound/NotFound';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Container } from "@mui/material";
-import Dashboard from "./pages/Dashboard/Dashboard";
+import DashboardPage from "./pages/Dashboard/Dashboard";
 import EmployeerLogin from "./pages/login/employeer/EmployeerLogin";
 import JobSeekerLogin from "./pages/login/JobSeeker/JobSeekerLogin";
 import EmployeerRegister from "./pages/register/Employeer/EmployerRegister";
@@ -20,7 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/jobs" element={<JobsPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/post/application/:JobId" element={<PostApplication />} />
           <Route path="/register/employer" element={<EmployeerRegister />} />
           <Route path="/register/job-seeker" element={<JobSeekRegister />} />
