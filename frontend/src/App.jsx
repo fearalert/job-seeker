@@ -5,12 +5,12 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Container } from "@mui/material";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
-import EmployeerLogin from "./pages/login/employeer/EmployeerLogin";
-import JobSeekerLogin from "./pages/login/JobSeeker/JobSeekerLogin";
-import EmployeerRegister from "./pages/register/Employeer/EmployerRegister";
-import JobSeekRegister from "./pages/register/JobSeeker/JobSeekRegister";
 import HomePage from "./pages/Home/HomePage";
 import JobsPage from "./pages/Jobs/JobsPage";
+import EmployeerLogin from "./pages/login/employeer/EmployeerLogin";
+import EmployeerRegister from "./pages/register/Employeer/EmployerRegister";
+import JobSeekRegister from "./pages/register/JobSeeker/JobSeekRegister";
+import JobSeekerLogin from "./pages/login/JobSeeker/JobSeekerLogin";
 
 function App() {
   return (
