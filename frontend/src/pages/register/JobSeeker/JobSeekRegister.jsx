@@ -15,18 +15,18 @@ import {
   Alert
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { register } from '../../store/slices/userSlice';
-import { NICHE_OPTIONS, ROLES } from '../../constants';
-import { useNavigate } from 'react-router-dom';
-import { createFormData, validateForm } from './utils';
-import { FormSection, StyledPaper, WelcomeSection } from './Styles';
+import { NICHE_OPTIONS, ROLES } from '../../../constants';
+import { Link, useNavigate } from 'react-router-dom';
+import { createFormData, validateForm } from '../utils';
+import { FormSection, StyledPaper } from '../Styles';
+import { register } from '../../../store/slices/userSlice';
 
-const Register = () => {
+const JobSeekRegister = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    role: '',
+    role: ROLES.JOB_SEEKER,
     name: '',
     email: '',
     phone: '',
@@ -50,11 +50,13 @@ const Register = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
+      role: ROLES.JOB_SEEKER,
       [name]: value,
     }));
     if (formErrors[name]) {
       setFormErrors((prev) => ({
         ...prev,
+        role: ROLES.JOB_SEEKER,
         [name]: '',
       }));
     }
@@ -164,40 +166,12 @@ const Register = () => {
 
   return (
     <StyledPaper elevation={3}>
-      <WelcomeSection sx={{ backgroundColor: "primary.dark" }}>
-        <Typography variant="h4" color="white" sx={{ mb: 1, fontWeight: 'bold' }}>
-          Welcome to Job Scan
-        </Typography>
-        <Typography variant="body2" sx={{ opacity: 0.8 }}>
-          Register as a Job Seeker or Employer
-        </Typography>
-      </WelcomeSection>
       <FormSection>
         <Typography variant="h5" align="center" sx={{ mb: 2, color: "primary.main", fontWeight: "bold" }}>
-          Register
+          Register as Job-Seeker
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
-                <InputLabel>Role</InputLabel>
-                <Select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  label="Role"
-                >
-                  <MenuItem value="" disabled>Select Role</MenuItem>
-                  <MenuItem value={ROLES.JOB_SEEKER}>Job Seeker</MenuItem>
-                  <MenuItem value={ROLES.EMPLOYER}>Employer</MenuItem>
-                </Select>
-                {formErrors.role && (
-                  <Typography variant="caption" color="error">
-                    {formErrors.role}
-                  </Typography>
-                )}
-              </FormControl>
-            </Grid>
             <Grid item xs={12} sm={6}>
               {renderTextField('name', 'Full Name')}
             </Grid>
@@ -273,15 +247,15 @@ const Register = () => {
             {loading ? 'Registering...' : 'Register'}
           </Button>
         </form>
-        {/* <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
           Already have an account?{' '}
-          <Link href="/login" variant="body2" sx={{ textDecoration: 'none', color: 'primary.main' }}>
+          <Link href="/login/job-seeker" variant="body2" sx={{ textDecoration: 'none', color: 'primary.main' }}>
             Sign In
           </Link>
-        </Typography> */}
+        </Typography>
       </FormSection>
     </StyledPaper>
   );
 };
 
-export default Register;
+export default JobSeekRegister;

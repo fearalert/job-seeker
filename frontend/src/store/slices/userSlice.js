@@ -13,7 +13,7 @@ const userSlice = createSlice({
   },
   reducers: {
     registerRequest(state) {
-      state.loading = true;
+      state.loading = false;
       state.isAuthenticated = false;
       state.user = {};
       state.error = null;
@@ -34,7 +34,7 @@ const userSlice = createSlice({
       state.message = null;
     },
     loginRequest(state) {
-      state.loading = true;
+      state.loading = false;
       state.isAuthenticated = false;
       state.user = {};
       state.error = null;
@@ -129,7 +129,7 @@ export const login = (data) => async (dispatch) => {
 
 export const logout = () => async (dispatch) => {
   try {
-    const response = await axios.get(`${hostname}/api/v1/user/logout`, {
+    const response = await axios.post(`${hostname}/api/v1/user/logout`, {
       withCredentials: true,
     });
     console.log(response.data);
@@ -152,7 +152,7 @@ export const fetchUser = () => async (dispatch) => {
   dispatch(userSlice.actions.fetchUserRequest());
   
   try {
-    const response = await axios.get(`${hostname}/api/v1/user/profile`, {
+    const response = await axios.post(`${hostname}/api/v1/user/profile`, {
       headers: { Authorization: `Bearer ${token}` },
       withCredentials: true,
     });

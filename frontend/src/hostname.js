@@ -1,1 +1,1 @@
-export const hostname = "https://job-seeker-1-jtnc.onrender.com"
+export const hostname = "https://job-seeker-1-jtnc.onrender.com";

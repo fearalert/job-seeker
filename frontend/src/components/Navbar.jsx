@@ -132,9 +132,19 @@ function Navbar() {
             variant="register"
             sx={{ display: { xs: 'none', md: 'block' }, ml: 2 }}
             component={NavLink} 
-            to="/register"
+            to="/register/employer"
           >
-            Register
+            Employeer Portal
+          </Button>
+          }
+           {!isAuthenticated &&
+          <Button 
+            variant="register"
+            sx={{ display: { xs: 'none', md: 'block' }, ml: 2 }}
+            component={NavLink} 
+            to="/register/job-seeker"
+          >
+            Register as Job Seeker
           </Button>
           }
           {!isAuthenticated &&
@@ -174,7 +184,24 @@ function Navbar() {
           <DrawerMenu menuItems={menuItems} onClose={toggleDrawer(false)} />
           <ListItem button component={NavLink} to="/register" onClick={toggleDrawer(false)}>
             {!isAuthenticated &&
-              <ListItemText primary="Register" />
+              <Button 
+              variant="register"
+              sx={{ display: { xs: 'none', md: 'block' }, ml: 2 }}
+              component={NavLink} 
+              to="/register"
+            >
+              Register as Employeer
+            </Button>
+            }
+             {!isAuthenticated &&
+            <Button 
+              variant="register"
+              sx={{ display: { xs: 'none', md: 'block' }, ml: 2 }}
+              component={NavLink} 
+              to="/register/job-seeker"
+            >
+              Register as Job Seeker
+            </Button>
             }
           </ListItem>
         </Box>

@@ -29,6 +29,19 @@ const jobSlice = createSlice({
       state.loading = false;
       state.error = action.payload.error;
     },
+    requestForSingleJob(state) {
+      state.loading = true;  // Set loading to true when fetching single job
+      state.error = null;
+    },
+    successForSingleJob(state, action) {
+      state.loading = false;
+      state.singlejob = action.payload;  // Store the fetched job in state
+      state.error = null;
+    },
+    failureForSingleJob(state, action) {
+      state.loading = false;
+      state.error = action.payload.error;  // Handle error for single job fetch
+    },
     clearAllError(state) {
       state.error = null;
     },
@@ -48,6 +61,9 @@ export const {
   requestForAllJobs,
   successForAllJobs,
   failureForAllJobs,
+  requestForSingleJob,
+  successForSingleJob,
+  failureForSingleJob,
   clearAllError,
   resetJobSlice,
 } = jobSlice.actions;
@@ -91,13 +107,15 @@ export const fetchSingleJob = (jobId) => async (dispatch) => {
   dispatch(jobSlice.actions.requestForSingleJob());
   try {
     const response = await axios.get(
-      `${hostname}/api/v1/job/get/${jobId}`,
+      `${hostname}/api/v1/job/getsinglejob/${jobId}`,
       { withCredentials: true }
     );
     dispatch(jobSlice.actions.successForSingleJob(response.data.job));
-    dispatch(jobSlice.actions.clearAllErrors());
+    dispatch(jobSlice.actions.clearAllError());
   } catch (error) {
-    dispatch(jobSlice.actions.failureForSingleJob(error.response.data.message));
+    dispatch(jobSlice.actions.failureForSingleJob({
+      error: error.response?.data?.message || "Failed to fetch single job",
+    }));
   }
 };
 
@@ -145,7 +163,7 @@ export const deleteJob = (id) => async (dispatch) => {
 };
 
 export const clearAllJobErrors = () => (dispatch) => {
-  dispatch(jobSlice.actions.clearAllErrors());
+  dispatch(jobSlice.actions.clearAllError());
 };
 
 export const resetJobSlices = () => (dispatch) => {

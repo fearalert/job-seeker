@@ -3,7 +3,7 @@ import { Box, Paper, styled } from "@mui/material";
 export const StyledPaper = styled(Paper)(({ theme }) => ({
     display: 'flex',
     padding: 0,
-    margin: 0,
+    margin: 10,
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[3],
     flexDirection: 'row',

@@ -7,13 +7,22 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListItemIcon,
   Typography,
   IconButton,
+  Avatar,
+  Divider,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import EditIcon from "@mui/icons-material/Edit";
+import LockIcon from "@mui/icons-material/Lock";
+import WorkIcon from "@mui/icons-material/Work";
+import DescriptionIcon from "@mui/icons-material/Description";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { clearAllUserError, logout, fetchUser } from "../../store/slices/userSlice";
 import MyProfile from "../../components/sidebar/MyProfile";
 import UpdateProfile from "../../components/sidebar/UpdateProfile";
@@ -21,15 +30,14 @@ import JobPost from "../../components/sidebar/employer/JobPost";
 import MyJobs from "../../components/sidebar/employer/MyJobs";
 import Applications from "../../components/sidebar/employer/Applications";
 import MyApplications from "../../components/sidebar/user/MyApplications";
+import { DashboardRounded } from "@mui/icons-material";
+import DashboardHome from "../../components/sidebar/DashHome";
 
 const Dashboard = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [componentName, setComponentName] = useState("My Profile");
 
-  const {isAuthenticated, error, user } = useSelector(
-    (state) => state.user
-  );
-
+  const { isAuthenticated, error, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigateTo = useNavigate();
 
@@ -39,59 +47,68 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // Check if the user is authenticated based on token
     const token = localStorage.getItem("userToken");
     if (token && !isAuthenticated) {
-      // Fetch user information if the token exists
       dispatch(fetchUser());
     }
     
-    // Handle errors
     if (error) {
       toast.error(error);
       dispatch(clearAllUserError());
     }
 
-    // Redirect to home if not authenticated
     if (!isAuthenticated) {
       navigateTo("/");
     }
   }, [dispatch, error, isAuthenticated, navigateTo]);
 
   const sidebarItems = [
-    { label: "My Profile", component: <MyProfile /> },
-    { label: "Update Profile", component: <UpdateProfile /> },
-    { label: "Update Password", component: <UpdateProfile /> },
+    { label: "Home", component: <DashboardHome />, icon: < DashboardRounded/> },
+    { label: "My Profile", component: <MyProfile />, icon: <AccountCircleIcon /> },
+    { label: "Update Profile", component: <UpdateProfile />, icon: <EditIcon /> },
+    { label: "Update Password", component: <UpdateProfile />, icon: <LockIcon /> },
   ];
 
   if (user && user.role === "Employer") {
     sidebarItems.push(
-      { label: "Post New Job", component: <JobPost /> },
-      { label: "My Jobs", component: <MyJobs /> },
-      { label: "Applications", component: <Applications /> }
+      { label: "Post New Job", component: <JobPost />, icon: <WorkIcon /> },
+      { label: "My Jobs", component: <MyJobs />, icon: <DescriptionIcon /> },
+      { label: "Applications", component: <Applications />, icon: <DescriptionIcon /> }
     );
   } else if (user && user.role === "Job Seeker") {
-    sidebarItems.push({ label: "My Applications", component: <MyApplications /> });
+    sidebarItems.push({ label: "My Applications", component: <MyApplications />, icon: <DescriptionIcon /> });
   }
 
   const drawerContent = (
-    <List>
-      {sidebarItems.map((item, index) => (
-        <ListItem
-          button
-          key={index}
-          onClick={() => {
-            setComponentName(item.label);
-            setShowSidebar(false);
-          }}
-        >
-          <ListItemText primary={item.label} />
+    <Box sx={{ width: 240 }}>
+      <Box display="flex" alignItems="center" p={2} bgcolor="primary.main" color="white">
+        <Avatar sx={{ bgcolor: "secondary.main", mr: 2 }}>{user?.name?.charAt(0)}</Avatar>
+        <Box>
+          <Typography variant="body1"><strong>{user?.name}</strong></Typography>
+          <Typography variant="body2" color="inherit">{user?.role}</Typography>
+        </Box>
+      </Box>
+      <Divider />
+      <List>
+        {sidebarItems.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            onClick={() => {
+              setComponentName(item.label);
+              setShowSidebar(false);
+            }}
+          >
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.label} />
+          </ListItem>
+        ))}
+        <ListItem button onClick={handleLogout}>
+          <ListItemIcon><LogoutIcon /></ListItemIcon>
+          <ListItemText primary="Logout" />
         </ListItem>
-      ))}
-      <ListItem button onClick={handleLogout}>
-        <ListItemText primary="Logout" />
-      </ListItem>
-    </List>
+      </List>
+    </Box>
   );
 
   return (
@@ -110,7 +127,7 @@ const Dashboard = () => {
             Dashboard
           </Typography>
           <Typography variant="subtitle1">
-            Welcome! <strong>{user && user.name}</strong>
+            Welcome, <strong>{user && user.name}</strong>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -137,7 +154,7 @@ const Dashboard = () => {
           const activeItem = sidebarItems.find(
             (item) => item.label === componentName
           );
-          return activeItem ? activeItem.component : <MyProfile />;
+          return activeItem ? activeItem.component : <DashboardHome />;
         })()}
       </Box>
     </Box>

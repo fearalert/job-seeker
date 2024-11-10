@@ -83,7 +83,7 @@ export const fetchEmployerApplications = () => async (dispatch) => {
   dispatch(applicationSlice.actions.requestForAllApplications());
   try {
     const response = await axios.get(
-      `${hostname}/api/v1/application/employer/getall`,
+      `${hostname}/api/v1/application/employer/applications`,
       {
         withCredentials: true,
       }
@@ -107,7 +107,7 @@ export const fetchJobSeekerApplications = () => async (dispatch) => {
   dispatch(applicationSlice.actions.requestForMyApplications());
   try {
     const response = await axios.get(
-      `${hostname}/api/v1/application/jobseeker/getall`,
+      `${hostname}/api/v1/application/jobseeker/applications`,
       {
         withCredentials: true,
       }
