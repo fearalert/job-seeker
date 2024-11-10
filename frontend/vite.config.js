@@ -6,5 +6,10 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     exclude: ['js-big-decimal']
-  }
+  },
+  build: {
+    rollupOptions: {
+      external: ['src/pages/login/JobSeeker/JobSeekerLogin'],
+    },
+  },
 })
