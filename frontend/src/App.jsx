@@ -10,8 +10,7 @@ import JobsPage from "./pages/Jobs/JobsPage";
 import EmployeerLogin from "./pages/login/employeer/EmployeerLogin";
 import EmployeerRegister from "./pages/register/Employeer/EmployerRegister";
 import JobSeekRegister from "./pages/register/JobSeeker/JobSeekRegister";
-import JobSeekerLogin from ".pages/login/JobSeeker/JobSeekerLogin";
-
+import JobSeekLogin from "./pages/login/JobSeeker/JobSeekLogin";
 
 function App() {
   return (
@@ -26,7 +25,7 @@ function App() {
           <Route path="/register/employer" element={<EmployeerRegister />} />
           <Route path="/register/job-seeker" element={<JobSeekRegister />} />
           <Route path="/login/employer" element={<EmployeerLogin />} />
-          <Route path="/login/job-seeker" element={<JobSeekerLogin />} />
+          <Route path="/login/job-seeker" element={<JobSeekLogin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>
