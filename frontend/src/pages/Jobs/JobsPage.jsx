@@ -18,7 +18,7 @@ import {
 import { Link } from "react-router-dom";
 import { theme } from "../../themes/theme";
 
-const Jobs = () => {
+const JobsPage = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedNiche, setSelectedNiche] = useState("");
@@ -192,4 +192,4 @@ const Jobs = () => {
   );
 };
 
-export default Jobs;
+export default JobsPage;
