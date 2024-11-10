@@ -3,7 +3,7 @@ import Niches from "../../components/home/Niches";
 import Working from "../../components/home/Working";
 import { Box, Container } from "@mui/material";
 
-const Home = () => {
+const HomePage = () => {
   return (
     <Box sx={{ overflowX: 'hidden' }}>
       <Container>
@@ -15,4 +15,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;
