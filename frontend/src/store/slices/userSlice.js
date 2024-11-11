@@ -13,7 +13,7 @@ const userSlice = createSlice({
   },
   reducers: {
     registerRequest(state) {
-      state.loading = false;
+      state.loading = true;
       state.isAuthenticated = false;
       state.user = {};
       state.error = null;
@@ -34,7 +34,7 @@ const userSlice = createSlice({
       state.message = null;
     },
     loginRequest(state) {
-      state.loading = false;
+      state.loading = true;
       state.isAuthenticated = false;
       state.user = {};
       state.error = null;
@@ -129,7 +129,7 @@ export const login = (data) => async (dispatch) => {
 
 export const logout = () => async (dispatch) => {
   try {
-    const response = await axios.post(`${hostname}/api/v1/user/logout`, {
+    const response = await axios.get(`${hostname}/api/v1/user/logout`, {
       withCredentials: true,
     });
     console.log(response.data);
@@ -142,24 +142,26 @@ export const logout = () => async (dispatch) => {
 };
 
 export const fetchUser = () => async (dispatch) => {
-  const token = localStorage.getItem("userToken");
-  
-  if (!token) {
-    dispatch(userSlice.actions.logoutSuccess());
-    return;
-  }
-
   dispatch(userSlice.actions.fetchUserRequest());
-  
+
+  console.log("APP TOKEN LOCAL:", localStorage.getItem("userToken"))
   try {
-    const response = await axios.post(`${hostname}/api/v1/user/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-      withCredentials: true,
-    });
+    const response = await axios.post(
+      `${hostname}/api/v1/user/profile`,
+      {},
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+        },
+      }
+    );
+    console.log("DATA", response.data)
 
     dispatch(userSlice.actions.fetchUserSuccess(response.data));
   } catch (error) {
-    dispatch(userSlice.actions.fetchUserFailed(error.response.data.message));
+    dispatch(userSlice.actions.fetchUserFailed(error.response?.data.message || "Failed to fetch user"));
+    dispatch(logout());
   }
 };
 

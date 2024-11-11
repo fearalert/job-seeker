@@ -73,7 +73,6 @@ const MyProfile = () => {
       </Box>
 
       <Grid container spacing={4}>
-        {/* Personal Information Card */}
         <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column' }}>
           <Card elevation={3} sx={{ borderRadius: 2, flex: 1,
             boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
@@ -116,7 +115,6 @@ const MyProfile = () => {
           </Card>
         </Grid>
 
-        {/* Job Information Card */}
         <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column' }}>
         <Card elevation={3} sx={{ borderRadius: 2, flex: 1,
             boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',

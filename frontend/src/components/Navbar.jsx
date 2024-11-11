@@ -14,7 +14,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -110,9 +110,6 @@ function Navbar() {
   const menuItems = [
     { title: 'Home', path: '/' },
     { title: 'Jobs', path: '/jobs' },
-    ...(isAuthenticated
-      ? [{ title: 'Dashboard', path: '/dashboard' }]
-      : []),
   ];
 
   return (
@@ -184,24 +181,10 @@ function Navbar() {
           <DrawerMenu menuItems={menuItems} onClose={toggleDrawer(false)} />
           <ListItem button component={NavLink} to="/register" onClick={toggleDrawer(false)}>
             {!isAuthenticated &&
-              <Button 
-              variant="register"
-              sx={{ display: { xs: 'none', md: 'block' }, ml: 2 }}
-              component={NavLink} 
-              to="/register"
-            >
-              Register as Employeer
-            </Button>
+              <Link to="/register/employer">Employer Portal</Link>
             }
              {!isAuthenticated &&
-            <Button 
-              variant="register"
-              sx={{ display: { xs: 'none', md: 'block' }, ml: 2 }}
-              component={NavLink} 
-              to="/register/job-seeker"
-            >
-              Register as Job Seeker
-            </Button>
+              <Link to="/register/job-seeker">Job Seeker Portal</Link>
             }
           </ListItem>
         </Box>

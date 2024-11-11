@@ -20,27 +20,27 @@ const jobSlice = createSlice({
       state.searchTriggered = action.payload.isSearch;
     },
     successForAllJobs(state, action) {
-      state.loading = false;
+      state.loading = true;
       state.jobs = action.payload.jobs;
       state.error = null;
       state.message = action.payload.message || null;
     },
     failureForAllJobs(state, action) {
-      state.loading = false;
+      state.loading = true;
       state.error = action.payload.error;
     },
     requestForSingleJob(state) {
-      state.loading = true;  // Set loading to true when fetching single job
+      state.loading = true;
       state.error = null;
     },
     successForSingleJob(state, action) {
       state.loading = false;
-      state.singlejob = action.payload;  // Store the fetched job in state
+      state.singlejob = action.payload;
       state.error = null;
     },
     failureForSingleJob(state, action) {
       state.loading = false;
-      state.error = action.payload.error;  // Handle error for single job fetch
+      state.error = action.payload.error;
     },
     clearAllError(state) {
       state.error = null;

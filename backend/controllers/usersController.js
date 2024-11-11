@@ -105,44 +105,18 @@ export const login = catchAsyncError(async (req, res, next) => {
 });
 
 
-// export const logout = catchAsyncError(async (req, res, next) => {
-//   const { refreshToken } = req.cookies;
-
-//   if (refreshToken) {
-//     const user = await User.findOne({ refreshToken });
-
-//     if (user) {
-//       user.refreshToken = undefined;
-//       await user.save();
-//     }
-//   }
-
-//   res.status(200)
-//     .cookie("token", "", {
-//       expires: new Date(Date.now()),
-//       httpOnly: true,
-//     })
-//     .cookie("refreshToken", "", {
-//       expires: new Date(Date.now()),
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === 'production',
-//       sameSite: 'Strict',
-//     })
-//     .json({
-//       success: true,
-//       message: "Logged out successfully",
-//     });
-// });
-
-export const logout= catchAsyncError(async (req, res, next) => {
-  res.status(200).cookie("token", "", {
-    expires: new Date(Date.now()),
-    httpOnly: true,
-  }).json({
-    success: true,
-    message: "Logged out successfully",
-  })
-})
+export const logout = catchAsyncError(async (req, res, next) => {
+  res
+    .status(200)
+    .cookie("token", "", {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+    })
+    .json({
+      success: true,
+      message: "Logged out successfully.",
+    });
+});
 
 export const getUser = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user.id);

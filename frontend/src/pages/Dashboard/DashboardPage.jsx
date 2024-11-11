@@ -32,10 +32,13 @@ import Applications from "../../components/sidebar/employer/Applications";
 import MyApplications from "../../components/sidebar/user/MyApplications";
 import { DashboardRounded } from "@mui/icons-material";
 import DashboardHome from "../../components/sidebar/DashHome";
+import { ROLES } from "../../constants";
+import Jobs from "../../components/sidebar/user/Jobs";
+import UpdatePassword from "../../components/sidebar/UpdatePassword";
 
 const DashboardPage = () => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [componentName, setComponentName] = useState("My Profile");
+  const [componentName, setComponentName] = useState("DashHome");
 
   const { isAuthenticated, error, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -66,17 +69,18 @@ const DashboardPage = () => {
     { label: "Home", component: <DashboardHome />, icon: < DashboardRounded/> },
     { label: "My Profile", component: <MyProfile />, icon: <AccountCircleIcon /> },
     { label: "Update Profile", component: <UpdateProfile />, icon: <EditIcon /> },
-    { label: "Update Password", component: <UpdateProfile />, icon: <LockIcon /> },
+    { label: "Update Password", component: <UpdatePassword />, icon: <LockIcon /> },
   ];
 
-  if (user && user.role === "Employer") {
+  if (user && user.role === ROLES.EMPLOYER) {
     sidebarItems.push(
       { label: "Post New Job", component: <JobPost />, icon: <WorkIcon /> },
       { label: "My Jobs", component: <MyJobs />, icon: <DescriptionIcon /> },
       { label: "Applications", component: <Applications />, icon: <DescriptionIcon /> }
     );
-  } else if (user && user.role === "Job Seeker") {
+  } else if (user && user.role === ROLES.JOB_SEEKER) {
     sidebarItems.push({ label: "My Applications", component: <MyApplications />, icon: <DescriptionIcon /> });
+    sidebarItems.push({ label: "Jobs", component: <Jobs />, icon: <WorkIcon /> });
   }
 
   const drawerContent = (

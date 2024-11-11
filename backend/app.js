@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(fileUpload({
     useTempFiles: true,
-    tempFileDie: "/tmp/",
+    tempFileDir: "/tmp/",
 }));
 
 app.use("/api/v1/user", userRouter);

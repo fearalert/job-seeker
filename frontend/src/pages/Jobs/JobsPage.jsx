@@ -26,6 +26,7 @@ const JobsPage = () => {
 
   const { jobs, loading, error } = useSelector((state) => state.jobs);
   const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchJobs({ city: "", niche: "", searchKeyword: "" }));
@@ -172,11 +173,14 @@ const JobsPage = () => {
                         <Typography variant="body2" color="primary">
                           {job.hiringMultipleCandidates ? "Hiring Multiple Candidates" : "Hiring"}
                         </Typography>
-                        <Link to={`/post/application/${job._id}`} className="btn">
+                        {
+                          isAuthenticated && <Link to={`/post/application/${job._id}`} className="btn">
                           <Button variant="contained" size="small">
                             Apply Now
                           </Button>
                         </Link>
+                        }
+                        
                       </Box>
                     </Paper>
                   ))
