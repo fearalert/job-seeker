@@ -22,12 +22,11 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("userToken");
     console.log("Token App:", token);
+    console.log("Is Authenticated", isAuthenticated);
     if (token && !isAuthenticated) {
       dispatch(fetchUser());
     }
   }, [dispatch, isAuthenticated]);
-  
-  
 
   if (loading) {
     return (

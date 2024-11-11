@@ -51,6 +51,7 @@ const DashboardPage = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("userToken");
+
     if (token && !isAuthenticated) {
       dispatch(fetchUser());
     }

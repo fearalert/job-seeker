@@ -133,18 +133,26 @@ export const logout = () => async (dispatch) => {
       withCredentials: true,
     });
     console.log(response.data);
+
     localStorage.removeItem("userToken");
     dispatch(userSlice.actions.logoutSuccess());
     dispatch(userSlice.actions.clearAllErrors());
   } catch (error) {
-    dispatch(userSlice.actions.logoutFailed(error.response.data.message));
+    localStorage.removeItem("userToken");
+    dispatch(userSlice.actions.logoutFailed(error.response?.data.message || "Logout failed"));
+    dispatch(userSlice.actions.clearAllErrors());
   }
 };
 
 export const fetchUser = () => async (dispatch) => {
   dispatch(userSlice.actions.fetchUserRequest());
 
-  console.log("APP TOKEN LOCAL:", localStorage.getItem("userToken"))
+  const token = localStorage.getItem("userToken");
+  if (!token) {
+    dispatch(userSlice.actions.fetchUserFailed("No token found"));
+    return;
+  }
+
   try {
     const response = await axios.post(
       `${hostname}/api/v1/user/profile`,
@@ -152,11 +160,11 @@ export const fetchUser = () => async (dispatch) => {
       {
         withCredentials: true,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     );
-    console.log("DATA", response.data)
+    console.log("DATA", response.data);
 
     dispatch(userSlice.actions.fetchUserSuccess(response.data));
   } catch (error) {
@@ -164,6 +172,7 @@ export const fetchUser = () => async (dispatch) => {
     dispatch(logout());
   }
 };
+
 
 
 export default userSlice.reducer;
