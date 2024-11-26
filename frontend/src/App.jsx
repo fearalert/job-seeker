@@ -7,7 +7,7 @@ import { Container, CircularProgress, Box } from "@mui/material";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
 import HomePage from "./pages/Home/HomePage";
 import JobsPage from "./pages/Jobs/JobsPage";
-import EmployeerLogin from "./pages/login/employeer/EmployeerLogin";
+import EmployeerLogin from "./pages/login/Employeer/EmployeerLogin";
 import EmployeerRegister from "./pages/register/Employeer/EmployerRegister";
 import JobSeekRegister from "./pages/register/JobSeeker/JobSeekRegister";
 import JobSeekLogin from "./pages/login/JobSeeker/JobSeekLogin";
