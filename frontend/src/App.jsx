@@ -7,13 +7,13 @@ import { Container, CircularProgress, Box } from "@mui/material";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
 import HomePage from "./pages/Home/HomePage";
 import JobsPage from "./pages/Jobs/JobsPage";
-import EmployeerLogin from "./pages/login/Employeer/EmployeerLogin";
-import EmployeerRegister from "./pages/register/Employeer/EmployerRegister";
-import JobSeekRegister from "./pages/register/JobSeeker/JobSeekRegister";
-import JobSeekLogin from "./pages/login/JobSeeker/JobSeekLogin";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "./store/slices/userSlice";
+import JobSeekerRegister from "./pages/register/JobSeeker/JobSeekRegister";
+import JobSeekerLogin from "./pages/login/JobSeeker/JobSeekLogin";
+import EmployerLogin from "./pages/login/Employeer/EmployeerLogin";
+import EmployerRegister from "./pages/register/Employeer/EmployerRegister";
 
 function App() {
   const dispatch = useDispatch();
@@ -56,10 +56,10 @@ function App() {
             path="/post/application/:JobId"
             element={isAuthenticated ? <PostApplication /> : <Navigate to="/login/job-seeker" />}
           />
-          <Route path="/register/employer" element={<EmployeerRegister />} />
-          <Route path="/register/job-seeker" element={<JobSeekRegister />} />
-          <Route path="/login/employer" element={<EmployeerLogin />} />
-          <Route path="/login/job-seeker" element={<JobSeekLogin />} />
+          <Route path="/register/employer" element={<EmployerRegister />} />
+          <Route path="/register/job-seeker" element={<JobSeekerRegister />} />
+          <Route path="/login/employer" element={<EmployerLogin />} />
+          <Route path="/login/job-seeker" element={<JobSeekerLogin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>
