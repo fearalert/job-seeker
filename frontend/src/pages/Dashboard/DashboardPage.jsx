@@ -52,17 +52,17 @@ const DashboardPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("userToken");
 
-    if (token && !isAuthenticated) {
-      dispatch(fetchUser());
+    if (!isAuthenticated) {
+      if (token) {
+        dispatch(fetchUser());
+      } else {
+        navigateTo("/");
+      }
     }
     
     if (error) {
       toast.error(error);
       dispatch(clearAllUserError());
-    }
-
-    if (!isAuthenticated) {
-      navigateTo("/");
     }
   }, [dispatch, error, isAuthenticated, navigateTo]);
 

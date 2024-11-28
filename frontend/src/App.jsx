@@ -21,12 +21,11 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("userToken");
-    console.log("Token App:", token);
-    console.log("Is Authenticated", isAuthenticated);
+    console.log("Autghenticated", isAuthenticated)
     if (token && !isAuthenticated) {
       dispatch(fetchUser());
     }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch]);
 
   if (loading) {
     return (
@@ -50,11 +49,23 @@ function App() {
           <Route path="/jobs" element={<JobsPage />} />
           <Route
             path="/dashboard"
-            element={isAuthenticated ? <DashboardPage /> : <Navigate to="/login/job-seeker" />}
+            element={
+              isAuthenticated ? (
+                <DashboardPage />
+              ) : (
+                <Navigate to="/login/job-seeker" state={{ from: '/dashboard' }} />
+              )
+            }
           />
           <Route
             path="/post/application/:JobId"
-            element={isAuthenticated ? <PostApplication /> : <Navigate to="/login/job-seeker" />}
+            element={
+              isAuthenticated ? (
+                <PostApplication />
+              ) : (
+                <Navigate to="/login/job-seeker" state={{ from: '/post/application/:JobId' }} />
+              )
+            }
           />
           <Route path="/register/employer" element={<EmployerRegister />} />
           <Route path="/register/job-seeker" element={<JobSeekerRegister />} />

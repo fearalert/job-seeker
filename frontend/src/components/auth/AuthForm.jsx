@@ -13,8 +13,8 @@ import {
 } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { validateLoginForm, validateRegisterForm } from './utils';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { validateLoginForm, validateRegisterForm } from './utils.js';
 import { ROLES, NICHE_OPTIONS } from '../../constants';
 import { login, register } from '../../store/slices/userSlice';
 import { theme } from '../../themes/theme';
@@ -23,6 +23,7 @@ const AuthForm = ({ mode = 'login', role }) => {
   const isLogin = mode === 'login';
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { loading, error, isAuthenticated } = useSelector((state) => state.user);
 
@@ -35,7 +36,7 @@ const AuthForm = ({ mode = 'login', role }) => {
     niche: [],
     coverLetter: '',
     resume: null,
-    role,
+    role: role,
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -89,7 +90,8 @@ const AuthForm = ({ mode = 'login', role }) => {
     dispatch(action);
 
     if (isAuthenticated) {
-      navigate('/dashboard');
+      const from = location.state?.from || '/dashboard';
+      navigate(from);
     }
   };
 
@@ -263,7 +265,6 @@ const AuthForm = ({ mode = 'login', role }) => {
             </>
             )}
 
-            {/* Remember Me Checkbox (only for login form) */}
             {isLogin && (
               <Grid item xs={12}>
                 <FormControlLabel

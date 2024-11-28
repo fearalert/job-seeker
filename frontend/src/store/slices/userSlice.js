@@ -144,6 +144,35 @@ export const logout = () => async (dispatch) => {
   }
 };
 
+// export const fetchUser = () => async (dispatch) => {
+//   dispatch(userSlice.actions.fetchUserRequest());
+
+//   const token = localStorage.getItem("userToken");
+//   if (!token) {
+//     dispatch(userSlice.actions.fetchUserFailed("No token found"));
+//     return;
+//   }
+
+//   try {
+//     const response = await axios.post(
+//       `${hostname}/api/v1/user/profile`,
+//       {},
+//       {
+//         withCredentials: true,
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
+//     console.log("DATA", response.data);
+
+//     dispatch(userSlice.actions.fetchUserSuccess(response.data));
+//   } catch (error) {
+//     dispatch(userSlice.actions.fetchUserFailed(error.response?.data.message || "Failed to fetch user"));
+//     dispatch(logout());
+//   }
+// };
+
 export const fetchUser = () => async (dispatch) => {
   dispatch(userSlice.actions.fetchUserRequest());
 
@@ -161,18 +190,23 @@ export const fetchUser = () => async (dispatch) => {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"  // Add this line
         },
       }
     );
-    console.log("DATA", response.data);
+    console.log("User Profile Data", response.data);
 
     dispatch(userSlice.actions.fetchUserSuccess(response.data));
   } catch (error) {
+    console.error("Fetch User Error:", error);
     dispatch(userSlice.actions.fetchUserFailed(error.response?.data.message || "Failed to fetch user"));
-    dispatch(logout());
+    
+    // Only dispatch logout if the error is specifically about token/authentication
+    if (error.response?.status === 401) {
+      dispatch(logout());
+    }
   }
 };
-
 
 
 export default userSlice.reducer;

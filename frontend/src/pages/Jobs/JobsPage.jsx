@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import {  clearAllJobErrors, fetchJobs } from "../../store/slices/jobSlice";
+import { clearAllJobErrors, fetchJobs } from "../../store/slices/jobSlice";
 import {
   Container,
   TextField,
@@ -61,6 +61,8 @@ const JobsPage = () => {
     setSalaryRange(newValue);
   };
 
+  console.log("Filtered Jobs", filteredJobs); // Debugging the filtered jobs
+
   return (
     <>
       {loading ? (
@@ -89,7 +91,7 @@ const JobsPage = () => {
           </form>
 
           <Box sx={{ display: "flex", gap: 4, flexDirection: "row", [theme.breakpoints.down("md")]: { flexDirection: "column" }, }}>
-            <Box sx={{ flex: 1}}>
+            <Box sx={{ flex: 1 }}>
               <FormControl fullWidth>
                 <Select
                   value={selectedCity}
@@ -141,7 +143,6 @@ const JobsPage = () => {
                     { value: 200000, label: "200k" },
                     { value: 250000, label: "250k" },
                     { value: 300000, label: "300k" },
-                    { value: 300000, label: "300k" },
                   ]}
                 />
               </Box>
@@ -153,34 +154,35 @@ const JobsPage = () => {
                   filteredJobs.map((job) => (
                     <Paper key={job._id} sx={{ p: 2, mb: 2 }}>
                       <Typography variant="h5" sx={{ mb: 1, color: "primary.main" }}>
-                        {job.jobTitle}
+                        {job.jobTitle || "No Job Title"}
                       </Typography>
                       <Typography variant="body2" sx={{ mb: 1 }}>
-                        <strong>Sector:</strong> {job.organizationType}
+                        <strong>Sector:</strong> {job.organizationType || "No Sector"}
                       </Typography>
                       <Typography variant="body2" sx={{ mb: 1 }}>
-                        <strong>Location:</strong> {job.location}
+                        <strong>Location:</strong> {job.location || "No Location"}
                       </Typography>
                       <Typography variant="body2" sx={{ mb: 1 }}>
-                        <strong>Salary:</strong> Rs. {job.salary}
+                        <strong>Salary:</strong> Rs. {job.salary || "No Salary"}
                       </Typography>
                       <Typography variant="body2" sx={{ mb: 1 }}>
-                        <strong>Posted On:</strong> {job.jobPostedOn.substring(0, 10)}
+                        <strong>Posted On:</strong> {job.jobPostedOn?.substring(0, 10) || "No Date"}
                       </Typography>
                       <Box
                         sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
                       >
                         <Typography variant="body2" color="primary">
-                          {job.hiringMultipleCandidates ? "Hiring Multiple Candidates" : "Hiring"}
+                          {job.hiringMultipleCandidates
+                            ? "Hiring Multiple Candidates"
+                            : "Hiring"}
                         </Typography>
-                        {
-                          isAuthenticated && <Link to={`/post/application/${job._id}`} className="btn">
-                          <Button variant="contained" size="small">
-                            Apply Now
-                          </Button>
-                        </Link>
-                        }
-                        
+                        {isAuthenticated && (
+                          <Link to={`/post/application/${job._id}`} className="btn">
+                            <Button variant="contained" size="small">
+                              Apply Now
+                            </Button>
+                          </Link>
+                        )}
                       </Box>
                     </Paper>
                   ))

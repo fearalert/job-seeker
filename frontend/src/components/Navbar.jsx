@@ -86,14 +86,16 @@ function Navbar() {
               <Button
                 onClick={toggleMenu}
                 sx={{
-                  color: theme.palette.text.primary.contrastText,
+                  color: theme.palette.backg,
+                  backgroundColor: theme.palette.primary.light,
+                  border: theme.palette.primary.dark,
                   fontWeight: 200,
                   '&:hover': {
                     backgroundColor: theme.palette.primary.light,
                   },
                 }}
               >
-                More
+                Login
               </Button>
 
               {menuOpen && (
