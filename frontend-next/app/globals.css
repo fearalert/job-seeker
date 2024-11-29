@@ -2,20 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%; /* Pure White */
+    --foreground: 230 15% 20%; /* Deep Gray */
+    --card: 0 0% 98%; /* Light Gray */
+    --card-foreground: 230 15% 20%; /* Deep Gray */
+    --popover: 0 0% 98%; /* Light Gray */
+    --popover-foreground: 230 15% 20%; /* Deep Gray */
+    --primary: 255 70% 55%; /* Indigo */
+    --primary-foreground: 0 0% 100%; /* Pure White */
+    --secondary: 215 15% 90%; /* Light Blue */
+    --secondary-foreground: 230 15% 20%; /* Deep Gray */
+    --muted: 220 15% 95%; /* Very Light Gray */
+    --muted-foreground: 220 10% 45%; /* Subtle Gray */
+    --accent: 174 60% 50%; /* Teal Green */
+    --accent-foreground: 0 0% 100%; /* Pure White */
+    --destructive: 0 80% 50%; /* Bright Red */
+    --destructive-foreground: 0 0% 100%; /* Pure White */
+    --border: 220 15% 90%; /* Soft Gray */
+    --input: 220 15% 90%; /* Soft Gray */
+    --ring: 226 70% 55%; /* Indigo */
+    --radius: 0.5rem; /* Default Radius */
+    --chart-1: 15 85% 65%; /* Vibrant Orange */
+    --chart-2: 160 70% 45%; /* Fresh Green */
+    --chart-3: 200 60% 50%; /* Aqua */
+    --chart-4: 50 80% 65%; /* Lemon Yellow */
+    --chart-5: 340 80% 70%; /* Bright Pink */
+    --sidebar-background: 0 0% 96%; /* Subtle Light Gray */
+    --sidebar-foreground: 230 15% 20%; /* Deep Gray */
+    --sidebar-primary: 226 70% 55%; /* Indigo */
+    --sidebar-primary-foreground: 0 0% 100%; /* Pure White */
+    --sidebar-accent: 174 60% 50%; /* Teal Green */
+    --sidebar-accent-foreground: 0 0% 100%; /* Pure White */
+    --sidebar-border: 220 15% 90%; /* Soft Gray */
+    --sidebar-ring: 226 70% 55%; /* Indigo */
+  }
+
+  .dark {
+    --background: 230 20% 10%; /* Dark Gray */
+    --foreground: 210 20% 95%; /* Light Gray */
+    --card: 220 25% 15%; /* Deep Gray */
+    --card-foreground: 210 20% 95%; /* Light Gray */
+    --popover: 220 25% 15%; /* Deep Gray */
+    --popover-foreground: 210 20% 95%; /* Light Gray */
+    --primary: 226 60% 40%; /* Dark Indigo */
+    --primary-foreground: 210 20% 95%; /* Light Gray */
+    --secondary: 215 20% 25%; /* Muted Blue */
+    --secondary-foreground: 210 20% 95%; /* Light Gray */
+    --muted: 220 20% 20%; /* Muted Gray */
+    --muted-foreground: 220 10% 65%; /* Soft Gray */
+    --accent: 174 50% 40%; /* Dark Teal Green */
+    --accent-foreground: 210 20% 95%; /* Light Gray */
+    --destructive: 0 70% 40%; /* Dark Red */
+    --destructive-foreground: 210 20% 95%; /* Light Gray */
+    --border: 220 20% 20%; /* Muted Gray */
+    --input: 220 20% 20%; /* Muted Gray */
+    --ring: 226 60% 40%; /* Dark Indigo */
+    --chart-1: 15 75% 55%; /* Orange */
+    --chart-2: 160 60% 40%; /* Deep Green */
+    --chart-3: 200 50% 40%; /* Deep Aqua */
+    --chart-4: 50 70% 55%; /* Yellow */
+    --chart-5: 340 70% 60%; /* Pink */
+    --sidebar-background: 220 20% 12%; /* Deep Gray */
+    --sidebar-foreground: 210 20% 95%; /* Light Gray */
+    --sidebar-primary: 226 60% 40%; /* Dark Indigo */
+    --sidebar-primary-foreground: 210 20% 95%; /* Light Gray */
+    --sidebar-accent: 174 50% 40%; /* Dark Teal Green */
+    --sidebar-accent-foreground: 210 20% 95%; /* Light Gray */
+    --sidebar-border: 220 20% 12%; /* Deep Gray */
+    --sidebar-ring: 226 60% 40%; /* Dark Indigo */
+  }
 }
