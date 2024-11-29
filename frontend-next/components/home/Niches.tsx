@@ -82,18 +82,18 @@ const Niches = () => {
       ]
       
   return (
-    <div id='niches' className='flex flex-col justify-center items-center text-center gap-4 md:gap-8 py-6 md:py-12 px-4 md:px-16'>
+    <div id='niches' className='flex flex-col justify-center items-center text-center gap-4 md:gap-8 py-6 md:py-12 px-4 md:px-16 max-w-5xl'>
         <h2 className='text-3xl md:text-4xl font-bold text-primary'>Top Niches</h2>
         <div className='grid md:grid-cols-3 gap-4'>
         {
         topNiches.map((niche) => {
                 return (
-                        <Card key={niche.id} className='text-center bg-background border border-zinc-50 hover:bg-slate-50 max-w-[400px]'>
-                            <CardHeader className='font-extrabold text-2xl text-primary'>
+                        <Card key={niche.id} className='text-center bg-background border border-zinc-50 hover:bg-slate-50 max-w-[350px]'>
+                            <CardHeader className='font-bold text-xl text-primary py-0 pb-4'>
                                 {niche.role}
                             </CardHeader>
-                            <CardContent>
-                                <p className='text-zinc-500'>{niche.description}</p>
+                            <CardContent className='py-0'>
+                                <p className='text-zinc-400 text-xs'>{niche.description}</p>
                             </CardContent>
                         </Card>
                 );
