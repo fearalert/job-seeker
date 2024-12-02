@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "JOBBABA",
+  title: "JobBaba",
   description: "Streamilne your Job finding or Hiring Process",
 };
 

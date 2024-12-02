@@ -3,83 +3,114 @@ import { Card, CardContent, CardHeader } from '../ui/card'
 
 const Niches = () => {
     
-   const topNiches= [
-        {
-          "id": 1,
-          "role": "Java Developer",
-          "description": "Responsible for developing and maintaining Java-based applications, ensuring high performance and scalability."
-        },
-        {
-          "id": 2,
-          "role": "Sales Manager",
-          "description": "Leads a sales team, develops strategies to meet sales targets, and fosters client relationships."
-        },
-        {
-          "id": 3,
-          "role": "UI/UX Designer",
-          "description": "Designs intuitive user interfaces and ensures a seamless user experience across digital platforms."
-        },
-        {
-          "id": 4,
-          "role": "Data Analyst",
-          "description": "Analyzes large datasets to identify trends, generate insights, and support data-driven decision-making."
-        },
-        {
-          "id": 5,
-          "role": "Marketing Coordinator",
-          "description": "Coordinates marketing campaigns, manages social media channels, and assists in promotional activities."
-        },
-        {
-          "id": 6,
-          "role": "Project Manager",
-          "description": "Oversees project development from inception to completion, ensuring timelines and goals are met."
-        },
-        {
-          "id": 7,
-          "role": "Software Engineer",
-          "description": "Designs, develops, tests, and maintains software solutions using modern programming languages."
-        },
-        {
-          "id": 8,
-          "role": "Customer Support Specialist",
-          "description": "Provides technical and non-technical support to customers, ensuring their issues are resolved promptly."
-        },
-        {
-          "id": 9,
-          "role": "DevOps Engineer",
-          "description": "Collaborates with development and operations teams to automate and optimize infrastructure, ensuring continuous integration and delivery."
-        },
-        {
-          "id": 10,
-          "role": "Data Scientist",
-          "description": "Uses machine learning algorithms and statistical methods to analyze complex data sets and develop predictive models."
-        },
-        {
-          "id": 11,
-          "role": "Cybersecurity Specialist",
-          "description": "Protects an organization’s networks, systems, and data from security threats by implementing security protocols and monitoring for vulnerabilities."
-        },
-        {
-          "id": 12,
-          "role": "Content Strategist",
-          "description": "Develops content strategies for websites, blogs, and social media platforms to drive engagement and align with business objectives."
-        },
-        {
-          "id": 13,
-          "role": "SEO Specialist",
-          "description": "Optimizes website content to improve search engine rankings and drive organic traffic to the site."
-        },
-        {
-          "id": 14,
-          "role": "Cloud Architect",
-          "description": "Designs and manages cloud computing systems and infrastructure, ensuring scalability, performance, and security."
-        },
-        {
-          "id": 15,
-          "role": "Full-Stack Developer",
-          "description": "Develops both front-end and back-end components of web applications, ensuring seamless integration and performance."
-        }
-      ]
+  const topNiches = [
+    {
+      "id": 1,
+      "role": "Software Development",
+      "description": "Involves creating, testing, and maintaining software applications tailored to specific needs."
+    },
+    {
+      "id": 2,
+      "role": "Web Development",
+      "description": "Focuses on building and maintaining websites and web applications, ensuring functionality and user experience."
+    },
+    {
+      "id": 3,
+      "role": "Cybersecurity",
+      "description": "Protects systems, networks, and data from unauthorized access and cyber threats."
+    },
+    {
+      "id": 4,
+      "role": "Data Science",
+      "description": "Extracts insights and knowledge from structured and unstructured data to support decision-making."
+    },
+    {
+      "id": 5,
+      "role": "Artificial Intelligence",
+      "description": "Develops intelligent systems capable of performing tasks that typically require human intelligence."
+    },
+    {
+      "id": 6,
+      "role": "Cloud Computing",
+      "description": "Manages and delivers computing services such as servers, storage, and databases over the internet."
+    },
+    {
+      "id": 7,
+      "role": "DevOps",
+      "description": "Combines development and IT operations to enable continuous delivery and improve system reliability."
+    },
+    {
+      "id": 8,
+      "role": "Mobile App Development",
+      "description": "Designs and develops applications for mobile devices, ensuring cross-platform compatibility."
+    },
+    {
+      "id": 9,
+      "role": "Blockchain",
+      "description": "Works on decentralized ledger technologies to enable secure and transparent data sharing."
+    },
+    {
+      "id": 10,
+      "role": "Database Administration",
+      "description": "Maintains and optimizes databases to ensure secure, efficient, and reliable data management."
+    },
+    {
+      "id": 11,
+      "role": "Network Administration",
+      "description": "Manages and troubleshoots an organization’s network infrastructure to ensure connectivity."
+    },
+    {
+      "id": 12,
+      "role": "UI/UX Design",
+      "description": "Focuses on creating visually appealing and user-friendly interfaces for digital products."
+    },
+    {
+      "id": 13,
+      "role": "Game Development",
+      "description": "Designs, develops, and tests video games for various platforms and audiences."
+    },
+    {
+      "id": 14,
+      "role": "IoT (Internet of Things)",
+      "description": "Develops and integrates connected devices to enable seamless communication and automation."
+    },
+    {
+      "id": 15,
+      "role": "Big Data",
+      "description": "Processes and analyzes large datasets to uncover trends, patterns, and actionable insights."
+    },
+    {
+      "id": 16,
+      "role": "Machine Learning",
+      "description": "Builds algorithms and models that enable computers to learn and make decisions autonomously."
+    },
+    {
+      "id": 17,
+      "role": "IT Project Management",
+      "description": "Plans, organizes, and oversees IT projects to ensure timely delivery and alignment with objectives."
+    },
+    {
+      "id": 18,
+      "role": "IT Support and Helpdesk",
+      "description": "Provides technical assistance and resolves IT-related issues for users and organizations."
+    },
+    {
+      "id": 19,
+      "role": "Systems Administration",
+      "description": "Installs, configures, and maintains computer systems and servers to ensure optimal performance."
+    },
+    {
+      "id": 20,
+      "role": "IT Consulting",
+      "description": "Advises organizations on best practices and strategies for leveraging IT to achieve business goals."
+    },
+    {
+      "id": 21,
+      "role": "Business Analyst",
+      "description": "Analyzes business processes and systems to recommend improvements and technology solutions."
+    }
+  ];
+  
       
   return (
     <div id='niches' className='flex flex-col justify-center items-center text-center gap-4 md:gap-8 py-6 md:py-12 px-4 md:px-16 max-w-5xl'>

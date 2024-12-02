@@ -14,7 +14,7 @@ export const authFormSchema = (type: "register" | "login", role: string) => {
     password: z
       .string()
       .min(8, "Password must be at least 8 characters.")
-      .max(16, "Password must be at most 16 characters.")
+      .max(32, "Password must be at most 32 characters.")
       // .regex(
       //   PASSWORD_REGEX,
       //   "Password must contain at least one letter, one number, and one special character."
@@ -22,7 +22,7 @@ export const authFormSchema = (type: "register" | "login", role: string) => {
       ,
     confirmPassword:
       type === "register"
-        ? z.string().min(6, "Password must be at least 6 characters.")
+        ? z.string().min(8, "Password must be at least 6 characters.")
         : z.string().optional(),
   });
 

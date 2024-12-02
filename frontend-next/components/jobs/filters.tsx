@@ -1,6 +1,7 @@
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import React from 'react'
+import { Label } from '../ui/label';
 
 interface FiltersProps {
     selectedCity: string; // Currently selected city
@@ -30,6 +31,8 @@ interface FiltersProps {
 
     <div className="space-y-6">
       {/* City Filter */}
+      <div className="space-y-2">
+      <p className="text-sm font-medium">Loaction</p>
       <Select
         value={selectedCity}
         onValueChange={(value: string) => setSelectedCity(value)}
@@ -45,8 +48,11 @@ interface FiltersProps {
           ))}
         </SelectContent>
       </Select>
+      </div>
 
       {/* Niche Filter */}
+      <div className="space-y-2">
+      <p className="text-sm font-medium">Niches</p>
       <Select
         value={selectedNiche}
         onValueChange={(value: string) => setSelectedNiche(value)}
@@ -62,6 +68,7 @@ interface FiltersProps {
           ))}
         </SelectContent>
       </Select>
+      </div>
 
       {/* Salary Range Slider */}
       <div className="space-y-2">

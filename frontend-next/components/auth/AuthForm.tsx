@@ -14,6 +14,7 @@ import { authFormSchema } from "@/schema/validation.schema";
 import { useDispatch, useSelector } from "react-redux";
 import { login, register } from "@/store/slices/user.slice";
 import { AppDispatch } from "@/store/store";
+import LoadingView from "@/app/loading";
 
 
 const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) => {
@@ -47,6 +48,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
     setErrorMsg("");
 
     console.log("Role", role)
+    loading === true;
 
     try {
       const formData = new FormData();
@@ -73,14 +75,17 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <div className="animate-spin text-primary"  />
-        <p className="mt-4 text-lg text-primary">Loading...</p>
-      </div>
+    <LoadingView />
     );
   }
 
   return (
+    <>
+     {
+        loading && (
+          <LoadingView />
+        )
+      }
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form">
         <h1 className="form-title">{role} {type.toWellFormed()}</h1>
@@ -240,7 +245,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
           )
         }
 
-        <Button type="submit" variant="primary" disabled={loading}>
+        <Button type="submit" variant="primary">
           {type === "login" ? "Sign In" : "Sign Up"}
         </Button>
 
@@ -270,6 +275,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
         </div>
       </form>
     </Form>
+    </>
   );
 };
 

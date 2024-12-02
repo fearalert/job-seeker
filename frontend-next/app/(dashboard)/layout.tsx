@@ -1,31 +1,51 @@
-import { Navbar } from '@/components/navbar/Navbar';
+"use client";
 import AppSidebar from '@/components/sidebar/Sidebar';
-import { Separator } from '@/components/ui/separator';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import { ROLES } from '@/constants';
-import { Sidebar } from 'lucide-react';
-import React from 'react';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { redirect } from 'next/navigation';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import LoadingView from '../loading';
 
 const layout = ({ children }: { children: React.ReactNode }) => {
 
-    const user = {
-        role: ROLES.JOB_SEEKER,
-      };
+ 
+    const { isAuthenticated, error, loading, user } = useSelector((state: any) => state.user);
 
+    console.log(isAuthenticated)
+
+    useEffect(()=> {
+      if(!isAuthenticated) {
+        loading === true
+        redirect("/");
+      }
+    }, [isAuthenticated, loading])
+
+    if (loading) {
+      return (
+        <LoadingView />
+      )
+    }
+  
   return (
-    <SidebarProvider>
-    <div className="h-screen max-h-auto flex flex-col">
-      {/* <Navbar /> */}
-      <div className="flex-1 h-full w-screen px-4 py-4 flex items-start justify-start">
-        <AppSidebar user={user} />
-        <main className='w-full'>
-            <Navbar />
-            <Separator className='mb-4' />
-            {children}
-        </main>
-      </div>
-    </div>
-    </SidebarProvider>
+    <>
+      {
+        isAuthenticated ? (
+          <SidebarProvider>
+                <div className="h-screen max-h-auto flex flex-col">
+                <div className="flex-1 h-full w-screen px-4 py-4 flex items-start justify-start">
+                  <AppSidebar user={user} />
+                  <main className='w-full'>
+                      {children}
+                  </main>
+                </div>
+              </div>
+          </SidebarProvider> 
+
+        ) : 
+        <LoadingView />
+      }
+   
+    </>
   );
 };
 
