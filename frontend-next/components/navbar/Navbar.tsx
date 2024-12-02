@@ -52,9 +52,9 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ]
 
-export function NavigationMenuDemo() {
+export function Navbar() {
   return (
-    <header className="flex flex-row justify-between px-4 md:px-12 py-4">
+    <header className="flex flex-row justify-between px-4 md:px-12 py-4 bg-white z-10">
       <h1 className="font-bold text-xl text-primary">
         JobScan
       </h1>
@@ -70,10 +70,10 @@ export function NavigationMenuDemo() {
                 <ListItem href="/auth/candidate/register" title="Candidate Registration">
                  Visit to Candidate portal and Create Account to get started.
                 </ListItem>
-                <ListItem href="/auth/employeer/login" title="Employeer Login">
+                <ListItem href="/auth/employer/login" title="Employeer Login">
                  Visit to Employeer portal and login
                 </ListItem>
-                <ListItem href="/auth/employeer/register" title="Employeer Registration">
+                <ListItem href="/auth/employer/register" title="Employeer Registration">
                  Visit to Employeer portal and Start posting jobs.
                 </ListItem>
                 <ListItem href="/jobs" title="Browse Jobs" className="md:hidden">

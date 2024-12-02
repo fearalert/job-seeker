@@ -88,14 +88,14 @@ const Niches = () => {
         {
         topNiches.map((niche) => {
                 return (
-                        <Card key={niche.id} className='text-center bg-background border border-zinc-50 hover:bg-slate-50 max-w-[350px]'>
-                            <CardHeader className='font-bold text-xl text-primary py-0 pb-4'>
-                                {niche.role}
-                            </CardHeader>
-                            <CardContent className='py-0'>
-                                <p className='text-zinc-400 text-xs'>{niche.description}</p>
-                            </CardContent>
-                        </Card>
+                    <Card key={niche.id} className='text-center bg-background border border-zinc-50 hover:bg-slate-50 max-w-[350px]'>
+                        <CardHeader className='font-bold text-xl text-primary py-0 pb-4'>
+                            {niche.role}
+                        </CardHeader>
+                        <CardContent className='py-0'>
+                            <p className='text-zinc-400 text-xs'>{niche.description}</p>
+                        </CardContent>
+                    </Card>
                 );
             })
         }
