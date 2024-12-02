@@ -1,63 +1,158 @@
 "use client";
 
-import { Navbar } from '@/components/navbar/Navbar';
-import { Input } from '@/components/ui/input';
-import React, { useState } from 'react';
+import { useState, useEffect, FormEvent } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Link from "next/link";
+
+// Shadcn UI Components
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 
-const JobsPage = () => {
-    const [searchKeyword, setSearchKeyword] = useState("");
-    const [selectedCity, setSelectedCity] = useState("");
-    const [selectedNiche, setSelectedNiche] = useState("");
-    const [salaryRange, setSalaryRange] = useState([0, 10000000]);
+// Redux Slice
+import { fetchJobs, clearAllError, Job } from "@/store/slices/job.slice";
+import { AppDispatch, RootState } from "@/store/store";
+import { Navbar } from "@/components/navbar/Navbar";
+import { NICHES } from "@/constants";
 
-    // Update the handler type to match the expected slider value change handler
-    const handleSalaryChange = (newValue: number | number[]) => {
-        if (Array.isArray(newValue)) {
-            setSalaryRange(newValue);
-        }
-    };
+// Icons
+import { MapPin, Briefcase, DollarSign, Filter } from "lucide-react";
+import Filters from "@/components/jobs/filters";
 
-    return (
-        <>
-            <Navbar />
-            <div className='flex flex-row px-24 max-w-6xl gap-8'>
-                <aside>
-                    <h3>Filter area</h3>
+export default function JobsPage() {
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [selectedCity, setSelectedCity] = useState<string>("all");
+  const [selectedNiche, setSelectedNiche] = useState<string>("all");
+  const [salaryRange, setSalaryRange] = useState<[number, number]>([0, 300000]);
 
-                    <div className='my-4'>
-                        <h4 className='text-lg font-semibold'>Salary Range</h4>
-                        <Slider
-                            value={salaryRange}
-                            onChange={() => handleSalaryChange}
-                            min={0}
-                            max={1000000}
-                            step={10000}
-                            className='w-full'
-                        />
-                        <div className='flex justify-between mt-2'>
-                            <span>{`$${salaryRange[0].toLocaleString()}`}</span>
-                            <span>{`$${salaryRange[1].toLocaleString()}`}</span>
-                        </div>
-                    </div>
-                    {/* Add filter options like city, niche, etc., here */}
-                </aside>
-                <section className='flex flex-col'>
-                    <Input
-                        placeholder='Search Here ...'
-                        value={searchKeyword}
-                        onChange={(e) => setSearchKeyword(e.target.value)}
-                        className='w-full min-w-[500px] bg-zinc-200 border-none rounded-lg mb-4'
-                    />
-                    
-                    {/* Jobs Card Display Section */}
-                    <div>
-                        {/* Display jobs that match the filters */}
-                    </div>
-                </section>
-            </div>
-        </>
+  const { jobs, loading, error, searchTriggered } = useSelector(
+    (state: RootState) => state.jobs
+  );
+  const dispatch = useDispatch<AppDispatch>();
+
+  // Fetch jobs on component mount
+  useEffect(() => {
+    dispatch(fetchJobs({}));
+  }, [dispatch]);
+
+  // Clear errors if any
+  useEffect(() => {
+    if (error) {
+      dispatch(clearAllError());
+    }
+  }, [error, dispatch]);
+
+  // Extract dynamic filter options
+  const cities = ["all", ...new Set(jobs.map((job: Job) => job.location))];
+  const niches = ["all", ...new Set(NICHES)];
+
+  // Search handler
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+
+    dispatch(
+      fetchJobs({
+        searchKeyword: searchKeyword.trim(),
+        city: selectedCity === "all" ? undefined : selectedCity,
+        niche: selectedNiche === "all" ? undefined : selectedNiche,
+        minSalary: salaryRange[0],
+        maxSalary: salaryRange[1],
+      })
     );
-};
+  };
 
-export default JobsPage;
+  // Job card component for better readability
+  const JobCard = ({ job }: { job: Job }) => (
+    <Card
+      key={job.id}
+      className="bg-background shadow-sm rounded-lg hover:shadow-md hover:bg-background transition-all duration-300"
+    >
+      <CardHeader className="mb-0 pb-0">
+        <CardTitle className="text-primary text-xl mb-0 pb-0">{job.jobTitle}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          <p className="text-zinc-600 -1">{job.jobType}</p>
+
+          <div className="flex items-center text-zinc-500 space-x-2">
+            <MapPin size={16} className="text-primary" />
+            <span>{job.location}</span>
+          </div>
+
+          <div className="flex items-center text-zinc-500 space-x-2">
+            <Briefcase size={16} className="text-primary" />
+            <span>{job.jobValidThrough}</span>
+          </div>
+
+          <div className="flex items-center text-zinc-500 space-x-2">
+            <DollarSign size={16} className="text-primary" />
+            <span>Rs. {job.salary.toLocaleString()}</span>
+          </div>
+
+          <div className="flex justify-end items-center mt-4">
+            <Link href={`/job/${job.id}`}>
+              <Button variant="primary">View Details</Button>
+            </Link>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <>
+      <Navbar />
+      <div className="flex flex-col md:flex-row px-4 md:px-24 max-w-full gap-8">
+        {/* Filters Sidebar */}
+        <Filters
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+          selectedNiche={selectedNiche}
+          setSelectedNiche={setSelectedNiche}
+          salaryRange={salaryRange}
+          setSalaryRange={setSalaryRange}
+          cities={cities}
+          niches={niches}
+        />
+        {/* Jobs Section */}
+        <section className="flex flex-col w-full">
+          <form onSubmit={handleSearch} className="mb-6">
+            <div className="flex items-center space-x-4">
+              <Input
+                placeholder="Search for Jobs"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="w-full bg-zinc-100 border-none rounded-lg"
+              />
+              <Button variant="primary" type="submit">
+                Find Job
+              </Button>
+            </div>
+          </form>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {loading ? (
+              <div className="col-span-full flex justify-center items-center h-64">
+                <span>Loading jobs...</span>
+              </div>
+            ) : jobs.length > 0 ? (
+              jobs.map((job) => <JobCard key={job.id} job={job} />)
+            ) : (
+              <div className="col-span-full text-center text-zinc-500">
+                {searchTriggered ? "No Jobs Found" : "Start searching for jobs"}
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+    </>
+  );
+}

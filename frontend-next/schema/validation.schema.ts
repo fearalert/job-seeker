@@ -1,9 +1,11 @@
-import { PASSWORD_REGEX, ROLES } from "@/constants";
+import { ROLES } from "@/constants";
 import { z } from "zod";
 
 export const authFormSchema = (type: "register" | "login", role: string) => {
   const baseSchema = z.object({
-    role: z.string(),
+    role: z.string().refine((val) => val === role, {
+      message: `Role must be "${role}"`,
+    }),
     email: z.string().email(),
     name:
       type === "register"
@@ -13,10 +15,11 @@ export const authFormSchema = (type: "register" | "login", role: string) => {
       .string()
       .min(8, "Password must be at least 8 characters.")
       .max(16, "Password must be at most 16 characters.")
-      .regex(
-        PASSWORD_REGEX,
-        "Password must contain at least one letter, one number, and one special character."
-      ),
+      // .regex(
+      //   PASSWORD_REGEX,
+      //   "Password must contain at least one letter, one number, and one special character."
+      // )
+      ,
     confirmPassword:
       type === "register"
         ? z.string().min(6, "Password must be at least 6 characters.")

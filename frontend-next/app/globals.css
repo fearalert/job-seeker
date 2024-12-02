@@ -86,11 +86,11 @@ body {
 }
 
 .auth-form {
-  @apply flex max-h-[800px] w-full max-w-[580px] flex-col justify-center space-y-4 transition-all lg:h-full lg:space-y-2 !important;
+  @apply flex max-h-[800px] w-full max-w-[580px] flex-col justify-center space-y-4 transition-all lg:h-full lg:space-y-3 !important;
 }
 
 .form-title{
-  @apply text-primary dark:text-white text-[36px] text-center items-center font-bold pt-24;
+  @apply text-primary dark:text-white text-[36px] text-center items-center font-bold;
 }
 
 @layer base {

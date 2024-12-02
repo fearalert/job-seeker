@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -10,38 +11,74 @@ import { NICHES, ROLES } from "@/constants";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authFormSchema } from "@/schema/validation.schema";
+import { useDispatch, useSelector } from "react-redux";
+import { login, register } from "@/store/slices/user.slice";
+import { AppDispatch } from "@/store/store";
+
 
 const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const { loading, error, isAuthenticated } = useSelector((state: any) => state.user);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const router = useRouter();
 
   const formSchema = authFormSchema(type, role);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      role: role,
+      role,
       email: "",
-      name: type === "register" ? "" : undefined, // Optional for login
-      firstNiche: "",
+      name: type === "register" ? "" : undefined,
+      firstNiche: type === "register" && role === ROLES.JOB_SEEKER ? "" : undefined,
       secondNiche: "",
       thirdNiche: "",
       fourthNiche: "",
       coverLetter: "",
-      resume: null, // File inputs are not truly controlled
+      resume: null,
       password: "",
-      confirmPassword: type === "register" ? "" : undefined, // Optional for login
+      confirmPassword: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
-    setError("");
-    
-    setIsLoading(false);
+    setErrorMsg("");
+
+    console.log("Role", role)
+
+    try {
+      const formData = new FormData();
+      Object.keys(values).forEach((key) => {
+        const value = (values as any)[key];
+        if (value !== undefined && value !== null) {
+          formData.append(key, value instanceof File ? value : String(value));
+        }
+      });
+
+      if (type === "login") {
+        await dispatch(login({ email: values.email, password: values.password, role: role}));
+        if (isAuthenticated) {
+          router.push("/dashboard");
+        }
+      } else if (type === "register") {
+        await dispatch(register(formData));
+      }
+    } catch (e) {
+      setErrorMsg("An error occurred. Please try again.");
+      console.error(e);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="animate-spin text-primary"  />
+        <p className="mt-4 text-lg text-primary">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
@@ -203,11 +240,12 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
           )
         }
 
-        <Button type="submit" variant="primary" disabled={isLoading}>
+        <Button type="submit" variant="primary" disabled={loading}>
           {type === "login" ? "Sign In" : "Sign Up"}
         </Button>
 
         {error && <p className="text-destructive">{error}</p>}
+        {errorMsg && <p className="text-destructive">{errorMsg}</p>}
 
         <div className="flex flex-row text-sm gap-2 items-center justify-center py-4">
           <p>{type === "login" ? "Don't have an account?" : "Already have an account?"}</p>

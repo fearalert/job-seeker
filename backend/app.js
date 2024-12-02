@@ -17,7 +17,7 @@ config({ path: "./config/config.env" });
 // Middleware for CORS
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URI, "http://localhost:5173"],
+    origin: [process.env.FRONTEND_URI, "http://localhost:5173", "http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true, // Allow cookies
   })
@@ -25,7 +25,7 @@ app.use(
 
 // Explicitly handle preflight OPTIONS requests
 app.options("*", (req, res) => {
-    res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URI || "http://localhost:5173");
+    res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URI || "http://localhost:5173" || "http://localhost:3000");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.header("Access-Control-Allow-Credentials", "true");

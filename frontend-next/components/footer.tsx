@@ -23,57 +23,57 @@ const Footer = () => {
   ]
   return (
     <footer className="flex flex-col px-12 bg-zinc-900">
-      <div className='flex flex-row justify-between items-center'>
+      <div className='flex flex-col mt-4 md:mt-0 md:flex-row justify-between items-center'>
         <h3 className='text-primary-foreground font-bold text-2xl'>Job Scan</h3>
-        <div className="grid md:grid-cols-3 gap-8 space-x-10 py-12 items-center justify-center">
-          <section className='flex flex-col'>
-            <h3 className='text-white font-bold'>Home</h3>
-            <ul className='text-zinc-300 text-sm flex flex-col items-start justify-start gap-2 py-4'>
-              {
-                homeLinks.map((link) => {
-                  return(
+        <div className="grid md:grid-cols-3 grid-cols-1 gap-8 md:space-x-10 py-12 items-center justify-center">
+          <div className='flex flex-col'>
+              <h3 className='text-white font-bold'>Home</h3>
+              <ul className='text-zinc-300 text-sm flex flex-col items-start justify-start gap-2 py-4'>
+                {
+                  homeLinks.map((link) => {
+                    return(
                       <li key={link.id} className='text-zinc-400'>
-                          <Link href={link.link}>
-                            {link.label}
-                          </Link>
+                        <Link href={link.link}>
+                          {link.label}
+                        </Link>
                       </li>
-                  );
-                })
-              }
-            </ul>
-          </section>
-          <section className='flex flex-col'>
-            <h3 className='text-white font-bold'>Getting Started</h3>
-            <ul className='text-zinc-300 text-sm flex flex-col items-start justify-start gap-2 py-4'>
-              {
-                homeLinks.map((link) => {
-                  return(
-                    <li key={link.id} className='text-zinc-400'>
-                      <Link href={link.link}>
-                        {link.label}
-                      </Link>
-                    </li>
-                  );
-                })
-              }
-            </ul>
-          </section>
-          <section className='flex flex-col'>
-            <h3 className='text-white font-bold'>Quick Links</h3>
-            <ul className='text-zinc-300 text-sm flex flex-col items-start justify-start gap-2 py-4'>
-              {
-                homeLinks.map((link) => {
-                  return(
-                    <li key={link.id} className='text-zinc-400'>
-                      <Link href={link.link}>
-                        {link.label}
-                      </Link>
-                    </li>
-                  );
-                })
-              }
-            </ul>
-          </section>
+                    );
+                  })
+                }
+              </ul>
+            </div>
+            <div className='flex flex-col'>
+              <h3 className='text-white font-bold'>Home</h3>
+              <ul className='text-zinc-300 text-sm flex flex-col items-start justify-start gap-2 py-4'>
+                {
+                  homeLinks.map((link) => {
+                    return(
+                      <li key={link.id} className='text-zinc-400'>
+                        <Link href={link.link}>
+                          {link.label}
+                        </Link>
+                      </li>
+                    );
+                  })
+                }
+              </ul>
+            </div>
+            <div className='flex flex-col'>
+              <h3 className='text-white font-bold'>Home</h3>
+              <ul className='text-zinc-300 text-sm flex flex-col items-start justify-start gap-2 py-4'>
+                {
+                  homeLinks.map((link) => {
+                    return(
+                      <li key={link.id} className='text-zinc-400'>
+                        <Link href={link.link}>
+                          {link.label}
+                        </Link>
+                      </li>
+                    );
+                  })
+                }
+              </ul>
+            </div>
         </div>
       </div>
       <Separator className='w-full bg-zinc-500'/>
