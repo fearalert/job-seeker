@@ -8,6 +8,7 @@ export interface Job {
   jobTitle: string; // Matches jobTitle in the API response
   jobType: string; // Matches jobType in the API response
   organizationType: string; // Matches organizationType in the API response
+  organizationName: string;
   location: string; // Matches location in the API response
   jobIntroduction: string; // Matches jobIntroduction in the API response
   jobResponsibilities: string[]; // Matches jobResponsibilities in the API response
@@ -137,6 +138,7 @@ export const fetchJobs = (filters: FetchJobsFilters) => async (dispatch: AppDisp
       jobTitle: job.jobTitle,
       jobType: job.jobType,
       organizationType: job.organizationType,
+      organizationName: job.organizationName,
       location: job.location,
       jobIntroduction: job.jobIntroduction,
       jobResponsibilities: job.jobResponsibilities,
@@ -162,11 +164,33 @@ export const fetchSingleJob = (jobId: string) => async (dispatch: AppDispatch) =
   dispatch(requestForSingleJob());
   try {
     const response = await axios.get(`${HOSTNAME}/api/v1/job/getsinglejob/${jobId}`, { withCredentials: true });
-    dispatch(successForSingleJob(response.data.job));
+    const job = {
+      id: response.data.job._id,
+      jobTitle: response.data.job.jobTitle,
+      jobType: response.data.job.jobType,
+      organizationType: response.data.job.organizationType,
+      organizationName: response.data.job.organizationName,
+      location: response.data.job.location,
+      jobIntroduction: response.data.job.jobIntroduction,
+      jobResponsibilities: response.data.job.jobResponsibilities,
+      salary: Number(response.data.job.salary),
+      jobPostedOn: response.data.job.jobPostedOn,
+      jobValidThrough: response.data.job.jobValidThrough,
+      jobBenefits: response.data.job.jobBenefits,
+      jobQualifications: response.data.job.jobQualifications,
+      hiringMultipleCandidates: response.data.job.hiringMultipleCandidates,
+      jobNiche: response.data.job.jobNiche,
+      newsLettersSent: response.data.job.newsLettersSent,
+      howToApply: response.data.job.howToApply,
+      postedBy: response.data.job.postedBy,
+      personalWebsite: response.data.job.personalWebsite,
+    };
+    dispatch(successForSingleJob(job));
   } catch (error: any) {
     dispatch(failureForSingleJob({ error: error.response?.data?.message || "Failed to fetch single job" }));
   }
 };
+
 
 export const clearAllJobErrors = () => (dispatch: AppDispatch) => {
   dispatch(clearAllError());

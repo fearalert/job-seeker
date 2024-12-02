@@ -13,6 +13,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import { useRouter } from "next/navigation"
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -53,9 +54,10 @@ const components: { title: string; href: string; description: string }[] = [
 ]
 
 export function Navbar() {
+  const router = useRouter();
   return (
     <header className="flex flex-row justify-between px-4 md:px-12 py-4 bg-white z-10">
-      <h1 className="font-bold text-xl text-primary">
+      <h1 className="font-bold text-xl text-primary cursor-pointer" onClick={() => router.push("/")}>
         JobScan
       </h1>
       <NavigationMenu>

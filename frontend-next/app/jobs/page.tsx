@@ -24,8 +24,9 @@ import { Navbar } from "@/components/navbar/Navbar";
 import { NICHES } from "@/constants";
 
 // Icons
-import { MapPin, Briefcase, DollarSign, Filter } from "lucide-react";
+import { MapPin, Briefcase, DollarSign, Filter, Clock, TypeIcon } from "lucide-react";
 import Filters from "@/components/jobs/filters";
+import { formatDate } from "@/lib/utils";
 
 export default function JobsPage() {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
@@ -75,12 +76,16 @@ export default function JobsPage() {
       key={job.id}
       className="bg-background shadow-sm rounded-lg hover:shadow-md hover:bg-background transition-all duration-300"
     >
-      <CardHeader className="mb-0 pb-0">
+      <CardHeader className="mb-0 pb-0 flex flex-col">
         <CardTitle className="text-primary text-xl mb-0 pb-0">{job.jobTitle}</CardTitle>
+        <p className="text-ellipsis font-semibold max-w-60 text-zinc-400">{job.organizationName}</p>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          <p className="text-zinc-600 -1">{job.jobType}</p>
+      <CardContent className="pt-2">
+        <div className="space-y-1">
+        <div className="flex items-center text-zinc-500 space-x-2">
+            <TypeIcon size={16} className="text-primary" />
+            <span>{job.jobType}</span>
+          </div>
 
           <div className="flex items-center text-zinc-500 space-x-2">
             <MapPin size={16} className="text-primary" />
@@ -88,8 +93,8 @@ export default function JobsPage() {
           </div>
 
           <div className="flex items-center text-zinc-500 space-x-2">
-            <Briefcase size={16} className="text-primary" />
-            <span>{job.jobValidThrough}</span>
+            <Clock size={16} className="text-primary" />
+            <span>{formatDate(job.jobValidThrough)}</span>
           </div>
 
           <div className="flex items-center text-zinc-500 space-x-2">
@@ -98,7 +103,7 @@ export default function JobsPage() {
           </div>
 
           <div className="flex justify-end items-center mt-4">
-            <Link href={`/job/${job.id}`}>
+            <Link href={`/jobs/${job.id}`}>
               <Button variant="primary">View Details</Button>
             </Link>
           </div>
