@@ -13,14 +13,15 @@ import { useRouter } from "next/navigation";
 import { authFormSchema } from "@/schema/validation.schema";
 import { useDispatch, useSelector } from "react-redux";
 import { login, register } from "@/store/slices/user.slice";
-import { AppDispatch } from "@/store/store";
+import { AppDispatch, RootState } from "@/store/store";
 import LoadingView from "@/app/loading";
+import { toast } from "@/hooks/use-toast";
 
 
 const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) => {
   const [errorMsg, setErrorMsg] = useState("");
 
-  const { loading, error, isAuthenticated } = useSelector((state: any) => state.user);
+  const { loading, error, isAuthenticated } = useSelector((state: RootState) => state.user);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -46,10 +47,6 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setErrorMsg("");
-
-    console.log("Role", role)
-    loading === true;
-
     try {
       const formData = new FormData();
       Object.keys(values).forEach((key) => {
@@ -63,13 +60,22 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
         await dispatch(login({ email: values.email, password: values.password, role: role}));
         if (isAuthenticated) {
           router.push("/dashboard");
+
+          toast({
+            title: "Success",
+            description: "Login Successful",
+            className: "bg-green-600 text-white"
+          })
         }
       } else if (type === "register") {
         await dispatch(register(formData));
       }
     } catch (e) {
       setErrorMsg("An error occurred. Please try again.");
-      console.error(e);
+      toast({
+        title: "Error",
+        description: error?.toString()
+      })
     }
   };
 
@@ -80,12 +86,6 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
   }
 
   return (
-    <>
-     {
-        loading && (
-          <LoadingView />
-        )
-      }
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form">
         <h1 className="form-title">{role} {type.toWellFormed()}</h1>
@@ -275,7 +275,6 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
         </div>
       </form>
     </Form>
-    </>
   );
 };
 

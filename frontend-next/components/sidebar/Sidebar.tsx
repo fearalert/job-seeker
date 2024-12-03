@@ -40,7 +40,6 @@ const AppSidebar = () => {
   useEffect(() => {
     console.log("Sidebar - User Raw:", user);
 
-    // Ensure we're working with the actual user object
     const actualUser = user;
 
     if (actualUser) {

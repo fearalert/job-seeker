@@ -4,14 +4,14 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { redirect } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ThunkDispatch } from '@reduxjs/toolkit';
 import LoadingView from '../loading';
 import { AppDispatch, RootState } from '@/store/store';
 import { fetchUser } from '@/store/slices/user.slice';
+import { toast } from '@/hooks/use-toast';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, loading, user, error } = useSelector((state: RootState) => state.user);
+  const { isAuthenticated, loading } = useSelector((state: RootState) => state.user);
   const [initialCheckComplete, setInitialCheckComplete] = useState(false);
 
   useEffect(() => {
@@ -23,9 +23,12 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           await dispatch(fetchUser());
         } catch (error) {
           localStorage.removeItem("userToken");
+          toast({
+            title: "Error",
+            description: error?.toString(),
+          })
         }
       }
-      
       setInitialCheckComplete(true);
     };
 
