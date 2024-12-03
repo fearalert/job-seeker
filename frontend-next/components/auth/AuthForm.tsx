@@ -69,6 +69,17 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
         }
       } else if (type === "register") {
         await dispatch(register(formData));
+        if (isAuthenticated) {
+
+          role === ROLES.JOB_SEEKER ? 
+          router.push("/auth/candidate/login") : router.push("/auth/employer/login")
+
+          toast({
+            title: "Success",
+            description: "Login Successful",
+            className: "bg-green-600 text-white"
+          })
+        }
       }
     } catch (e) {
       setErrorMsg("An error occurred. Please try again.");

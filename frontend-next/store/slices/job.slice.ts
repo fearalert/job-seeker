@@ -88,6 +88,19 @@ const jobSlice = createSlice({
       state.loading = false;
       state.error = action.payload.error;
     },
+    requestForMyJobs(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    successForMyJobs(state, action: PayloadAction<Job[]>) {
+      state.loading = false;
+      state.myJobs = action.payload;
+      state.error = null;
+    },
+    failureForMyJobs(state, action: PayloadAction<{ error: string }>) {
+      state.loading = false;
+      state.error = action.payload.error;
+    },
     clearAllError(state) {
       state.error = null;
     },
@@ -106,6 +119,9 @@ export const {
   failureForSingleJob,
   clearAllError,
   resetJobSlice,
+  successForMyJobs,
+  failureForMyJobs,
+  requestForMyJobs
 } = jobSlice.actions;
 
 export const fetchJobs = (filters: FetchJobsFilters) => async (dispatch: AppDispatch) => {
@@ -188,6 +204,38 @@ export const fetchSingleJob = (jobId: string) => async (dispatch: AppDispatch) =
     dispatch(successForSingleJob(job));
   } catch (error: any) {
     dispatch(failureForSingleJob({ error: error.response?.data?.message || "Failed to fetch single job" }));
+  }
+};
+
+export const fetchMyJobs = () => async (dispatch: AppDispatch) => {
+  dispatch(requestForMyJobs());
+  try {
+    const response = await axios.get(`${HOSTNAME}/api/v1/job/getmyjobs`, { withCredentials: true });
+    // Map _id to id and adapt the response data to match the `Job` interface
+    const myJobs = response.data.jobs.map((job: any) => ({
+      id: job._id,
+      jobTitle: job.jobTitle,
+      jobType: job.jobType,
+      organizationType: job.organizationType,
+      organizationName: job.organizationName,
+      location: job.location,
+      jobIntroduction: job.jobIntroduction,
+      jobResponsibilities: job.jobResponsibilities,
+      salary: Number(job.salary),
+      jobPostedOn: job.jobPostedOn,
+      jobValidThrough: job.jobValidThrough,
+      jobBenefits: job.jobBenefits,
+      jobQualifications: job.jobQualifications,
+      hiringMultipleCandidates: job.hiringMultipleCandidates,
+      jobNiche: job.jobNiche,
+      newsLettersSent: job.newsLettersSent,
+      howToApply: job.howToApply,
+      postedBy: job.postedBy,
+      personalWebsite: job.personalWebsite,
+    }));
+    dispatch(successForMyJobs(myJobs));
+  } catch (error: any) {
+    dispatch(failureForMyJobs({ error: error.response?.data?.message || "Failed to fetch jobs" }));
   }
 };
 

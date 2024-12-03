@@ -45,9 +45,9 @@ const AppSidebar = () => {
     if (actualUser) {
       const additionalItems = actualUser.role === ROLES.EMPLOYER 
         ? [
-            { label: "Post New Job", url: "/jobs/post", icon: Edit2Icon },
-            { label: "My Jobs", url: "/jobs/my-jobs", icon: ShieldHalfIcon },
-            { label: "Applications", url: "/jobs/applications", icon: FileIcon }
+            { label: "Post New Job", url: "/employer/post", icon: Edit2Icon },
+            { label: "My Jobs", url: "/employer/my-jobs", icon: ShieldHalfIcon },
+            { label: "Applications", url: "/employer/applications", icon: FileIcon }
           ]
         : actualUser.role === ROLES.JOB_SEEKER
         ? [
