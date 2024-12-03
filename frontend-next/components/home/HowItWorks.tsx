@@ -25,7 +25,7 @@ const HowItWorks = () => {
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-center gap-12 mt-12 px-6 md:px-16">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-24 mt-12 px-6 md:px-16">
             <Image 
                 src="/image.png" 
                 width={400} 
@@ -33,7 +33,7 @@ const HowItWorks = () => {
                 alt="image" 
                 className="object-contain rounded-full bg-background bg-blend-overlay"
             />
-        <div className="flex flex-col items-start justify-end text-start gap-4">
+        <div className="flex flex-col items-start justify-end text-start gap-12">
             <div className="flex flex-row gap-4 items-center justify-center text-center">
                 <div className="min-w-16 min-h-16 bg-yellow-500 rounded-md flex justify-center items-center text-center">
                     <CircleUserRoundIcon className="text-white w-8 h-8" />

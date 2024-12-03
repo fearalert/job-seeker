@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Define User and Slice State Types
-interface User {
+export interface User {
     _id?: string;
     name?: string;
     email?: string;
@@ -134,21 +134,72 @@ export const register =
         }
     };
 
-export const login =
-    (data: { email: string; password: string, role: string }) => async (dispatch: any) => {
-        dispatch(userSlice.actions.loginRequest());
+    export const fetchUser = () => async (dispatch: any) => {
+        const token = localStorage.getItem("userToken");
+        if (!token) {
+            dispatch(userSlice.actions.fetchUserFailed("No token found"));
+            throw new Error("No token found");
+        }
+        
         try {
-            const response = await axios.post(`${HOSTNAME}/api/v1/user/login`, data, {
-                withCredentials: true,
-                headers: { "Content-Type": "application/json" },
-            });
-            localStorage.setItem("userToken", response.data.token);
-            dispatch(userSlice.actions.loginSuccess(response.data));
+            const response = await axios.post(
+                `${HOSTNAME}/api/v1/user/profile`,
+                {},
+                {
+                    withCredentials: true,
+                    headers: { 
+                        Authorization: `Bearer ${token}`, 
+                        "Content-Type": "application/json" 
+                    },
+                }
+            );
+            
+            // Extract the user from the nested response
+            const userData = response.data.user;
+            
+            dispatch(userSlice.actions.fetchUserSuccess(userData));
+            return userData;
         } catch (error: any) {
-            dispatch(userSlice.actions.loginFailed(error.response?.data.message || "Login failed"));
+            localStorage.removeItem("userToken");
+            
+            if (error.response?.status === 401) {
+                dispatch(logout());
+            }
+            
+            dispatch(userSlice.actions.fetchUserFailed(error.response?.data.message || "Failed to fetch user"));
+            throw error;
         }
     };
-
+    
+export const login =
+        (data: { email: string; password: string, role: string }) => async (dispatch: any) => {
+            dispatch(userSlice.actions.loginRequest());
+            try {
+                const response = await axios.post(`${HOSTNAME}/api/v1/user/login`, data, {
+                    withCredentials: true,
+                    headers: { "Content-Type": "application/json" },
+                });
+                
+                // Ensure token is always set
+                const token = response.data.token;
+                if (token) {
+                    localStorage.setItem("userToken", token);
+                }
+                
+                // Extract the user from the nested response
+                const userData = response.data.user;
+                
+                dispatch(userSlice.actions.loginSuccess({
+                    user: userData, 
+                    message: response.data.message
+                }));
+                return response.data;
+            } catch (error: any) {
+                dispatch(userSlice.actions.loginFailed(error.response?.data.message || "Login failed"));
+                throw error;
+            }
+        };
+    
 export const logout = () => async (dispatch: any) => {
     try {
         const response = await axios.get(`${HOSTNAME}/api/v1/user/logout`, {
@@ -162,30 +213,30 @@ export const logout = () => async (dispatch: any) => {
     }
 };
 
-export const fetchUser = () => async (dispatch: any) => {
-    dispatch(userSlice.actions.fetchUserRequest());
-    const token = localStorage.getItem("userToken");
-    if (!token) {
-        dispatch(userSlice.actions.fetchUserFailed("No token found"));
-        return;
-    }
-    try {
-        const response = await axios.post(
-            `${HOSTNAME}/api/v1/user/profile`,
-            {},
-            {
-                withCredentials: true,
-                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-            }
-        );
-        dispatch(userSlice.actions.fetchUserSuccess(response.data));
-    } catch (error: any) {
-        if (error.response?.status === 401) {
-            dispatch(logout());
-        }
-        dispatch(userSlice.actions.fetchUserFailed(error.response?.data.message || "Failed to fetch user"));
-    }
-};
+// export const fetchUser = () => async (dispatch: any) => {
+//     dispatch(userSlice.actions.fetchUserRequest());
+//     const token = localStorage.getItem("userToken");
+//     if (!token) {
+//         dispatch(userSlice.actions.fetchUserFailed("No token found"));
+//         return;
+//     }
+//     try {
+//         const response = await axios.post(
+//             `${HOSTNAME}/api/v1/user/profile`,
+//             {},
+//             {
+//                 withCredentials: true,
+//                 headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+//             }
+//         );
+//         dispatch(userSlice.actions.fetchUserSuccess(response.data));
+//     } catch (error: any) {
+//         if (error.response?.status === 401) {
+//             dispatch(logout());
+//         }
+//         dispatch(userSlice.actions.fetchUserFailed(error.response?.data.message || "Failed to fetch user"));
+//     }
+// };
 
 // Export Reducer
 export default userSlice.reducer;

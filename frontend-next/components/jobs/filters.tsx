@@ -24,7 +24,7 @@ interface FiltersProps {
     cities,
     niches}: FiltersProps) => {
   return (
-    <aside className="w-full md:w-[300px] hidden md:block bg-secondary/10 rounded-lg p-6 mb-6 md:mb-0">
+    <aside className="w-full md:w-[300px] hidden md:block bg-secondary/10 rounded-lg p-6 mb-6 md:mb-0 h-fit">
     <h3 className="font-semibold text-lg text-center text-primary mb-6">
       Job Filters
     </h3>

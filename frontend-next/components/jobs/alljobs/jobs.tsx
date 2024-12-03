@@ -27,6 +27,10 @@ export default function JobsPage() {
   const { jobs, loading, error, searchTriggered } = useSelector(
     (state: RootState) => state.jobs
   );
+
+  const { isAuthenticated } = useSelector(
+    (state: RootState) => state.user
+  );
   const dispatch = useDispatch<AppDispatch>();
 
   // Fetch jobs on component mount
@@ -64,7 +68,7 @@ export default function JobsPage() {
   const JobCard = ({ job }: { job: Job }) => (
     <Card
       key={job.id}
-      className="bg-background shadow-sm rounded-lg hover:shadow-md hover:bg-background transition-all duration-300"
+      className="bg-background shadow-xs rounded-lg hover:shadow-md hover:bg-background transition-all duration-300"
     >
       <CardHeader className="mb-0 pb-0 flex flex-col">
         <CardTitle className="text-primary text-xl mb-0 pb-0">{job.jobTitle}</CardTitle>
@@ -94,7 +98,7 @@ export default function JobsPage() {
 
           <div className="flex justify-end items-center mt-4">
             <Link href={`/jobs/${job.id}`}>
-              <Button variant="primary">View Details</Button>
+              <Button variant="viewDetails">View Details</Button>
             </Link>
           </div>
         </div>
@@ -104,8 +108,10 @@ export default function JobsPage() {
 
   return (
     <>
-      <Navbar />
-      <div className="flex flex-col md:flex-row px-4 md:px-24 max-w-full gap-8">
+      {!isAuthenticated && <Navbar />}
+      {isAuthenticated && <h1 className="text-primary font-bold text-4xl px-4 py-4">View Jobs</h1>}
+      <div className={`flex flex-col md:flex-row px-4 py-8 ${isAuthenticated ? "md:px-4 md:flex-row-reverse" : "md:px-24"} max-w-full gap-8`}>
+      {/* <div className="flex flex-col md:flex-row px-4 py-8 md:px-24 max-w-full gap-8"> */}
         {/* Filters Sidebar */}
         <Filters
           selectedCity={selectedCity}

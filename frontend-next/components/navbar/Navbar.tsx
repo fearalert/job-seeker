@@ -63,7 +63,7 @@ export function Navbar() {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger>Menu</NavigationMenuTrigger>
+            <NavigationMenuTrigger className="hover:text-primary hover:font-semibold">Menu</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid gap-3 p-6 min-w-[300px] lg:w-[400px] lg:grid-cols-1">
                 <ListItem href="/auth/candidate/login" title="Candidate Login">
@@ -114,7 +114,7 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-secondary hover:text-accent-foreground focus:bg-secondary focus:text-accent-foreground",
             className
           )}
           {...props}

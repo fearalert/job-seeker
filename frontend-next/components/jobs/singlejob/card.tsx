@@ -20,7 +20,7 @@ export default function DetailSingleJobCard() {
   const dispatch = useDispatch<AppDispatch>();
   const { singleJob: job, loading, error } = useSelector((state: RootState) => state.jobs);
 
-  const { isAuthenticated } = useSelector((state: any) => state.user);
+  const { isAuthenticated } = useSelector((state: RootState) => state.user);
 
   const router = useRouter()
 
@@ -63,7 +63,7 @@ export default function DetailSingleJobCard() {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto p-6 my-6">
+      <div className="max-w-4xl ml-auto p-6 my-6">
         <Card className="bg-background hover:bg-background shadow-sm rounded-lg">
           <ArrowLeftIcon className="text-primary mx-4 my-4 cursor-pointer" onClick={() => router.back()}/>
           <CardHeader className="flex flex-row justify-between items-center text-center py-0 m-0">

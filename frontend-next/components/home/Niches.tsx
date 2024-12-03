@@ -119,7 +119,7 @@ const Niches = () => {
         {
         topNiches.map((niche) => {
                 return (
-                    <Card key={niche.id} className='text-center bg-background border border-zinc-50 hover:bg-slate-50 max-w-[350px]'>
+                    <Card key={niche.id} className='text-center border-sm rounded-md shadow-xs border-slate-100 bg-slate-50 hover:bg-slate-100 max-w-[350px]'>
                         <CardHeader className='font-bold text-xl text-primary py-0 pb-4'>
                             {niche.role}
                         </CardHeader>
