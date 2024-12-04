@@ -51,9 +51,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <SidebarProvider>
-      <div className="flex">
+      <div className="w-screen flex h-screen items-start overflow-y-scroll overflow-x-clip bg-background">
         <AppSidebar />
-        <main className="flex-grow">{children}</main>
+        <main className="flex flex-col items-start justify-start w-full">{children}</main>
       </div>
     </SidebarProvider>
   );

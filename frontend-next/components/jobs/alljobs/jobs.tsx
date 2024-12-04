@@ -13,7 +13,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { Navbar } from "@/components/navbar/Navbar";
 import { NICHES } from "@/constants";
 
-import { MapPin, DollarSign, Clock, TypeIcon } from "lucide-react";
+import { MapPin, DollarSign, Clock, TypeIcon, Eye } from "lucide-react";
 import Filters from "@/components/jobs/filters";
 import { formatDate } from "@/lib/utils";
 import LoadingView from "@/app/loading";
@@ -98,7 +98,11 @@ export default function JobsPage() {
 
           <div className="flex justify-end items-center mt-4">
             <Link href={`/jobs/${job.id}`}>
-              <Button variant="viewDetails">View Details</Button>
+              <Button variant="outline"
+                  className='text-zinc-500'
+              >
+                  <Eye className="mr-2 h-4 w-4" /> View Details
+              </Button>
             </Link>
           </div>
         </div>
@@ -110,7 +114,7 @@ export default function JobsPage() {
     <>
       {!isAuthenticated && <Navbar />}
       {isAuthenticated && <h1 className="text-primary font-bold text-4xl px-4 py-4">View Jobs</h1>}
-      <div className={`flex flex-col md:flex-row px-4 py-8 ${isAuthenticated ? "md:px-4 md:flex-row-reverse" : "md:px-24"} max-w-full gap-8`}>
+      <div className={`flex flex-col md:flex-row px-4 py-8 ${isAuthenticated ? "md:px-4 md:flex-row-reverse" : "md:px-24"} w-full gap-8`}>
       {/* <div className="flex flex-col md:flex-row px-4 py-8 md:px-24 max-w-full gap-8"> */}
         {/* Filters Sidebar */}
         <Filters

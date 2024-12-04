@@ -5,7 +5,7 @@ import { RootState } from "@/store/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { MapPin, Briefcase, DollarSign } from "lucide-react";
+import { MapPin, Briefcase, DollarSign, Eye } from "lucide-react";
 import LoadingView from "@/app/loading";
 
 const SimilarJobs = () => {
@@ -52,7 +52,11 @@ const SimilarJobs = () => {
               </div>
               <div className="flex justify-end items-center mt-4">
             <Link href={`/jobs/${job.id}`}>
-              <Button variant="viewDetails">View Details</Button>
+            <Button variant="outline"
+                  className='text-zinc-500'
+              >
+                  <Eye className="mr-2 h-4 w-4" /> View Details
+              </Button>
             </Link>
           </div>
             </CardContent>

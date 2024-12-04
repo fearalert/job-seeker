@@ -2,6 +2,7 @@ import { HOSTNAME } from "@/constants";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { AppDispatch } from "../store";
+import { User } from "./user.slice";
 
 export interface Job {
   id: string; // Matches _id in the API response
@@ -101,6 +102,32 @@ const jobSlice = createSlice({
       state.loading = false;
       state.error = action.payload.error;
     },
+    requestForPostJob(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    successForPostJob(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.message = action.payload;
+      state.error = null;
+    },
+    failureForPostJob(state, action: PayloadAction<{ error: string }>) {
+      state.loading = false;
+      state.error = action.payload.error;
+    },
+    requestForDeleteJob(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    successForDeleteJob(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.message = action.payload;
+      state.error = null;
+    },
+    failureForDeleteJob(state, action: PayloadAction<{ error: string }>) {
+      state.loading = false;
+      state.error = action.payload.error;
+    },
     clearAllError(state) {
       state.error = null;
     },
@@ -121,7 +148,13 @@ export const {
   resetJobSlice,
   successForMyJobs,
   failureForMyJobs,
-  requestForMyJobs
+  requestForMyJobs,
+  requestForDeleteJob,
+  requestForPostJob,
+  successForDeleteJob,
+  successForPostJob,
+  failureForDeleteJob,
+  failureForPostJob
 } = jobSlice.actions;
 
 export const fetchJobs = (filters: FetchJobsFilters) => async (dispatch: AppDispatch) => {
@@ -211,7 +244,7 @@ export const fetchMyJobs = () => async (dispatch: AppDispatch) => {
   dispatch(requestForMyJobs());
   try {
     const response = await axios.get(`${HOSTNAME}/api/v1/job/getmyjobs`, { withCredentials: true });
-    // Map _id to id and adapt the response data to match the `Job` interface
+
     const myJobs = response.data.jobs.map((job: any) => ({
       id: job._id,
       jobTitle: job.jobTitle,
@@ -239,6 +272,75 @@ export const fetchMyJobs = () => async (dispatch: AppDispatch) => {
   }
 };
 
+
+export const postJob = (jobData: Omit<Job, 'id' | 'jobPostedOn' | 'organizationName' | 'postedBy'>) => 
+  async (dispatch: AppDispatch, getState: () => { user: { user: User | null } }) => {
+    dispatch(requestForPostJob());
+    try {
+      const state = getState();
+      const user = state.user.user;
+
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      const completeJobData: Job = {
+        ...jobData,
+        id: '', // Backend will generate this
+        jobPostedOn: new Date().toISOString(),
+        organizationName: user.name || 'Unknown Organization',
+        postedBy: user._id || '',
+      };
+
+      const response = await axios.post(
+        `${HOSTNAME}/api/v1/job/postjob`,
+        completeJobData,
+        { 
+          withCredentials: true, 
+          headers: { "Content-Type": "application/json" } 
+        }
+      );
+      
+      dispatch(successForPostJob(response.data.message));
+      
+      // Optionally, refresh my jobs after posting
+      dispatch(fetchMyJobs());
+    } catch (error: any) {
+      dispatch(failureForPostJob({ 
+        error: error.response?.data?.message || "Failed to post job" 
+      }));
+    }
+  };
+
+
+export const deleteJob = (jobId: string) => 
+  async (dispatch: AppDispatch, getState: () => { user: { user: User | null } }) => {
+    dispatch(requestForDeleteJob());
+    try {
+      const state = getState();
+      const user = state.user.user;
+
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      const response = await axios.delete(`${HOSTNAME}/api/v1/job/delete/${jobId}`, {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`
+        }
+      });
+
+      dispatch(successForDeleteJob(response.data.message));
+      
+      // Refresh my jobs after deletion
+      dispatch(fetchMyJobs());
+    } catch (error: any) {
+      dispatch(failureForDeleteJob({ 
+        error: error.response?.data?.message || "Failed to delete job" 
+      }));
+    }
+  };
 
 export const clearAllJobErrors = () => (dispatch: AppDispatch) => {
   dispatch(clearAllError());
