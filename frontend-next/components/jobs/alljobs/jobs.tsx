@@ -17,6 +17,7 @@ import { MapPin, DollarSign, Clock, TypeIcon, Eye } from "lucide-react";
 import Filters from "@/components/jobs/filters";
 import { formatDate } from "@/lib/utils";
 import LoadingView from "@/app/loading";
+import AuthHeader from "@/components/navbar/AuthenticatedHeader";
 
 export default function JobsPage() {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
@@ -108,7 +109,7 @@ export default function JobsPage() {
   return (
     <>
       {(!isAuthenticated && !user)&& <Navbar />}
-      {(isAuthenticated && user) && <h1 className="text-primary font-bold text-4xl px-4 py-4">View Jobs</h1>}
+      {(isAuthenticated && user) && <AuthHeader title={"Browse Jobs"}/>}
       <div className={`flex flex-col md:flex-row px-4 py-8 ${isAuthenticated ? "md:px-4 md:flex-row-reverse" : "md:px-24"} w-full gap-8`}>
         <Filters
           selectedCity={selectedCity}

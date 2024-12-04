@@ -14,6 +14,7 @@ import { JOB_TYPE, NICHES } from '@/constants';
 import { AppDispatch, RootState } from '@/store/store';
 import { toast } from '@/hooks/use-toast';
 import { postJob } from '@/store/slices/job.slice';
+import AuthHeader from '@/components/navbar/AuthenticatedHeader';
 
 const organizationTypes = [
   'Startup', 'Enterprise', 'Non-Profit', 'Government', 'Educational'
@@ -174,6 +175,8 @@ export function JobPostForm() {
   );
 
   return (
+    <>
+    <AuthHeader title='Post Job'/>
     <div className="md:flex md:flex-col md:items-center md:justify-center md:min-w-[1600px] w-full mx-auto px-4 py-8">
       <Card className="w-full lg:min-w-[1000px] md:min-w-[700px] bg-background hover:bg-background">
         <CardHeader>
@@ -360,6 +363,7 @@ export function JobPostForm() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }
 

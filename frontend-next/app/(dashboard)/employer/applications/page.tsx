@@ -1,8 +1,12 @@
+import AuthHeader from '@/components/navbar/AuthenticatedHeader'
 import React from 'react'
 
 const MyApplication = () => {
   return (
-    <div>MyApplication</div>
+    <>
+      <AuthHeader title='My Applications'/>
+      <div>My Applications</div>
+    </>
   )
 }
 

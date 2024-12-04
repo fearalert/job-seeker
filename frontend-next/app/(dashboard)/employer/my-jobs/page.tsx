@@ -11,10 +11,12 @@ import {
   DialogTitle, 
   DialogDescription 
 } from "@/components/ui/dialog";
-import { Trash2, Eye } from 'lucide-react';
+import { Trash2, Eye, FileIcon } from 'lucide-react';
 import { deleteJob, fetchMyJobs, Job } from '@/store/slices/job.slice';
 import { AppDispatch, RootState } from '@/store/store';
 import { formatDate } from '@/lib/utils';
+import LoadingView from '@/app/loading';
+import AuthHeader from '@/components/navbar/AuthenticatedHeader';
 
 const MyJobsPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,15 +41,18 @@ const MyJobsPage = () => {
     setSelectedJob(null);
   };
 
-  if (loading) return <div className="text-center py-4">Loading jobs...</div>;
+  if (loading) return <LoadingView />;
   if (error) return <div className="text-destructive text-center py-4">Error: {error}</div>;
 
   return (
-    <div className="px-12 py-6">
-      <h1 className="text-3xl text-primary font-bold mb-6">My Posted Jobs</h1>
+    <div className="w-full">
+       <AuthHeader title='My Jobs'/>
       
       {myJobs.length === 0 ? (
-        <div className="flex items-center justify-center text-center text-destructive">No jobs posted yet</div>
+        <div className="flex flex-col items-center justify-center text-center text-red-400 mt-24">
+          <FileIcon className="w-24 h-24 mb-6" />
+          <p>No jobs posted yet</p>
+        </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {myJobs.map((job) => (

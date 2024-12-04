@@ -58,17 +58,17 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
       });
 
       if (type === "login") {
+
         setLoadingHere(true);
-        console.log("Is Authenticated", isAuthenticated)
+
         await dispatch(login({ email: values.email, password: values.password, role: role}));
         router.push("/dashboard");
-
-          toast({
+        toast({
             title: "Success",
             description: "Login Successful",
-            className: "bg-green-600 text-white"
-          })
-        // }
+            variant: "success"
+          });
+          
       } else if (type === "register") {
         setLoadingHere(true);
         await dispatch(register(formData));
@@ -79,16 +79,21 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
           toast({
             title: "Success",
             description: "Login Successful",
-            className: "bg-green-600 text-white"
+            variant: "destructive"
           })
         
       }
-    } catch (e) {
+    } catch (e: any) {
       setErrorMsg("An error occurred. Please try again.");
       toast({
         title: "Error",
-        description: error?.toString()
-      })
+        description: error?.toString(),
+        className: "bg-red-600 text-white"
+      });
+      setLoadingHere(false);
+    } finally {
+      setLoadingHere(false);
+      setErrorMsg("");
     }
   };
 
