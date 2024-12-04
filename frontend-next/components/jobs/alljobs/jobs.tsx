@@ -28,28 +28,24 @@ export default function JobsPage() {
     (state: RootState) => state.jobs
   );
 
-  const { isAuthenticated } = useSelector(
+  const { isAuthenticated, user } = useSelector(
     (state: RootState) => state.user
   );
   const dispatch = useDispatch<AppDispatch>();
 
-  // Fetch jobs on component mount
   useEffect(() => {
     dispatch(fetchJobs({}));
   }, [dispatch]);
 
-  // Clear errors if any
   useEffect(() => {
     if (error) {
       dispatch(clearAllError());
     }
   }, [error, dispatch]);
 
-  // Extract dynamic filter options
   const cities = ["all", ...new Set(jobs.map((job: Job) => job.location))];
   const niches = ["all", ...new Set(NICHES)];
 
-  // Search handler
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
 
@@ -64,7 +60,6 @@ export default function JobsPage() {
     );
   };
 
-  // Job card component for better readability
   const JobCard = ({ job }: { job: Job }) => (
     <Card
       key={job.id}
@@ -112,11 +107,9 @@ export default function JobsPage() {
 
   return (
     <>
-      {!isAuthenticated && <Navbar />}
-      {isAuthenticated && <h1 className="text-primary font-bold text-4xl px-4 py-4">View Jobs</h1>}
+      {(!isAuthenticated && !user)&& <Navbar />}
+      {(isAuthenticated && user) && <h1 className="text-primary font-bold text-4xl px-4 py-4">View Jobs</h1>}
       <div className={`flex flex-col md:flex-row px-4 py-8 ${isAuthenticated ? "md:px-4 md:flex-row-reverse" : "md:px-24"} w-full gap-8`}>
-      {/* <div className="flex flex-col md:flex-row px-4 py-8 md:px-24 max-w-full gap-8"> */}
-        {/* Filters Sidebar */}
         <Filters
           selectedCity={selectedCity}
           setSelectedCity={setSelectedCity}
@@ -127,7 +120,7 @@ export default function JobsPage() {
           cities={cities}
           niches={niches}
         />
-        {/* Jobs Section */}
+
         <section className="flex flex-col w-full">
           <form onSubmit={handleSearch} className="mb-6">
             <div className="flex items-center space-x-4">

@@ -32,9 +32,9 @@ const AppSidebar = () => {
 
   const [sidebarItems, setSidebarItems] = useState([
     { label: "Dashboard", url: "/dashboard", icon: HomeIcon },
-    { label: "My Profile", url: "/profile", icon: User2Icon },
-    { label: "Update Profile", url: "/update-profile", icon: EditIcon },
-    { label: "Update Password", url: "/update-password", icon: LockIcon },
+    // { label: "My Profile", url: "/profile", icon: User2Icon },
+    // { label: "Update Profile", url: "/update-profile", icon: EditIcon },
+    // { label: "Update Password", url: "/update-password", icon: LockIcon },
   ]);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const AppSidebar = () => {
         : [];
 
       setSidebarItems(prev => [
-        ...prev.slice(0, 4),
+        ...prev.slice(0, 1),
         ...additionalItems
       ]);
     }

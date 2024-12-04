@@ -20,6 +20,7 @@ import { toast } from "@/hooks/use-toast";
 
 const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) => {
   const [errorMsg, setErrorMsg] = useState("");
+  const [loadingHere, setLoadingHere] = useState<boolean>(false);
 
   const { loading, error, isAuthenticated } = useSelector((state: RootState) => state.user);
 
@@ -57,19 +58,20 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
       });
 
       if (type === "login") {
+        setLoadingHere(true);
+        console.log("Is Authenticated", isAuthenticated)
         await dispatch(login({ email: values.email, password: values.password, role: role}));
-        if (isAuthenticated) {
-          router.push("/dashboard");
+        router.push("/dashboard");
 
           toast({
             title: "Success",
             description: "Login Successful",
             className: "bg-green-600 text-white"
           })
-        }
+        // }
       } else if (type === "register") {
+        setLoadingHere(true);
         await dispatch(register(formData));
-        if (isAuthenticated) {
 
           role === ROLES.JOB_SEEKER ? 
           router.push("/auth/candidate/login") : router.push("/auth/employer/login")
@@ -79,7 +81,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
             description: "Login Successful",
             className: "bg-green-600 text-white"
           })
-        }
+        
       }
     } catch (e) {
       setErrorMsg("An error occurred. Please try again.");
@@ -90,7 +92,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
     }
   };
 
-  if (loading) {
+  if (loading || loadingHere) {
     return (
     <LoadingView />
     );
