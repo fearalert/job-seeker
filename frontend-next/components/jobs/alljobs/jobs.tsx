@@ -15,7 +15,7 @@ import { NICHES } from "@/constants";
 
 import { MapPin, DollarSign, Clock, TypeIcon, Eye } from "lucide-react";
 import Filters from "@/components/jobs/filters";
-import { formatDate } from "@/lib/utils";
+import { checkJobValidity, formatDate } from "@/lib/utils";
 import LoadingView from "@/app/loading";
 import AuthHeader from "@/components/navbar/AuthenticatedHeader";
 
@@ -65,13 +65,24 @@ export default function JobsPage() {
     return new Date(b.jobPostedOn).getTime() - new Date(a.jobPostedOn).getTime();
   });
 
-  const JobCard = ({ job }: { job: Job }) => (
-    <Card
-      key={job.id}
-      className="bg-background shadow-xs rounded-lg hover:shadow-md hover:bg-background transition-all duration-300"
-    >
+
+
+  const JobCard = ({ job }: { job: Job }) => 
+    {
+      const result = checkJobValidity(job.jobValidThrough);
+
+      const {isExpired, daysLeft} = result;
+
+    return(
+      <Card
+        key={job.id}
+        className="bg-background shadow-xs rounded-lg hover:shadow-md hover:bg-background transition-all duration-300"
+      >
       <CardHeader className="mb-0 pb-0 flex flex-col">
-        <CardTitle className="text-primary text-xl mb-0 pb-0">{job.jobTitle}</CardTitle>
+        <div className="mb-0 pb-0 flex flex-row text-center justify-between">
+          <CardTitle className="text-primary text-xl mb-0 pb-0">{job.jobTitle}</CardTitle>
+          {isExpired ? <span className="text-red-400 text-sm font-semibold">Expired</span>: <span className="text-sm font-semibold text-zinc-500">🔥 {daysLeft} days left</span> }
+        </div>
         <p className="text-ellipsis font-semibold max-w-60 text-zinc-400">{job.organizationName}</p>
       </CardHeader>
       <CardContent className="pt-2">
@@ -95,20 +106,24 @@ export default function JobsPage() {
             <DollarSign size={16} className="text-primary" />
             <span>Rs. {job.salary.toLocaleString()}</span>
           </div>
-
-          <div className="flex justify-end items-center mt-4">
-            <Link href={`/jobs/${job.id}`}>
-              <Button variant="outline"
-                  className='text-zinc-500'
-              >
-                  <Eye className="mr-2 h-4 w-4" /> View Details
-              </Button>
-            </Link>
-          </div>
+          {
+            !isExpired && (
+              <div className="flex justify-end items-center mt-4">
+                <Link href={`/jobs/${job.id}`}>
+                  <Button variant="outline"
+                      className='text-zinc-500'
+                  >
+                      <Eye className="mr-2 h-4 w-4" /> View Details
+                  </Button>
+                </Link>
+              </div>
+            )
+          }
+          
         </div>
       </CardContent>
     </Card>
-  );
+  )};
 
   return (
     <>

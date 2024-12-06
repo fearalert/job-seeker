@@ -31,3 +31,22 @@ export const formatDate = (dateStr: string | null | undefined, dateFormat = "MMM
     return "Invalid Date";
   }
 };
+
+export const checkJobValidity = (jobValidThrough: string) => {
+  const currentDate = new Date();
+  const validThroughDate = new Date(jobValidThrough);
+
+  if (isNaN(validThroughDate.getTime())) {
+    return { isExpired: true, daysLeft: null }; // Invalid date case
+  }
+
+  const isExpired = validThroughDate < currentDate;
+
+  let daysLeft = null;
+  if (!isExpired) {
+    const timeDifference = validThroughDate.getTime() - currentDate.getTime();
+    daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+  }
+
+  return { isExpired, daysLeft };
+};

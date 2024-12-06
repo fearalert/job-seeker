@@ -49,7 +49,7 @@ export default function DetailSingleJobCard() {
 
   useEffect(() => {
     if (job && applications) {
-      const applied = applications.some((app) => app.jobInfo.jobId === job.id);
+      applications.some((app) => app.jobInfo.jobId === job.id);
     }
   }, [job, applications]);
 
