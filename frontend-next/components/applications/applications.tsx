@@ -44,18 +44,6 @@ function ApplicationDetailsDialog({ application, isOpen, onClose, userRole }: Ap
                 <p>Phone: {application.jobSeekerInfo.phone}</p>
                 <p>Address: {application.jobSeekerInfo.address}</p>
               </div>
-              <br />
-              <div className='text-zinc-500'>
-                  <h4 className="font-semibold text-zinc-800">Cover Letter</h4>
-                  <p>{application.jobSeekerInfo.coverLetter}</p>
-              </div>
-              <br />
-              <div className='text-zinc-500'>
-                  <h4 className="font-semibold text-zinc-800">Resume</h4>
-                <Button variant='outline' onClick={() => window.open(application.jobSeekerInfo.resume.url, '_blank')}>
-                  View Resume
-                </Button>
-              </div>
             </>
           )}
           <div className='text-zinc-500'>
