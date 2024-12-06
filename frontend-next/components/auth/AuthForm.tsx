@@ -17,15 +17,12 @@ import { AppDispatch, RootState } from "@/store/store";
 import LoadingView from "@/app/loading";
 import { toast } from "@/hooks/use-toast";
 
-
-const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) => {
+const AuthForm = ({ type, role }: { type: "login" | "register"; role: string }) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [loadingHere, setLoadingHere] = useState<boolean>(false);
 
   const { loading, error, isAuthenticated } = useSelector((state: RootState) => state.user);
-
   const dispatch = useDispatch<AppDispatch>();
-
   const router = useRouter();
 
   const formSchema = authFormSchema(type, role);
@@ -35,17 +32,20 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
       role,
       email: "",
       name: type === "register" ? "" : undefined,
+      phone: type === "register" ? "" : undefined,
+      address: type === "register" ? "" : undefined,
       firstNiche: type === "register" && role === ROLES.JOB_SEEKER ? "" : undefined,
-      secondNiche: "",
-      thirdNiche: "",
-      fourthNiche: "",
-      coverLetter: "",
+      secondNiche: type === "register" && role === ROLES.JOB_SEEKER ? "" : undefined,
+      thirdNiche: type === "register" && role === ROLES.JOB_SEEKER ? "" : undefined,
+      fourthNiche: type === "register" && role === ROLES.JOB_SEEKER ? "" : undefined,
+      coverLetter: type === "register" && role === ROLES.JOB_SEEKER ? "" : undefined,
       resume: null,
       password: "",
       confirmPassword: "",
     },
   });
 
+  
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setErrorMsg("");
     try {
@@ -105,22 +105,20 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form">
-        <h1 className="form-title">{role} {type.toWellFormed()}</h1>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form container">
+        <h1 className="form-title">{role} {type.toUpperCase()}</h1>
 
-      {
-        type === "register" && (
+        {type === "register" && (
           <FormField control={form.control} name="name" render={({ field }) => (
             <FormItem>
-              <FormLabel>{role===ROLES.JOB_SEEKER ? "Name" : "Organization Name"}</FormLabel>
+              <FormLabel>{role === ROLES.JOB_SEEKER ? "Name" : "Organization Name"}</FormLabel>
               <FormControl>
                 <Input placeholder="Enter your name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )} />
-        )
-      }
+        )}
 
         <FormField control={form.control} name="email" render={({ field }) => (
           <FormItem>
@@ -132,7 +130,32 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
           </FormItem>
         )} />
 
-        <FormField control={form.control} name="password" render={({ field }) => (
+      {type === "register" && (
+          <FormField control={form.control} name="phone" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter your phone number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        )}
+
+        {type === "register" && (
+          <FormField control={form.control} name="address" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Address</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter your address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        )}
+
+
+      <FormField control={form.control} name="password" render={({ field }) => (
           <FormItem>
             <FormLabel>Password</FormLabel>
             <FormControl>
@@ -154,11 +177,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
           )} />
         )}
 
-      {type === "register" && role === "Job Seeker" && (
-        <h2 className="pt-8 font-bold text-primary">Select Preferences</h2>
-      )}
-
-      {type === "register" && role === "Job Seeker" && (
+        {type === "register" && role === ROLES.JOB_SEEKER && (
           <div className="grid grid-cols-2 gap-2">
             <FormField control={form.control} name="firstNiche" render={({ field }) => (
               <FormItem>
@@ -229,8 +248,8 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
             )} />
           </div>
         )}
-
-        {type === "register" && role === "Job Seeker" && (
+        
+        {type === "register" && role === ROLES.JOB_SEEKER && (
             <>
              <FormField control={form.control} name="coverLetter" render={({ field }) => (
               <FormItem>
@@ -263,6 +282,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
           )
         }
 
+
         <Button type="submit" variant="primary">
           {type === "login" ? "Sign In" : "Sign Up"}
         </Button>
@@ -289,7 +309,6 @@ const AuthForm = ({ type, role }: { type: "login" | "register", role: string }) 
             </Link>
             )
           }
-         
         </div>
       </form>
     </Form>

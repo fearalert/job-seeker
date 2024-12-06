@@ -24,8 +24,22 @@ export const authFormSchema = (type: "register" | "login", role: string) => {
       type === "register"
         ? z.string().min(8, "Password must be at least 6 characters.")
         : z.string().optional(),
+    phone: type === "register"
+        ? z.string()
+            .length(10, "Phone number must be exactly 10 digits.")
+            .refine((val) => /^(97|98)\d{8}$/.test(val), {
+              message: "Phone number must start with 97 or 98.",
+            })
+        : z.string().optional(),
+      
+    address: type === "register"
+        ? z.string()
+            .min(10, "Address must be at least 10 characters.")
+            .max(100, "Address must be at most 100 characters.")
+        : z.string().optional(),
+      
   });
-
+  
   if (role === ROLES.JOB_SEEKER && type === "register") {
     return baseSchema.extend({
       firstNiche: z.string().min(1, "Please select your first niche."),

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { EyeIcon, Loader2, Trash2 } from 'lucide-react'
+import { EyeIcon, Trash2 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { fetchEmployerApplications, fetchJobSeekerApplications, deleteApplication, Application } from '@/store/slices/application.slice'
 import { AppDispatch, RootState } from '@/store/store'
@@ -12,6 +12,7 @@ import { ROLES } from '@/constants'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import AuthHeader from '@/components/navbar/AuthenticatedHeader'
+import LoadingView from '@/app/loading'
 
 interface ApplicationDetailsDialogProps {
   application: Application | null
@@ -121,7 +122,7 @@ export default function ApplicationsPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <LoadingView />
       </div>
     )
   }
@@ -129,10 +130,10 @@ export default function ApplicationsPage() {
   return (
     <div className='w-full'>
       <AuthHeader title={user?.role === ROLES.EMPLOYER ? 'Applied Applications' : 'My Applied Applications'}/>
-      <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4 px-4 py-4">
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 px-4 py-4">
         {applications.map((application) => (
           <Card key={application._id}>
-            <CardHeader className='pb-0'>
+            <CardHeader className='py-0'>
               <CardTitle>{application.jobInfo.jobTitle}</CardTitle>
               <CardDescription>
                 {user?.role === ROLES.EMPLOYER 
@@ -140,13 +141,27 @@ export default function ApplicationsPage() {
                   : `Employer: ${application.employerInfo.name}`}
               </CardDescription>
             </CardHeader>
-            <CardContent className='flex flex-row items-center text-center justify-center gap-2'>
+            <CardContent className={`flex ${user?.role === ROLES.EMPLOYER ? "flex-col" : "flex-row items-center text-center justify-center"} gap-2 py-0`}>
+                {user?.role === ROLES.EMPLOYER && (
+                    <div className="grid py-4">
+                      <div className='text-zinc-500 gap-6'>
+                        <h4 className="font-semibold text-zinc-800">Other Details</h4>
+                        <p>Email: {application.jobSeekerInfo.email}</p>
+                        <p>Phone: {application.jobSeekerInfo.phone}</p>
+                        <p>Address: {application.jobSeekerInfo.address}</p>
+                      </div>
+                  </div>
+                )}
+
               <Button variant="outline" className="w-full" onClick={() => setSelectedApplication(application)}>
                 <EyeIcon className="mr-2 h-4 w-4" /> View Details
               </Button>
-              <Button variant="destructive" className="w-full" onClick={() => openDeleteConfirmation(application._id)}>
+              {
+                user?.role === ROLES.JOB_SEEKER && 
+                (<Button variant="destructive" className="w-full" onClick={() => openDeleteConfirmation(application._id)}>
                 <Trash2 className="mr-2 h-4 w-4" /> Delete Application
-              </Button>
+              </Button>)
+              }
             </CardContent>
           </Card>
         ))}

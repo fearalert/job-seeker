@@ -53,14 +53,14 @@ const MyJobsPage = () => {
           <p>No jobs posted yet</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 py-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-8">
           {myJobs.map((job) => (
-            <Card key={job.id} className="hover:shadow-sm shadow-xs min-w-[320px] transition-shadow bg-background hover:bg-background">
+            <Card key={job.id} className="bg-background hover:bg-background">
               <CardHeader className='py-0'>
                 <CardTitle className="text-lg text-primary">{job.jobTitle}</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-zinc-500 font-semibold pt-0">{job.jobNiche} | {job.location}</p>
+              <CardContent className='flex flex-col items-start text-start justify-start gap-2'>
+              <p className="text-sm text-zinc-500 font-semibold pt-0">{job.jobNiche} | {job.location}</p>
                 <p className="mt-2 text-sm text-zinc-400 font-medium">
                   <strong>Salary:  </strong>NRS. {job.salary.toLocaleString()}
                 </p>
@@ -68,7 +68,7 @@ const MyJobsPage = () => {
                 <strong>Posted:  </strong>{formatDate(job.jobPostedOn)}
                 </p>
               </CardContent>
-              <CardFooter className="flex gap-2 justify-between">
+              <CardFooter className="gap-4">
                 <Button 
                   variant="outline" 
                   size="sm" 

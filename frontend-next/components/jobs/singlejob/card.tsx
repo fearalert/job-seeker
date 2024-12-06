@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSingleJob, clearAllJobErrors } from "@/store/slices/job.slice";
 import { AppDispatch, RootState } from "@/store/store";
@@ -11,18 +11,20 @@ import { MapPin, Briefcase, DollarSign, Users, Globe, BookOpen, Link as LinkIcon
 import { Button } from "@/components/ui/button";
 import { Separator } from "@radix-ui/react-separator";
 import { formatDate } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import LoadingView from "@/app/loading";
+import { postApplication } from "@/store/slices/application.slice";
 
 export default function DetailSingleJobCard() {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const dispatch = useDispatch<AppDispatch>();
   const { singleJob: job, loading, error } = useSelector((state: RootState) => state.jobs);
+  const { isAuthenticated, user } = useSelector((state: RootState) => state.user);
 
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (id) {
@@ -34,10 +36,44 @@ export default function DetailSingleJobCard() {
     };
   }, [id, dispatch]);
 
+  const handleApply = async () => {
+    if (hasApplied) return;
+
+    setIsLoading(true);
+
+    const applicationData = {
+      name: user?.name,
+      email: user?.email,
+      coverLetter: user?.coverLetter,
+      phone: user?.phone,
+      resume: user?.resume,
+      address: user?.address,
+      niches: user?.niches,
+      jobID: job?.id,
+    };
+
+    const formData = new FormData();
+
+    Object.entries(applicationData).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((item, index) => formData.append(`${key}[${index}]`, item));
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
+
+    const jobID = job?.id || ""
+    try {
+      await dispatch(postApplication(formData, jobID));
+      setHasApplied(true); // Mark as applied after success
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (loading) {
-    return (
-      <LoadingView />
-    );
+    return <LoadingView />;
   }
 
   if (error) {
@@ -60,26 +96,33 @@ export default function DetailSingleJobCard() {
   const validThroughDate = new Date(job.jobValidThrough);
   const isExpired = isNaN(validThroughDate.getTime()) || validThroughDate < currentDate;
 
-
   return (
     <>
       <div className="max-w-4xl ml-auto p-6 my-6">
         <Card className="bg-background hover:bg-background shadow-sm rounded-lg">
-          <ArrowLeftIcon className="text-primary mx-4 my-4 cursor-pointer" onClick={() => router.back()}/>
+          <ArrowLeftIcon className="text-primary mx-4 my-4 cursor-pointer" onClick={() => router.back()} />
           <CardHeader className="flex flex-row justify-between items-center text-center py-0 m-0">
             <CardTitle className="text-primary text-3xl text-center">{job.jobTitle}</CardTitle>
             {isAuthenticated && (
               <Button
                 type="submit"
                 variant="primary"
-                disabled={isExpired ? true : false}
+                onClick={handleApply}
+                disabled={isExpired || hasApplied || isLoading}
               >
-                {isExpired ? "Expired" : "Apply Now"}
+                {isExpired
+                  ? "Expired"
+                  : hasApplied
+                  ? "Already Applied"
+                  : isLoading
+                  ? "Applying..."
+                  : "Apply Now"}
               </Button>
             )}
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
+              {/* Job details */}
               <div className="flex items-center text-zinc-500 font-semibold space-x-2">
                 <span>{job.organizationType}</span>
                 <Separator className="w-1 h-4 bg-zinc-500" />

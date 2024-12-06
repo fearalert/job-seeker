@@ -13,7 +13,7 @@ export interface Job {
   location: string; // Matches location in the API response
   jobIntroduction: string; // Matches jobIntroduction in the API response
   jobResponsibilities: string[]; // Matches jobResponsibilities in the API response
-  salary: number; // Matches salary in the API response, assuming it will be converted from string to number
+  salary: string; // Matches salary in the API response, assuming it will be converted from string to number
   jobPostedOn: string; // Matches jobPostedOn in the API response
   jobValidThrough: string; // Matches jobValidThrough in the API response
   jobBenefits: string[]; // Matches jobBenefits in the API response
@@ -191,7 +191,7 @@ export const fetchJobs = (filters: FetchJobsFilters) => async (dispatch: AppDisp
       location: job.location,
       jobIntroduction: job.jobIntroduction,
       jobResponsibilities: job.jobResponsibilities,
-      salary: Number(job.salary),
+      salary: job.salary,
       jobPostedOn: job.jobPostedOn,
       jobValidThrough: job.jobValidThrough,
       jobBenefits: job.jobBenefits,
@@ -222,7 +222,7 @@ export const fetchSingleJob = (jobId: string) => async (dispatch: AppDispatch) =
       location: response.data.job.location,
       jobIntroduction: response.data.job.jobIntroduction,
       jobResponsibilities: response.data.job.jobResponsibilities,
-      salary: Number(response.data.job.salary),
+      salary: response.data.job.salary,
       jobPostedOn: response.data.job.jobPostedOn,
       jobValidThrough: response.data.job.jobValidThrough,
       jobBenefits: response.data.job.jobBenefits,
@@ -254,7 +254,7 @@ export const fetchMyJobs = () => async (dispatch: AppDispatch) => {
       location: job.location,
       jobIntroduction: job.jobIntroduction,
       jobResponsibilities: job.jobResponsibilities,
-      salary: Number(job.salary),
+      salary: job.salary,
       jobPostedOn: job.jobPostedOn,
       jobValidThrough: job.jobValidThrough,
       jobBenefits: job.jobBenefits,
@@ -286,7 +286,7 @@ export const postJob = (jobData: Omit<Job, 'id' | 'jobPostedOn' | 'organizationN
 
       const completeJobData: Job = {
         ...jobData,
-        id: '', // Backend will generate this
+        id: '',
         jobPostedOn: new Date().toISOString(),
         organizationName: user.name || 'Unknown Organization',
         postedBy: user._id || '',
@@ -297,7 +297,10 @@ export const postJob = (jobData: Omit<Job, 'id' | 'jobPostedOn' | 'organizationN
         completeJobData,
         { 
           withCredentials: true, 
-          headers: { "Content-Type": "application/json" } 
+          headers: { 
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem('userToken')}`
+           } 
         }
       );
       

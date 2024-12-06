@@ -14,6 +14,7 @@ export interface User {
     role?: string;
     createdAt?: string;
     __v?: number;
+    resume?: string;
     niches?: {
         firstNiche?: string;
         secondNiche?: string;
