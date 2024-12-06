@@ -61,6 +61,10 @@ export default function JobsPage() {
     );
   };
 
+  const sortedJobs = [...jobs].sort((a, b) => {
+    return new Date(b.jobPostedOn).getTime() - new Date(a.jobPostedOn).getTime();
+  });
+
   const JobCard = ({ job }: { job: Job }) => (
     <Card
       key={job.id}
@@ -142,8 +146,8 @@ export default function JobsPage() {
               <div className="col-span-full flex justify-center items-center h-64">
               <LoadingView />
               </div>
-            ) : jobs.length > 0 ? (
-              jobs.map((job) => <JobCard key={job.id} job={job} />)
+            ) : sortedJobs.length > 0 ? (
+              sortedJobs.map((job) => <JobCard key={job.id} job={job} />)
             ) : (
               <div className="col-span-full text-center text-zinc-500">
                 {searchTriggered ? "No Jobs Found" : "Start searching for jobs"}

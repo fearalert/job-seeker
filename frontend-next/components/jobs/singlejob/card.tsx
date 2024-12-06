@@ -1,18 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSingleJob, clearAllJobErrors } from "@/store/slices/job.slice";
 import { AppDispatch, RootState } from "@/store/store";
-import { Navbar } from "@/components/navbar/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Briefcase, DollarSign, Users, Globe, BookOpen, Link as LinkIcon, ArrowLeftIcon } from "lucide-react";
+import { MapPin, Briefcase, DollarSign, Users, Globe, BookOpen, Link as LinkIcon, ArrowLeftIcon, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@radix-ui/react-separator";
 import { formatDate } from "@/lib/utils";
 import LoadingView from "@/app/loading";
-import { postApplication } from "@/store/slices/application.slice";
+import { fetchJobSeekerApplications, postApplication } from "@/store/slices/application.slice";
+import { toast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 export default function DetailSingleJobCard() {
   const params = useParams();
@@ -20,15 +25,21 @@ export default function DetailSingleJobCard() {
   const dispatch = useDispatch<AppDispatch>();
   const { singleJob: job, loading, error } = useSelector((state: RootState) => state.jobs);
   const { isAuthenticated, user } = useSelector((state: RootState) => state.user);
+  const { applications } = useSelector((state: RootState) => state.application);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [hasApplied, setHasApplied] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [coverLetterFile, setCoverLetterFile] = useState<string | undefined>(user?.coverLetter);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   const router = useRouter();
+
+  const hasApplied = !!applications.find((app) => app.jobInfo.jobId === job?.id);
 
   useEffect(() => {
     if (id) {
       dispatch(fetchSingleJob(id));
+      dispatch(fetchJobSeekerApplications());
     }
 
     return () => {
@@ -36,23 +47,35 @@ export default function DetailSingleJobCard() {
     };
   }, [id, dispatch]);
 
+  useEffect(() => {
+    if (job && applications) {
+      const applied = applications.some((app) => app.jobInfo.jobId === job.id);
+    }
+  }, [job, applications]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
   const handleApply = async () => {
-    if (hasApplied) return;
+    if (hasApplied || isLoading) return;
 
     setIsLoading(true);
+
+    const formData = new FormData();
 
     const applicationData = {
       name: user?.name,
       email: user?.email,
-      coverLetter: user?.coverLetter,
+      coverLetter: coverLetterFile ? coverLetterFile : user?.coverLetter,
       phone: user?.phone,
-      resume: user?.resume,
+      resume: resumeFile? resumeFile : user?.resume,
       address: user?.address,
       niches: user?.niches,
       jobID: job?.id,
     };
-
-    const formData = new FormData();
 
     Object.entries(applicationData).forEach(([key, value]) => {
       if (Array.isArray(value)) {
@@ -65,8 +88,13 @@ export default function DetailSingleJobCard() {
     const jobID = job?.id || ""
     try {
       await dispatch(postApplication(formData, jobID));
-      setHasApplied(true); // Mark as applied after success
+      setIsModalOpen(false);
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to apply for the job.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -105,9 +133,9 @@ export default function DetailSingleJobCard() {
             <CardTitle className="text-primary text-3xl text-center">{job.jobTitle}</CardTitle>
             {isAuthenticated && (
               <Button
-                type="submit"
+                type="button"
                 variant="primary"
-                onClick={handleApply}
+                onClick={() => setIsModalOpen(true)}
                 disabled={isExpired || hasApplied || isLoading}
               >
                 {isExpired
@@ -122,18 +150,22 @@ export default function DetailSingleJobCard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {/* Job details */}
               <div className="flex items-center text-zinc-500 font-semibold space-x-2">
                 <span>{job.organizationType}</span>
                 <Separator className="w-1 h-4 bg-zinc-500" />
                 <span>
-                  {isExpired ? (
-                    <span className="text-red-600 font-bold">Expired</span>
-                  ) : (
-                    `Validity: ${formatDate(job.jobValidThrough)}`
-                  )}
+                  {
+                    isExpired ? (
+                      <span className="text-red-600 font-bold">Expired</span>
+                    ) : (
+                      <span>Validity: {formatDate(job.jobValidThrough)}</span>
+                    )
+                  }
                 </span>
               </div>
+              <p className="text-zinc-500 mt-4">
+                <strong>Posted on:</strong> {formatDate(job.jobPostedOn)}
+              </p>
               <div className="flex items-center text-zinc-500 space-x-2">
                 <MapPin size={16} className="text-primary" />
                 <span>{job.location}</span>
@@ -206,6 +238,56 @@ export default function DetailSingleJobCard() {
           </CardContent>
         </Card>
       </div>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cover Letter and Resume</DialogTitle>
+          </DialogHeader>
+          <Label className="font-bold">Cover Letter
+                 <TooltipProvider>
+                  <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-4 w-4 ml-1 inline" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Enter the Job Specific Cover Letter
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+          </Label>
+          <Textarea
+            placeholder="Type your cover letter here..."
+            onChange={(e) => setCoverLetterFile(e.target.value)}
+            className="mb-4"
+          />
+          <Label className="font-bold">Resume/CV
+              <TooltipProvider>
+                  <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-4 w-4 ml-1 inline" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Please upload .pdf, .doc or .docx as your updated resume.
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+          </Label>
+          <Input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={(e) => handleFileChange(e, setResumeFile)}
+          />
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleApply} disabled={isLoading}>
+              {isLoading ? "Submitting..." : "Submit"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

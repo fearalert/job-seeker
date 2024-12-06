@@ -3,7 +3,7 @@ import axios from "axios";
 import { AppDispatch } from "../store";
 import { HOSTNAME } from "@/constants";
 
-interface Resume {
+export interface Resume {
   public_id: string;
   url: string;
 }

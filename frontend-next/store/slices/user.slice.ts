@@ -1,6 +1,7 @@
 import { HOSTNAME } from "@/constants";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { Resume } from "./application.slice";
 
 // Define User and Slice State Types
 export interface User {
@@ -14,7 +15,7 @@ export interface User {
     role?: string;
     createdAt?: string;
     __v?: number;
-    resume?: string;
+    resume?: Resume;
     niches?: {
         firstNiche?: string;
         secondNiche?: string;

@@ -13,12 +13,9 @@ const AuthHeader = ({ title }: {title:string }) => {
 
   const { user } = useSelector((state: RootState) => state.user);
 
-  const dispatch = useDispatch<AppDispatch>();
-
   const firstLetter = user?.name;
 
   const slicedName = firstLetter?.slice(0, 1);
-
 
   const [items, setItems] = useState([
     { label: "Dashboard", url: "/dashboard", icon: HomeIcon },
@@ -55,8 +52,8 @@ const AuthHeader = ({ title }: {title:string }) => {
   };
 
   return (
-    <header className="w-full bg-slate-50 flex flex-row justify-between items-center text-center px-12 py-4">
-      <h1 className="text-3xl font-semibold text-primary">{title}</h1>
+    <header className="w-full bg-slate-50 flex flex-row justify-between items-center text-center px-4 md:px-12 py-4">
+      <h1 className="text-xl md:text-3xl font-semibold text-primary">{title}</h1>
 
       <div className="relative">
         <div

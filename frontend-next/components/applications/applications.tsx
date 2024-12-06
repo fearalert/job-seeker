@@ -26,7 +26,7 @@ function ApplicationDetailsDialog({ application, isOpen, onClose, userRole }: Ap
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="xs:max-w-[300px] mx-2">
         <DialogHeader>
           <DialogTitle>{application.jobInfo.jobTitle}</DialogTitle>
           <DialogDescription>
@@ -50,7 +50,7 @@ function ApplicationDetailsDialog({ application, isOpen, onClose, userRole }: Ap
           <div className='text-zinc-500'>
             <h4 className="font-semibold text-zinc-800">Job Details</h4>
             <p>Job ID: {application.jobInfo.jobId}</p>
-            <p>Organization: {application.employerInfo.name}</p>
+            <p>Organization: {application.employerInfo?.name}</p>
             <br />
             <div className='text-zinc-500'>
                 <h4 className="font-semibold text-zinc-800">Cover Letter</h4>
@@ -94,14 +94,14 @@ export default function ApplicationsPage() {
       toast({
         title: "Success",
         description: message,
-      })
+      });
     }
     if (error) {
       toast({
         title: "Error",
         description: error,
         variant: "destructive",
-      })
+      });
     }
   }, [message, error, toast])
 
@@ -132,7 +132,7 @@ export default function ApplicationsPage() {
       <AuthHeader title={user?.role === ROLES.EMPLOYER ? 'Applied Applications' : 'My Applied Applications'}/>
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 px-4 py-4">
         {applications.map((application) => (
-          <Card key={application._id}>
+          <Card key={application._id} className='w-fit min-w-[360px]'>
             <CardHeader className='py-0'>
               <CardTitle>{application.jobInfo.jobTitle}</CardTitle>
               <CardDescription>
@@ -141,7 +141,7 @@ export default function ApplicationsPage() {
                   : `Employer: ${application.employerInfo.name}`}
               </CardDescription>
             </CardHeader>
-            <CardContent className={`flex ${user?.role === ROLES.EMPLOYER ? "flex-col" : "flex-row items-center text-center justify-center"} gap-2 py-0`}>
+            <CardContent className={`flex ${user?.role === ROLES.EMPLOYER ? "flex-col" : "flex-col md:flex-row items-center text-center justify-center"} gap-2 py-0 pt-6`}>
                 {user?.role === ROLES.EMPLOYER && (
                     <div className="grid py-4">
                       <div className='text-zinc-500 gap-6'>

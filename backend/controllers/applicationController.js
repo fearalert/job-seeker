@@ -73,6 +73,8 @@ export const postApplication = catchAsyncError(async (req, res, next) => {
         role: "Employer",
         name: jobDetails.organizationName,
         validThrough: jobDetails.jobValidThrough,
+        title: jobDetails.personalWebsite.title,
+        url: jobDetails.personalWebsite.url
     };
 
     const jobInfo = {
