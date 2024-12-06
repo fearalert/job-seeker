@@ -47,16 +47,15 @@ const MyJobsPage = () => {
   return (
     <div className="w-full">
        <AuthHeader title='My Jobs'/>
-      
       {myJobs.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center text-red-400 mt-24">
           <FileIcon className="w-24 h-24 mb-6" />
           <p>No jobs posted yet</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 py-4">
           {myJobs.map((job) => (
-            <Card key={job.id} className="hover:shadow-sm shadow-xs min-w-[320px] transition-shadow bg-background hover:bg-slate-50">
+            <Card key={job.id} className="hover:shadow-sm shadow-xs min-w-[320px] transition-shadow bg-background hover:bg-background">
               <CardHeader className='py-0'>
                 <CardTitle className="text-lg text-primary">{job.jobTitle}</CardTitle>
               </CardHeader>

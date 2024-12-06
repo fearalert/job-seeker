@@ -134,7 +134,7 @@ export const register =
         }
     };
 
-    export const fetchUser = () => async (dispatch: any) => {
+export const fetchUser = () => async (dispatch: any) => {
         const token = localStorage.getItem("userToken");
         if (!token) {
             dispatch(userSlice.actions.fetchUserFailed("No token found"));
@@ -213,30 +213,4 @@ export const logout = () => async (dispatch: any) => {
     }
 };
 
-// export const fetchUser = () => async (dispatch: any) => {
-//     dispatch(userSlice.actions.fetchUserRequest());
-//     const token = localStorage.getItem("userToken");
-//     if (!token) {
-//         dispatch(userSlice.actions.fetchUserFailed("No token found"));
-//         return;
-//     }
-//     try {
-//         const response = await axios.post(
-//             `${HOSTNAME}/api/v1/user/profile`,
-//             {},
-//             {
-//                 withCredentials: true,
-//                 headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-//             }
-//         );
-//         dispatch(userSlice.actions.fetchUserSuccess(response.data));
-//     } catch (error: any) {
-//         if (error.response?.status === 401) {
-//             dispatch(logout());
-//         }
-//         dispatch(userSlice.actions.fetchUserFailed(error.response?.data.message || "Failed to fetch user"));
-//     }
-// };
-
-// Export Reducer
 export default userSlice.reducer;

@@ -29,8 +29,6 @@ export const NICHES = [
     "Business Analyst",
 ];
 
-export const JOB_TYPE = [
-  'Full-time', 'Part-time', 'Contract', 'Freelance', 'Internship'
-];
+export const JOB_TYPE = ["Full-time", "Part-time", "Internship", "Contract", "Remote"];
 
 export const HOSTNAME = "http://localhost:4000"

@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { Edit2Icon, FileIcon, HomeIcon, LockIcon, LogOutIcon, SheetIcon, ShieldHalfIcon, UserIcon } from "lucide-react";
+import { ROLES } from "@/constants";
 
 const AuthHeader = ({ title }: {title:string }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -11,9 +13,42 @@ const AuthHeader = ({ title }: {title:string }) => {
 
   const { user } = useSelector((state: RootState) => state.user);
 
+  const dispatch = useDispatch<AppDispatch>();
+
   const firstLetter = user?.name;
 
-  const slicedName = firstLetter?.slice(0, 1)
+  const slicedName = firstLetter?.slice(0, 1);
+
+
+  const [items, setItems] = useState([
+    { label: "Dashboard", url: "/dashboard", icon: HomeIcon },
+  ]);
+
+  useEffect(() => {
+    console.log("Sidebar - User Raw:", user);
+
+    const actualUser = user;
+
+    if (actualUser) {
+      const additionalItems = actualUser.role === ROLES.EMPLOYER 
+        ? [
+            { label: "Post New Job", url: "/employer/post", icon: Edit2Icon },
+            { label: "My Jobs", url: "/employer/my-jobs", icon: ShieldHalfIcon },
+            { label: "Applications", url: "/employer/applications", icon: FileIcon }
+          ]
+        : actualUser.role === ROLES.JOB_SEEKER
+        ? [
+            { label: "My Applications", url: "/jobseeker/applications", icon: FileIcon },
+            { label: "Jobs", url: "/jobseeker/jobs", icon: SheetIcon }
+          ]
+        : [];
+
+      setItems(prev => [
+        ...prev.slice(0,1),
+        ...additionalItems
+      ]);
+    }
+  }, [user]);
 
   const handleLogout = () => {
     console.log("Logout CLiked")
@@ -33,24 +68,37 @@ const AuthHeader = ({ title }: {title:string }) => {
 
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-md">
-            <ul className="py-2 text-start">
+            <ul className="py-2 text-start text-sm">
+              {
+                items.map((item) => {
+                  return (
+                    <li
+                    key={item.label}
+                    className="md:hidden flex flex-row gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => router.push(item.url)}
+                  >
+                    <item.icon className="w-4 h-4"/> {item.label}
+                  </li>
+                  )
+                })
+              }
               <li
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                className="flex flex-row gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
                 onClick={() => router.push("/profile")}
               >
-                Profile
+                <UserIcon className="w-4 h-4"/> Profile
               </li>
               <li
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                className="flex flex-row gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
                 onClick={() => router.push("/update-password")}
               >
-                Update Password
+                <LockIcon className="w-4 h-4"/> Update Password
               </li>
               <li
-                className="px-4 py-2 text-destructive hover:bg-red-100 cursor-pointer"
+                className="flex flex-row gap-2 px-4 py-2 text-destructive hover:bg-red-100 cursor-pointer"
                 onClick={handleLogout}
               >
-                Logout
+               <LogOutIcon className="w-4 h-4"/> Logout
               </li>
             </ul>
           </div>

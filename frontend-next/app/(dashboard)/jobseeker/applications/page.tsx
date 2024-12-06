@@ -1,13 +1,12 @@
-import AuthHeader from '@/components/navbar/AuthenticatedHeader'
+import ApplicationsPage from '@/components/applications/applications'
 import React from 'react'
 
-const MyApplication = () => {
+const JobSeekerApplicationsPage = () => {
   return (
-    <>
-      <AuthHeader title='My Applications'/>
-      <div>My Applications</div>
-    </>
+   <>
+   <ApplicationsPage />
+   </>
   )
 }
 
-export default MyApplication
+export default JobSeekerApplicationsPage

@@ -1,16 +1,59 @@
-import { HOSTNAME } from "@/constants";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { AppDispatch } from "../store";
+import { HOSTNAME } from "@/constants";
+
+interface Resume {
+  public_id: string;
+  url: string;
+}
+
+interface JobSeekerInfo {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  resume: Resume;
+  coverLetter: string;
+  role: "Job Seeker";
+}
+
+interface EmployerInfo {
+  id: string;
+  role: "Employer";
+  name: string;
+  validThrough: string;
+}
+
+interface JobInfo {
+  jobId: string;
+  jobTitle: string;
+  jobDescription: string;
+  jobNiche: string;
+  jobQualifications: string;
+  jobResponsibilities: string;
+  salary: number;
+}
+
+export interface Application {
+  _id: string;
+  jobSeekerInfo: JobSeekerInfo;
+  employerInfo: EmployerInfo;
+  jobInfo: JobInfo;
+  deletedBy: {
+    jobSeeker: boolean;
+    employer: boolean;
+  };
+}
 
 interface ApplicationState {
-  applications: any[];
+  applications: Application[];
   loading: boolean;
   error: string | null;
   message: string | null;
 }
 
-// Initial state with type
 const initialState: ApplicationState = {
   applications: [],
   loading: false,
@@ -18,7 +61,6 @@ const initialState: ApplicationState = {
   message: null,
 };
 
-// Create the slice
 const applicationSlice = createSlice({
   name: "applications",
   initialState,
@@ -27,25 +69,12 @@ const applicationSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    successForAllApplications(state, action: PayloadAction<any[]>) {
+    successForAllApplications(state, action: PayloadAction<Application[]>) {
       state.loading = false;
       state.error = null;
       state.applications = action.payload;
     },
     failureForAllApplications(state, action: PayloadAction<string>) {
-      state.loading = false;
-      state.error = action.payload;
-    },
-    requestForMyApplications(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    successForMyApplications(state, action: PayloadAction<any[]>) {
-      state.loading = false;
-      state.error = null;
-      state.applications = action.payload;
-    },
-    failureForMyApplications(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
     },
@@ -90,80 +119,99 @@ const applicationSlice = createSlice({
   },
 });
 
-// Asynchronous thunks with type-safe dispatch
 export const fetchEmployerApplications = () => async (dispatch: AppDispatch) => {
   dispatch(applicationSlice.actions.requestForAllApplications());
   try {
     const response = await axios.get(
       `${HOSTNAME}/api/v1/application/employer/applications`,
-      { withCredentials: true }
+      {
+        withCredentials: true,
+      }
     );
     dispatch(
-      applicationSlice.actions.successForAllApplications(response.data.applications)
+      applicationSlice.actions.successForAllApplications(
+        response.data.applications
+      )
     );
     dispatch(applicationSlice.actions.clearAllErrors());
   } catch (error: any) {
     dispatch(
-      applicationSlice.actions.failureForAllApplications(error.response?.data?.message || "An error occurred")
+      applicationSlice.actions.failureForAllApplications(
+        error.response?.data?.message || "An error occurred"
+      )
     );
   }
 };
 
 export const fetchJobSeekerApplications = () => async (dispatch: AppDispatch) => {
-  dispatch(applicationSlice.actions.requestForMyApplications());
+  dispatch(applicationSlice.actions.requestForAllApplications());
   try {
     const response = await axios.get(
       `${HOSTNAME}/api/v1/application/jobseeker/applications`,
-      { withCredentials: true }
+      {
+        withCredentials: true,
+      }
     );
     dispatch(
-      applicationSlice.actions.successForMyApplications(response.data.applications)
+      applicationSlice.actions.successForAllApplications(
+        response.data.applications
+      )
     );
     dispatch(applicationSlice.actions.clearAllErrors());
   } catch (error: any) {
     dispatch(
-      applicationSlice.actions.failureForMyApplications(error.response?.data?.message || "An error occurred")
+      applicationSlice.actions.failureForAllApplications(
+        error.response?.data?.message || "An error occurred"
+      )
     );
   }
 };
 
-export const postApplication =
-  (data: FormData, jobId: string) => async (dispatch: AppDispatch) => {
-    dispatch(applicationSlice.actions.requestForPostApplication());
-    try {
-      const response = await axios.post(
-        `${HOSTNAME}/api/v1/application/post/${jobId}`,
-        data,
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      dispatch(applicationSlice.actions.successForPostApplication(response.data.message));
-      dispatch(applicationSlice.actions.clearAllErrors());
-    } catch (error: any) {
-      dispatch(
-        applicationSlice.actions.failureForPostApplication(error.response?.data?.message || "An error occurred")
-      );
-    }
-  };
+export const postApplication = (data: FormData, jobId: string) => async (dispatch: AppDispatch) => {
+  dispatch(applicationSlice.actions.requestForPostApplication());
+  try {
+    const response = await axios.post(
+      `${HOSTNAME}/api/v1/application/post/${jobId}`,
+      data,
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    dispatch(
+      applicationSlice.actions.successForPostApplication(response.data.message)
+    );
+    dispatch(applicationSlice.actions.clearAllErrors());
+  } catch (error: any) {
+    dispatch(
+      applicationSlice.actions.failureForPostApplication(
+        error.response?.data?.message || "An error occurred"
+      )
+    );
+  }
+};
 
-export const deleteApplication =
-  (id: string) => async (dispatch: AppDispatch) => {
-    dispatch(applicationSlice.actions.requestForDeleteApplication());
-    try {
-      const response = await axios.delete(
-        `${HOSTNAME}/api/v1/application/delete/${id}`,
-        { withCredentials: true }
-      );
-      dispatch(applicationSlice.actions.successForDeleteApplication(response.data.message));
-      dispatch(clearAllApplicationErrors());
-    } catch (error: any) {
-      dispatch(
-        applicationSlice.actions.failureForDeleteApplication(error.response?.data?.message || "An error occurred")
-      );
-    }
-  };
+export const deleteApplication = (id: string) => async (dispatch: AppDispatch) => {
+  dispatch(applicationSlice.actions.requestForDeleteApplication());
+  try {
+    const response = await axios.delete(
+      `${HOSTNAME}/api/v1/application/delete/${id}`,
+      { withCredentials: true }
+    );
+    dispatch(
+      applicationSlice.actions.successForDeleteApplication(
+        response.data.message
+      )
+    );
+    dispatch(clearAllApplicationErrors());
+  } catch (error: any) {
+    dispatch(
+      applicationSlice.actions.failureForDeleteApplication(
+        error.response?.data?.message || "An error occurred"
+      )
+    );
+  }
+};
 
 export const clearAllApplicationErrors = () => (dispatch: AppDispatch) => {
   dispatch(applicationSlice.actions.clearAllErrors());

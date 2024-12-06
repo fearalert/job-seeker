@@ -71,10 +71,18 @@ export const postApplication = catchAsyncError(async (req, res, next) => {
     const employerInfo = {
         id: jobDetails.postedBy,
         role: "Employer",
+        name: jobDetails.organizationName,
+        validThrough: jobDetails.jobValidThrough,
     };
+
     const jobInfo = {
         jobId: id,
         jobTitle: jobDetails.jobTitle,
+        jobDescription: jobDetails.jobIntroduction,
+        jobNiche: jobDetails.jobNiche,
+        jobQualifications: jobDetails.jobQualifications,
+        jobResponsibilities: jobDetails.jobResponsibilities,
+        salary: jobDetails.salary,
     };
 
     const application = await ApplicationSchema.create({

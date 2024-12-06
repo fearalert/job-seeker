@@ -23,6 +23,7 @@ const organizationTypes = [
 interface JobPostFormData {
   jobTitle: string;
   jobType: string;
+  organizationName: string | undefined;
   organizationType: string;
   location: string;
   jobIntroduction: string;
@@ -41,10 +42,12 @@ interface JobPostFormData {
 export function JobPostForm() {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, message } = useSelector((state: RootState) => state.jobs);
-  
+  const { user } = useSelector((state: RootState) => state.user);
+
   const [formData, setFormData] = useState<JobPostFormData>({
     jobTitle: '',
     jobType: '',
+    organizationName: user?.name,
     organizationType: '',
     location: '',
     jobIntroduction: '',
@@ -57,7 +60,7 @@ export function JobPostForm() {
     jobNiche: '',
     newsLettersSent: false,
     howToApply: '',
-    personalWebsite: { title: '', url: '' }
+    personalWebsite: { title: '', url: '' },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -86,9 +89,8 @@ export function JobPostForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validation
-    if (!formData.jobTitle || !formData.jobType || !formData.location || !formData.organizationType) {
+
+    if (!formData.jobTitle || !formData.jobType || !formData.organizationName || !formData.location) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields",
@@ -99,17 +101,18 @@ export function JobPostForm() {
 
     try {
       await dispatch(postJob(formData));
-      
+
       if (message) {
         toast({
           title: "Job Posted Successfully",
           description: message
         });
-        
+
         // Reset form
         setFormData({
           jobTitle: '',
           jobType: '',
+          organizationName: '',
           organizationType: '',
           location: '',
           jobIntroduction: '',
@@ -122,7 +125,7 @@ export function JobPostForm() {
           jobNiche: '',
           newsLettersSent: false,
           howToApply: '',
-          personalWebsite: { title: '', url: '' }
+          personalWebsite: { title: '', url: '' },
         });
       }
     } catch (err) {
@@ -134,7 +137,6 @@ export function JobPostForm() {
     }
   };
 
-  // Dynamic array field renderer
   const renderDynamicArrayField = (
     field: keyof JobPostFormData, 
     placeholder: string
@@ -184,10 +186,9 @@ export function JobPostForm() {
         </CardHeader>
         <CardContent className="w-full">
           <form onSubmit={handleSubmit} className="space-y-6 w-full">
-            {/* Basic Job Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
               <div className="w-full">
-                <Label>Job Title</Label>
+                <Label>Job Title *</Label>
                 <Input 
                   name="jobTitle"
                   value={formData.jobTitle}
@@ -198,7 +199,7 @@ export function JobPostForm() {
                 />
               </div>
               <div className="w-full">
-                <Label>Job Type</Label>
+                <Label>Job Type *</Label>
                 <Select 
                   value={formData.jobType}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, jobType: value }))}
@@ -218,7 +219,7 @@ export function JobPostForm() {
             {/* Organization and Location */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
               <div className="w-full">
-                <Label>Organization Type</Label>
+                <Label>Organization Type *</Label>
                 <Select 
                   value={formData.organizationType}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, organizationType: value }))}
@@ -234,7 +235,7 @@ export function JobPostForm() {
                 </Select>
               </div>
               <div className="w-full">
-                <Label>Location</Label>
+                <Label>Location *</Label>
                 <Input 
                   name="location"
                   value={formData.location}
@@ -249,7 +250,7 @@ export function JobPostForm() {
             {/* Job Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
               <div className="w-full">
-                <Label>Job Niche</Label>
+                <Label>Job Niche *</Label>
                 <Select 
                   value={formData.jobNiche}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, jobNiche: value }))}
@@ -278,7 +279,7 @@ export function JobPostForm() {
 
             {/* Job Introduction */}
             <div className="w-full">
-              <Label>Job Introduction</Label>
+              <Label>Job Introduction *</Label>
               <Textarea 
                 name="jobIntroduction"
                 value={formData.jobIntroduction}
