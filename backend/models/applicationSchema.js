@@ -44,6 +44,23 @@ const applicationSchema = new mongoose.Schema({
             ref: "User",
             required: true
         },
+        name:{
+            type: String,
+            required: true,
+        },
+        email:{
+            type: String,
+            required: true,
+            validate:[validator.isEmail, "Please provide valid email."]
+        },
+        phone:{
+            type: Number,
+            required: true,
+        },
+        address:{
+            type: String,
+            required: true,
+        },
         role:{
             type: String,
             required: true,

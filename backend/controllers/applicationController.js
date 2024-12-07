@@ -22,6 +22,17 @@ export const postApplication = catchAsyncError(async (req, res, next) => {
         role: "Job Seeker",
     };
 
+
+    const employerInfo = {
+        id: req.user._id,
+        name,
+        email,
+        phone,
+        address,
+        coverLetter,
+        role: "Employer",
+    };
+
     const jobDetails = await Job.findById(id);
     if (!jobDetails) {
         return next(new ErrorHandler("Job not found.", 404));
@@ -67,15 +78,6 @@ export const postApplication = catchAsyncError(async (req, res, next) => {
             url: req.user.resume.url,
         };
     }
-
-    const employerInfo = {
-        id: jobDetails.postedBy,
-        role: "Employer",
-        name: jobDetails.organizationName,
-        validThrough: jobDetails.jobValidThrough,
-        title: jobDetails.personalWebsite.title,
-        url: jobDetails.personalWebsite.url
-    };
 
     const jobInfo = {
         jobId: id,
