@@ -106,8 +106,9 @@ const AuthForm = ({ type, role }: { type: "login" | "register"; role: string }) 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form container">
-        <h1 className="form-title">{role} {type.toUpperCase()}</h1>
-
+      <h1 className="form-title">
+          {role} {type.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
+        </h1>
         {type === "register" && (
           <FormField control={form.control} name="name" render={({ field }) => (
             <FormItem>

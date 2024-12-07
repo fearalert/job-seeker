@@ -53,8 +53,8 @@ function ApplicationDetailsDialog({ application, isOpen, onClose, userRole }: Ap
             <p>Organization: {application.employerInfo?.name}</p>
             <br />
             <div className='text-zinc-500'>
-                <h4 className="font-semibold text-zinc-800">Cover Letter</h4>
-                <p>{application.jobSeekerInfo.coverLetter}</p>
+                <h4 className="font-semibold text-zinc-800 ">Cover Letter</h4>
+                <p className='text-ellipsis overflow-x-clip'>{application.jobSeekerInfo.coverLetter}</p>
             </div>
             <br />
             <div className='text-zinc-500'>
@@ -184,8 +184,8 @@ export default function ApplicationsPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeleteConfirmation({ isOpen: false, applicationId: null })}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => deleteConfirmation.applicationId && handleDeleteApplication(deleteConfirmation.applicationId)}>Delete</AlertDialogAction>
+            <AlertDialogCancel className='bg-zinc-500 hover:bg-zinc-500 hover:text-zinc-50 text-zinc-50' onClick={() => setDeleteConfirmation({ isOpen: false, applicationId: null })}>Cancel</AlertDialogCancel>
+            <AlertDialogAction className='bg-destructive hover:bg-destructive' onClick={() => deleteConfirmation.applicationId && handleDeleteApplication(deleteConfirmation.applicationId)}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
