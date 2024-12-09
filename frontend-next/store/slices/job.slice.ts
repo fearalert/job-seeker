@@ -35,6 +35,8 @@ interface JobsState {
   error: string | null;
   message: string | null;
   singleJob: Job | null;
+  totalNiches: number;
+  totalJobsPosted: number;
   myJobs: Job[];
   searchTriggered: boolean;
 }
@@ -53,6 +55,8 @@ const initialState: JobsState = {
   error: null,
   message: null,
   singleJob: null,
+  totalNiches: 0,
+  totalJobsPosted: 0,
   myJobs: [],
   searchTriggered: false,
 };
@@ -111,6 +115,15 @@ const jobSlice = createSlice({
       state.message = action.payload;
       state.error = null;
     },
+    successForTotalJobs(state, action: PayloadAction<number>) {
+      state.loading = false;
+      state.totalJobsPosted = action.payload;
+    },
+
+    successForNiches(state, action: PayloadAction<number>) {
+      state.loading = false;
+      state.totalNiches = action.payload;
+    },
     failureForPostJob(state, action: PayloadAction<{ error: string }>) {
       state.loading = false;
       state.error = action.payload.error;
@@ -154,7 +167,9 @@ export const {
   successForDeleteJob,
   successForPostJob,
   failureForDeleteJob,
-  failureForPostJob
+  failureForPostJob,
+  successForNiches,
+  successForTotalJobs
 } = jobSlice.actions;
 
 export const fetchJobs = (filters: FetchJobsFilters) => async (dispatch: AppDispatch) => {
@@ -271,6 +286,43 @@ export const fetchMyJobs = () => async (dispatch: AppDispatch) => {
     dispatch(failureForMyJobs({ error: error.response?.data?.message || "Failed to fetch jobs" }));
   }
 };
+
+export const fetchTotalJobsPosted = () => async (dispatch: AppDispatch) => {
+  dispatch(requestForMyJobs());
+  try {
+    const response = await axios.get(`${HOSTNAME}/api/v1/job/getmyjobs`, {
+      withCredentials: true,
+    });
+    const totalJobs = response.data.jobs.length;
+    dispatch(successForTotalJobs(totalJobs));
+  } catch (error: any) {
+    dispatch(
+      failureForMyJobs({
+        error: error.response?.data?.message || "Failed to fetch total jobs posted",
+      })
+    );
+  }
+};
+
+
+export const fetchTotalNiches = () => async (dispatch: AppDispatch) => {
+  dispatch(requestForMyJobs());
+  try {
+    const response = await axios.get(`${HOSTNAME}/api/v1/job/getmyjobs`, {
+      withCredentials: true,
+    });
+    const niches = new Set(response.data.jobs.map((job: any) => job.jobNiche));
+    const totalNiches = niches.size;
+    dispatch(successForNiches(totalNiches));
+  } catch (error: any) {
+    dispatch(
+      failureForMyJobs({
+        error: error.response?.data?.message || "Failed to fetch total niches",
+      })
+    );
+  }
+};
+
 
 
 export const postJob = (jobData: Omit<Job, 'id' | 'jobPostedOn' | 'organizationName' | 'postedBy'>) => 

@@ -50,6 +50,7 @@ export interface Application {
 interface ApplicationState {
   applications: Application[];
   loading: boolean;
+  totalApplications: number;
   error: string | null;
   message: string | null;
 }
@@ -57,6 +58,7 @@ interface ApplicationState {
 const initialState: ApplicationState = {
   applications: [],
   loading: false,
+  totalApplications: 0,
   error: null,
   message: null,
 };
@@ -107,6 +109,10 @@ const applicationSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
       state.message = null;
+    },
+    successForTotalApplications(state, action: PayloadAction<number>) {
+      state.loading = false;
+      state.totalApplications = action.payload;
     },
     clearAllErrors(state) {
       state.error = null;
@@ -185,6 +191,54 @@ export const postApplication = (data: FormData, jobId: string) => async (dispatc
   } catch (error: any) {
     dispatch(
       applicationSlice.actions.failureForPostApplication(
+        error.response?.data?.message || "An error occurred"
+      )
+    );
+  }
+};
+
+export const fetchJobSeekerApplicationsLength = () => async (dispatch: AppDispatch) => {
+  dispatch(applicationSlice.actions.requestForAllApplications());
+  try {
+    const response = await axios.get(
+      `${HOSTNAME}/api/v1/application/jobseeker/applications`,
+      {
+        withCredentials: true,
+      }
+    );
+    dispatch(
+      applicationSlice.actions.successForTotalApplications(
+        response.data.applications.length
+      )
+    );
+    dispatch(applicationSlice.actions.clearAllErrors());
+  } catch (error: any) {
+    dispatch(
+      applicationSlice.actions.failureForAllApplications(
+        error.response?.data?.message || "An error occurred"
+      )
+    );
+  }
+};
+
+export const fetchEmployerApplicationsLength = () => async (dispatch: AppDispatch) => {
+  dispatch(applicationSlice.actions.requestForAllApplications());
+  try {
+    const response = await axios.get(
+      `${HOSTNAME}/api/v1/application/employer/applications`,
+      {
+        withCredentials: true,
+      }
+    );
+    dispatch(
+      applicationSlice.actions.successForTotalApplications(
+        response.data.applications.length
+      )
+    );
+    dispatch(applicationSlice.actions.clearAllErrors());
+  } catch (error: any) {
+    dispatch(
+      applicationSlice.actions.failureForAllApplications(
         error.response?.data?.message || "An error occurred"
       )
     );

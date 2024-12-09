@@ -3,7 +3,7 @@ export const ROLES = {
     EMPLOYER: "Employer",
   } as const;
   
-// export const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,16}$/;
+export const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,16}$/;
 
 export const NICHES = [
   "Software Development",

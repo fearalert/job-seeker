@@ -12,27 +12,6 @@ export const postApplication = catchAsyncError(async (req, res, next) => {
         return next(new ErrorHandler("All fields are required.", 400));
     }
 
-    const jobSeekerInfo = {
-        id: req.user._id,
-        name,
-        email,
-        phone,
-        address,
-        coverLetter,
-        role: "Job Seeker",
-    };
-
-
-    const employerInfo = {
-        id: req.user._id,
-        name,
-        email,
-        phone,
-        address,
-        coverLetter,
-        role: "Employer",
-    };
-
     const jobDetails = await Job.findById(id);
     if (!jobDetails) {
         return next(new ErrorHandler("Job not found.", 404));
@@ -46,28 +25,41 @@ export const postApplication = catchAsyncError(async (req, res, next) => {
         return next(new ErrorHandler("You have already applied for this job.", 400));
     }
 
+    const jobSeekerInfo = {
+        id: req.user._id,
+        name,
+        email,
+        phone,
+        address,
+        coverLetter,
+        role: "Job Seeker",
+    };
+
+    const employerInfo = {
+        id: jobDetails.postedBy,
+        name,
+        email,
+        phone,
+        address,
+        coverLetter,
+        role: "Employer",
+    };
+
     if (req.files && req.files.resume) {
         const { resume } = req.files;
-    
         if (resume) {
-          const currentResumeId = req.user.resume?.public_id;
-    
-          if (currentResumeId) {
-            await cloudinary.uploader.destroy(currentResumeId);
-          }
-    
-          const newResume = await cloudinary.uploader.upload(resume.tempFilePath, {
-            folder: "Users_Resume",
-          });
-    
-          if (!newResume || newResume.error) {
-            return next(new ErrorHandler("Failed to upload resume to cloud server.", 500));
-          }
-    
-          jobSeekerInfo.resume = {
-            public_id: newResume.public_id,
-            url: newResume.secure_url,
-          };
+            const newResume = await cloudinary.uploader.upload(resume.tempFilePath, {
+                folder: "Users_Resume",
+            });
+
+            if (!newResume || newResume.error) {
+                return next(new ErrorHandler("Failed to upload resume to cloud server.", 500));
+            }
+
+            jobSeekerInfo.resume = {
+                public_id: newResume.public_id,
+                url: newResume.secure_url,
+            };
         }
     } else {
         if (!req.user?.resume?.url) {

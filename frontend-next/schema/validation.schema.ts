@@ -1,4 +1,4 @@
-import { ROLES } from "@/constants";
+import { ROLES, PASSWORD_REGEX } from "@/constants";
 import { z } from "zod";
 
 export const authFormSchema = (type: "register" | "login", role: string) => {
@@ -15,10 +15,10 @@ export const authFormSchema = (type: "register" | "login", role: string) => {
       .string()
       .min(8, "Password must be at least 8 characters.")
       .max(32, "Password must be at most 32 characters.")
-      // .regex(
-      //   PASSWORD_REGEX,
-      //   "Password must contain at least one letter, one number, and one special character."
-      // )
+      .regex(
+        PASSWORD_REGEX,
+        "Password must contain at least one letter, one number, and one special character."
+      )
       ,
     confirmPassword:
       type === "register"
@@ -51,7 +51,7 @@ export const authFormSchema = (type: "register" | "login", role: string) => {
     }).refine(data => {
       // Ensure all niches are unique
       const niches = [data.firstNiche, data.secondNiche, data.thirdNiche, data.fourthNiche];
-      return new Set(niches).size === niches.length;  // Check for uniqueness
+      return new Set(niches).size === niches.length; 
     }, {
       message: "You cannot select the same niche more than once.",
       path: ["firstNiche", "secondNiche", "thirdNiche", "fourthNiche"],
