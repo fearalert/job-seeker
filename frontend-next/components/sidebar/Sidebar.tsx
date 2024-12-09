@@ -1,11 +1,9 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import { 
-  Edit2Icon, EditIcon, FileIcon, 
-  HomeIcon, LockIcon, LogOutIcon, 
-  SheetIcon, ShieldHalfIcon, 
-  User2Icon 
-} from "lucide-react";
+  Edit2Icon, FileIcon, 
+  HomeIcon, LogOutIcon, 
+  SheetIcon, ShieldHalfIcon} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,

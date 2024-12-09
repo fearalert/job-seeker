@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchUser } from "@/store/slices/user.slice";
 import { RootState } from "@/store/store";
-import { Edit, LogOut, Copy, CheckCircle } from "lucide-react";
+import { Edit, Copy, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { ROLES } from "@/constants";
 

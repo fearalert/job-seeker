@@ -1,7 +1,6 @@
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import React from 'react'
-import { Label } from '../ui/label';
 
 interface FiltersProps {
     selectedCity: string; // Currently selected city

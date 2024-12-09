@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AppDispatch, RootState } from "@/store/store";
-import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
 import { Edit2Icon, FileIcon, HomeIcon, LockIcon, LogOutIcon, SheetIcon, ShieldHalfIcon, UserIcon } from "lucide-react";
 import { ROLES } from "@/constants";
 
