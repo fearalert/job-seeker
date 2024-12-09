@@ -17,7 +17,6 @@ const DashboardCards = () => {
   const { user, loading: userLoading } = useSelector((state: RootState) => state.user);
   const { totalApplications, loading: applicationsLoading } = useSelector((state: RootState) => state.application);
 
-  // Fetch data based on the user role
   useEffect(() => {
     if (user?.role === ROLES.EMPLOYER) {
       dispatch(fetchEmployerApplicationsLength());

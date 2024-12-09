@@ -48,19 +48,6 @@ const applicationSchema = new mongoose.Schema({
             type: String,
             required: true,
         },
-        email:{
-            type: String,
-            required: true,
-            validate:[validator.isEmail, "Please provide valid email."]
-        },
-        phone:{
-            type: Number,
-            required: true,
-        },
-        address:{
-            type: String,
-            required: true,
-        },
         role:{
             type: String,
             required: true,
@@ -76,6 +63,11 @@ const applicationSchema = new mongoose.Schema({
             type: String,
             required: true,
           },
+          status: {
+            type: String,
+            enum: ["pending", "reviewed", "shortlisted", "fulfilled", "selected"],
+            default: "pending",
+        },
     },
     deletedBy: {
         jobSeeker: {

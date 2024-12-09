@@ -324,7 +324,6 @@ export const fetchTotalNiches = () => async (dispatch: AppDispatch) => {
 };
 
 
-
 export const postJob = (jobData: Omit<Job, 'id' | 'jobPostedOn' | 'organizationName' | 'postedBy'>) => 
   async (dispatch: AppDispatch, getState: () => { user: { user: User | null } }) => {
     dispatch(requestForPostJob());

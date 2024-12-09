@@ -33,7 +33,8 @@ interface JobInfo {
   jobNiche: string;
   jobQualifications: string;
   jobResponsibilities: string;
-  salary: number;
+  status: "pending" | "reviewed" | "fulfilled" | "selected";
+
 }
 
 export interface Application {
@@ -106,6 +107,21 @@ const applicationSlice = createSlice({
       state.message = action.payload;
     },
     failureForDeleteApplication(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+      state.message = null;
+    },
+    requestForUpdateStatus(state) {
+      state.loading = true;
+      state.error = null;
+      state.message = null;
+    },
+    successForUpdateStatus(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = null;
+      state.message = action.payload;
+    },
+    failureForUpdateStatus(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
       state.message = null;
@@ -274,5 +290,30 @@ export const clearAllApplicationErrors = () => (dispatch: AppDispatch) => {
 export const resetApplicationSlice = () => (dispatch: AppDispatch) => {
   dispatch(applicationSlice.actions.resetApplicationSlice());
 };
+
+
+export const updateApplicationStatus = (id: string, status: string) => async (dispatch: AppDispatch) => {
+  dispatch(applicationSlice.actions.requestForUpdateStatus());
+  try {
+    const response = await axios.put(
+      `${HOSTNAME}/api/v1/application/${id}/status`,
+      { status },
+      {
+        withCredentials: true,
+      }
+    );
+    dispatch(
+      applicationSlice.actions.successForUpdateStatus(response.data.message)
+    );
+    dispatch(applicationSlice.actions.clearAllErrors());
+  } catch (error: any) {
+    dispatch(
+      applicationSlice.actions.failureForUpdateStatus(
+        error.response?.data?.message || "An error occurred"
+      )
+    );
+  }
+};
+
 
 export default applicationSlice.reducer;

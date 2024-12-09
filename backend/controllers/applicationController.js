@@ -3,6 +3,7 @@ import ErrorHandler from "../middlewares/error.js";
 import { ApplicationSchema } from "../models/applicationSchema.js";
 import { Job } from "../models/jobSchema.js";
 import { v2 as cloudinary } from "cloudinary";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export const postApplication = catchAsyncError(async (req, res, next) => {
     const { id } = req.params;
@@ -37,11 +38,7 @@ export const postApplication = catchAsyncError(async (req, res, next) => {
 
     const employerInfo = {
         id: jobDetails.postedBy,
-        name,
-        email,
-        phone,
-        address,
-        coverLetter,
+        name: jobDetails.organizationName,
         role: "Employer",
     };
 
@@ -148,5 +145,43 @@ export const deleteApplication = catchAsyncError(async (req, res, next) => {
     res.status(200).json({
         success: true,
         message: "Application deleted successfully.",
+    });
+});
+
+
+export const updateApplicationStatus = catchAsyncError(async (req, res, next) => {
+    const { id } = req.params;
+    const { status } = req.body; // New status
+
+    // Validate the status value
+    if (!["pending", "reviewed", "shortlisted", "fulfilled", "selected"].includes(status)) {
+        return next(new ErrorHandler("Invalid status value.", 400));
+    }
+
+    // Find the application
+    const application = await ApplicationSchema.findById(id);
+    if (!application) {
+        return next(new ErrorHandler("Application not found.", 404));
+    }
+
+    // Check if the logged-in user is the employer for this application
+    if (application.employerInfo.id.toString() !== req.user._id.toString()) {
+        return next(new ErrorHandler("Unauthorized action.", 403));
+    }
+
+    // Update the status
+    application.jobInfo.status = status;
+    await application.save();
+
+    sendEmail({
+        email: application.jobSeekerInfo.email,
+        subject: `Application Status for Job ${application.jobInfo.jobTitle}`,
+        message:  `${application.jobInfo.status === "fulfilled" ? `The status of the job is ${application.jobInfo.status} by another candidate for the job ${application.jobInfo.jobTitle}. We understand that you have tried hard and wish you better luck for future. \nBest Regards,\n ${application.employerInfo.name}\n`: 
+            `You have been ${application.jobInfo.status} for the job ${application.jobInfo.jobTitle} \nBest Regards,\n ${application.employerInfo.name}\n`}`
+    })
+    res.status(200).json({
+        success: true,
+        message: "Application status updated successfully.",
+        application,
     });
 });
