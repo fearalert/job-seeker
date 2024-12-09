@@ -50,7 +50,7 @@ interface JobPostFormData {
   personalWebsite: { title: string; url: string };
 }
 
-export function JobPostForm() {
+function JobPostForm() {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, message } = useSelector(
     (state: RootState) => state.jobs
