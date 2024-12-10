@@ -10,8 +10,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function ATSChecker() {
-  const [jobDescription, setJobDescription] = useState('');
-  const [resume, setResume] = useState('');
+  const [jobDescription, setJobDescription] = useState<string>('');
+  const [resume, setResume] = useState<string>('');
   const [score, setScore] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<string[]>([]);
@@ -64,7 +64,7 @@ export default function ATSChecker() {
           <Label className="block text-sm font-semibold mb-1">Job Description</Label>
           <Textarea
             value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
+            onChange={(e) => setJobDescription(e.target.value.trim())}
             placeholder="Paste the job description here..."
             className="h-fit min-h-[400px] w-full"
           />
@@ -73,7 +73,7 @@ export default function ATSChecker() {
           <Label className="block text-sm font-semibold mb-1">Resume</Label>
           <Textarea
             value={resume}
-            onChange={(e) => setResume(e.target.value)}
+            onChange={(e) => setResume(e.target.value.trim())}
             placeholder="Paste your resume here..."
             className="h-fit min-h-[400px] w-full"
           />
@@ -99,16 +99,16 @@ export default function ATSChecker() {
           </h2>
         </div>
       )}
-       {recommendations.length > 0 && (
+      {recommendations.length > 0 && (
         <div className="mt-8">
           <h3 className="text-2xl font-bold mb-4 text-gray-800">Recommendations</h3>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {recommendations.map((rec, idx) => (
               <div
                 key={idx}
-                className="bg-white shadow-lg rounded-md p-4 border-l-4 border-blue-500"
+                className="bg-white shadow-lg rounded-md p-4 border-l-4 border-primary"
               >
-                <p className="text-gray-700 text-sm">{rec}</p>
+                <p className="text-zinc-700 text-sm">{rec}</p>
               </div>
             ))}
           </div>
