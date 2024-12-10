@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchSingleJob, clearAllJobErrors } from "@/store/slices/job.slice";
 import { AppDispatch, RootState } from "@/store/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Briefcase, DollarSign, Users, Globe, BookOpen, Link as LinkIcon, ArrowLeftIcon, Info } from "lucide-react";
+import { MapPin, Briefcase, DollarSign, Users, Globe, Link as LinkIcon, ArrowLeftIcon, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@radix-ui/react-separator";
 import { formatDate } from "@/lib/utils";
