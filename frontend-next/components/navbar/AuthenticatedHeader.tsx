@@ -52,7 +52,7 @@ const AuthHeader = ({ title }: {title:string }) => {
   };
 
   return (
-    <header className="w-full bg-slate-50 flex flex-row justify-between items-center text-center px-4 md:px-12 py-4">
+    <header className="w-full bg-slate-50 flex flex-row justify-between items-center text-center px-4 md:px-12 py-4 z-10">
       <h1 className="text-xl md:text-3xl font-semibold text-primary">{title}</h1>
 
       <div className="relative">
@@ -64,7 +64,7 @@ const AuthHeader = ({ title }: {title:string }) => {
         </div>
 
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-md">
+          <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-md z-10">
             <ul className="py-2 text-start text-sm">
               {
                 items.map((item) => {

@@ -36,8 +36,6 @@ const AppSidebar = () => {
   ]);
 
   useEffect(() => {
-    console.log("Sidebar - User Raw:", user);
-
     const actualUser = user;
 
     if (actualUser) {
@@ -70,8 +68,6 @@ const AppSidebar = () => {
     console.log("No user found in Sidebar");
     return null;
   }
-  console.log("Sidebar", user)
-
 
   return (
     <Sidebar collapsible="icon">

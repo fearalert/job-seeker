@@ -127,7 +127,7 @@ export default function JobsPage() {
 
   return (
     <>
-      {(!isAuthenticated && !user)&& <Navbar />}
+      {(!isAuthenticated || !user)&& <Navbar />}
       {(isAuthenticated && user) && <AuthHeader title={"Browse Jobs"}/>}
       <div className={`flex flex-col md:flex-row px-4 py-8 ${isAuthenticated ? "md:px-4 md:flex-row-reverse" : "md:px-24"} w-full gap-8`}>
         <Filters

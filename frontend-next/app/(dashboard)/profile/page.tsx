@@ -82,9 +82,10 @@ const ProfilePage = () => {
             variant="outline" 
             size="icon" 
             onClick={handleEditProfile}
-            className="hover:bg-blue-50"
+            className="hover:bg-blue-50 w-full px-4"
           >
             <Edit className="h-5 w-5 text-blue-600" />
+            Edit
           </Button>
         </div>
       </CardHeader>
@@ -150,7 +151,7 @@ const ProfilePage = () => {
           {user?.coverLetter && user?.role === ROLES.JOB_SEEKER  && (
             <div className="sm:col-span-2 bg-gray-50 p-3 rounded-lg">
               <p className="font-bold text-zinc-900">Cover Letter:</p>
-              <p className="capitalize text-zinc-500">{user?.coverLetter || "N/A"}</p>
+              <p className="text-zinc-500 whitespace-pre-wrap">{user?.coverLetter || "N/A"}</p>
             </div>
           )}
 
