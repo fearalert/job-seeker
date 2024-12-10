@@ -19,12 +19,53 @@ const Footer = () => {
       label: "How does it work?",
       link: "#how-it-works",
     },
+  ];
+
+  const employerLinks = [
+    {
+      id: 1,
+      label: "Login",
+      link: "/auth/employer/login",
+    },
+    {
+      id: 2,
+      label: "Register",
+      link: "/auth/employer/register",
+    },
+    // {
+    //   id: 3,
+    //   label: "Post New Job",
+    //   link: "/dashboard",
+    // },
+  ];
+
+  const candidateLinks = [
+    {
+      id: 1,
+      label: "Login",
+      link: "/auth/candidate/login",
+    },
+    {
+      id: 2,
+      label: "Register",
+      link: "/auth/candidate/register",
+    },
+    {
+      id: 3,
+      label: "Browse Jobs",
+      link: "/jobs",
+    },
+    {
+      id: 4,
+      label: "ATS Checker",
+      link: "/ats-checker",
+    },
   ]
   return (
     <footer className="flex flex-col px-12 bg-zinc-900">
       <div className='flex flex-col mt-4 md:mt-0 md:flex-row justify-between items-center'>
         <h3 className='text-primary-foreground font-bold text-2xl'>Job Scan</h3>
-        <div className="grid md:grid-cols-3 grid-cols-1 gap-8 md:space-x-10 py-12 items-center justify-center">
+        <div className="grid md:grid-cols-3 grid-cols-1 gap-8 md:space-x-10 py-12 items-start justify-center">
           <div className='flex flex-col'>
               <h3 className='text-white font-bold'>Home</h3>
               <ul className='text-zinc-300 text-sm flex flex-col items-start justify-start gap-2 py-4'>
@@ -42,10 +83,10 @@ const Footer = () => {
               </ul>
             </div>
             <div className='flex flex-col'>
-              <h3 className='text-white font-bold'>Home</h3>
+              <h3 className='text-white font-bold'>For Employers</h3>
               <ul className='text-zinc-300 text-sm flex flex-col items-start justify-start gap-2 py-4'>
                 {
-                  homeLinks.map((link) => {
+                  employerLinks.map((link) => {
                     return(
                       <li key={link.id} className='text-zinc-400'>
                         <Link href={link.link}>
@@ -58,10 +99,10 @@ const Footer = () => {
               </ul>
             </div>
             <div className='flex flex-col'>
-              <h3 className='text-white font-bold'>Home</h3>
+              <h3 className='text-white font-bold'>For Job Seekers</h3>
               <ul className='text-zinc-300 text-sm flex flex-col items-start justify-start gap-2 py-4'>
                 {
-                  homeLinks.map((link) => {
+                  candidateLinks.map((link) => {
                     return(
                       <li key={link.id} className='text-zinc-400'>
                         <Link href={link.link}>
