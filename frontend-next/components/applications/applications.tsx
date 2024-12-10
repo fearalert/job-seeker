@@ -2,96 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { EyeIcon, Trash2 } from 'lucide-react';
+import { Briefcase, ClipboardCheck, Eye, EyeIcon, Trash2, User2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { fetchEmployerApplications, fetchJobSeekerApplications, deleteApplication, updateApplicationStatus, Application } from '@/store/slices/application.slice';
 import { AppDispatch, RootState } from '@/store/store';
 import { ROLES } from '@/constants';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AuthHeader from '@/components/navbar/AuthenticatedHeader';
 import LoadingView from '@/app/loading';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { getStatusColor, ApplicationDetailsDialog } from './DetailsDialog';
 
-interface ApplicationDetailsDialogProps {
-  application: Application | null;
-  isOpen: boolean;
-  onClose: () => void;
-  userRole: string | undefined;
-}
-
-const getStatusColor = (status: string) => {
-  const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-  switch (status.toLowerCase()) {
-    case 'pending':
-      return { colorClass: 'text-zinc-400', displayStatus: formattedStatus };
-    case 'reviewed':
-      return { colorClass: 'text-blue-500', displayStatus: formattedStatus };
-    case 'shortlisted':
-      return { colorClass: 'text-green-500', displayStatus: formattedStatus };
-    case 'fulfilled':
-      return { colorClass: 'text-red-500', displayStatus: formattedStatus };
-    case 'selected':
-      return { colorClass: 'text-purple-500', displayStatus: formattedStatus };
-    default:
-      return { colorClass: 'text-zinc-400', displayStatus: formattedStatus };
-  }
-};
-
-function ApplicationDetailsDialog({ application, isOpen, onClose, userRole }: ApplicationDetailsDialogProps) {
-  const dispatch = useDispatch<AppDispatch>();
-
-  const handleStatusChange = async (status: 'shortlisted' | 'fulfilled' | 'selected') => {
-    if (application) {
-      await dispatch(updateApplicationStatus(application._id, status));
-      dispatch(fetchEmployerApplications());
-      onClose();
-    }
-  };
-
-  if (!application) return null;
-
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="xs:max-w-[300px] mx-2">
-        <DialogHeader>
-          <DialogTitle>{application.jobInfo.jobTitle}</DialogTitle>
-          <DialogDescription>
-            {userRole === ROLES.EMPLOYER
-              ? `Applicant: ${application.jobSeekerInfo.name}`
-              : `Employer: ${application.employerInfo.name}`}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="text-zinc-500">
-            <h4 className="font-semibold text-zinc-800">Application Status</h4>
-            <p className={`font-semibold ${getStatusColor(application.jobInfo.status).colorClass}`}>
-              {getStatusColor(application.jobInfo.status).displayStatus}
-            </p>
-          </div>
-          {userRole === ROLES.EMPLOYER && (
-            <div className="text-zinc-500">
-              <h4 className="font-semibold text-zinc-800">Update Status</h4>
-              <Select onValueChange={handleStatusChange} defaultValue={application.jobInfo.status}>
-                <SelectTrigger className="w-ful text-zinc-500">
-                  <SelectValue placeholder="Select a status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="reviewed">Reviewed</SelectItem>
-                  <SelectItem value="shortlisted">Shortlisted</SelectItem>
-                  <SelectItem value="fulfilled">Rejected</SelectItem>
-                  <SelectItem value="selected">Selected</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
 
 export default function ApplicationsPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -153,36 +75,83 @@ export default function ApplicationsPage() {
   return (
     <div className="w-full">
       <AuthHeader title={user?.role === ROLES.EMPLOYER ? 'Applied Applications' : 'My Applied Applications'} />
-      <div className="flex flex-row gap-4 flex-wrap py-4">
-        {applications.map((application) => (
-          <Card key={application._id} className="w-fit min-w-[360px]">
-            <CardHeader className="py-0">
-              <div className='flex flex-row justify-between items-center text-center'>
-                <CardTitle>{application.jobInfo.jobTitle}</CardTitle>
-                <p className={`font-semibold ${getStatusColor(application.jobInfo.status).colorClass}`}>
-                  {getStatusColor(application.jobInfo.status).displayStatus}
-                </p>
-              </div>
-              <CardDescription>
-                {user?.role === ROLES.EMPLOYER
-                  ? `Applicant: ${application.jobSeekerInfo.name}`
-                  : `Employer: ${application.employerInfo.name}`}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className={`flex flex-col gap-2 py-0 pt-6`}>
-              <Button variant="outline" className="w-full" onClick={() => setSelectedApplication(application)}>
-                <EyeIcon className="mr-2 h-4 w-4" /> View Details
-              </Button>
-              {user?.role === ROLES.JOB_SEEKER && (
-                <Button variant="destructive" className="w-full" onClick={() => openDeleteConfirmation(application._id)}>
-                  <Trash2 className="mr-2 h-4 w-4" /> Delete Application
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      {applications.length === 0 && <p className="text-center text-destructive mt-8">No applications found.</p>}
+      <div className="py-4 px-8">
+      {applications.length > 0 ? (
+        <Table className="w-full rounded-sm overflow-x-auto">
+          <TableHeader className="bg-primary hover:bg-primary">
+            <TableRow>
+              <TableHead className="text-primary-foreground font-semibold">
+                <div className="flex items-center space-x-2">
+                  <Briefcase className="h-4 w-4" />
+                  <span>Job Title</span>
+                </div>
+              </TableHead>
+              <TableHead className="text-primary-foreground font-semibold">
+                <div className="flex items-center space-x-2">
+                  <User2 className="h-4 w-4" />
+                  <span>{user?.role === ROLES.EMPLOYER ? 'Applicant' : 'Employer'}</span>
+                </div>
+              </TableHead>
+              <TableHead className="text-primary-foreground font-semibold">
+                <div className="flex items-center space-x-2">
+                  <ClipboardCheck className="h-4 w-4" />
+                  <span>Status</span>
+                </div>
+              </TableHead>
+              <TableHead className="text-primary-foreground font-semibold text-center">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {applications.map((application, index) => (
+              <TableRow key={application._id} className={index % 2 === 0 ? 'bg-muted/50' : 'bg-background'}>
+                <TableCell className='text-sm text-zinc-500 flex flex-col justify-start items-start gap-2'>
+                  <div className='font-bold text-md text-zinc-800'>
+                    {application.jobInfo.jobTitle}
+                  </div>
+                  <span className='text-zinc-600'>
+                    {application._id}
+                  </span>
+                  </TableCell>
+                <TableCell>
+                      {user?.role === ROLES.EMPLOYER
+                        ? application.jobSeekerInfo.name
+                        : application.employerInfo.name}                 
+                </TableCell>
+                <TableCell className="text-start">
+                  <span
+                    className={`font-semibold ${getStatusColor(application.jobInfo.status).colorClass}`}
+                  >
+                    {getStatusColor(application.jobInfo.status).displayStatus}
+                  </span>
+                </TableCell>
+                <TableCell className="text-center">
+                  <div className="flex justify-center space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedApplication(application)}
+                    >
+                      <Eye className="mr-1 h-4 w-4" /> View
+                    </Button>
+                    {user?.role === ROLES.JOB_SEEKER && (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => openDeleteConfirmation(application._id)}
+                      >
+                        <Trash2 className="mr-1 h-4 w-4" /> Delete
+                      </Button>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <p className="text-center text-destructive mt-8">No applications found.</p>
+      )}
+    </div>
       <ApplicationDetailsDialog
         application={selectedApplication}
         isOpen={!!selectedApplication}
@@ -219,3 +188,4 @@ export default function ApplicationsPage() {
     </div>
   );
 }
+
