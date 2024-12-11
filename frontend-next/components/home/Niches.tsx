@@ -1,5 +1,6 @@
 import React from 'react'
 import { Card, CardContent, CardHeader } from '../ui/card'
+import { motion } from 'framer-motion'
 
 const Niches = () => {
     
@@ -112,26 +113,61 @@ const Niches = () => {
   ];
   
       
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
   return (
-    <div id='niches' className='flex flex-col justify-center items-center text-center gap-4 md:gap-8 py-6 md:py-12 px-4 md:px-16 max-w-5xl'>
-        <h2 className='text-3xl md:text-4xl font-bold text-primary'>Top Niches</h2>
-        <div className='grid md:grid-cols-3 gap-4'>
-        {
-        topNiches.map((niche) => {
-                return (
-                    <Card key={niche.id} className='text-center border-sm rounded-md shadow-xs border-slate-100 bg-slate-50 hover:bg-slate-100 max-w-[350px]'>
-                        <CardHeader className='font-bold text-xl text-primary py-0 pb-4'>
-                            {niche.role}
-                        </CardHeader>
-                        <CardContent className='py-0'>
-                            <p className='text-zinc-400 text-xs'>{niche.description}</p>
-                        </CardContent>
-                    </Card>
-                );
-            })
-        }
-        </div>
-    </div>
+    <motion.div
+      id='niches'
+      className='flex flex-col justify-center items-center text-center gap-4 md:gap-8 py-6 md:py-12 px-4 md:px-16 max-w-5xl mx-auto'
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <motion.h2 className='text-3xl md:text-4xl font-bold text-primary' variants={itemVariants}>
+        Top Niches
+      </motion.h2>
+      <motion.div className='grid md:grid-cols-3 gap-4' variants={containerVariants}>
+        {topNiches.map((niche) => (
+          <motion.div key={niche.id} variants={itemVariants}>
+            <motion.div
+              variants={itemVariants}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <Card className='text-center h-[200px] border-sm rounded-md shadow-xs border-slate-100 bg-slate-50 hover:bg-slate-100 max-w-[350px] transition-all duration-300 ease-in-out'>
+                <CardHeader className='font-bold text-xl text-primary py-0 pb-4'>
+                  {niche.role}
+                </CardHeader>
+                <CardContent className='py-0'>
+                  <p className='text-zinc-400 text-sm'>{niche.description}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
+        ))}
+      </motion.div>
+    </motion.div>
   )
 }
 

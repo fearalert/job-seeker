@@ -22,10 +22,10 @@ export function Navbar() {
   return (
     <header className="flex flex-row justify-between px-4 md:px-12 py-4 bg-slate-50 z-10">
       <h1
-        className="font-bold text-xl text-primary cursor-pointer"
+        className="font-extrabold text-xl text-primary cursor-pointer bg-primary rounded-full text-white p-2"
         onClick={() => router.push("/")}
       >
-        JobScan
+        JB
       </h1>
       <NavigationMenu>
         <NavigationMenuList>
