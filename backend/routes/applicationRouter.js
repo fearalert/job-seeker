@@ -1,7 +1,6 @@
 import express from "express";
-import { postApplication, employerGetAllApplications, jobSeekerGetAllApplications, deleteApplication, updateApplicationStatus } from "../controllers/applicationController.js"; // Adjust the path as needed
+import { postApplication, employerGetAllApplications, jobSeekerGetAllApplications, deleteApplication, updateApplicationStatus } from "../controllers/applicationController.js";
 import { isAuthenticated, isAuthorized } from "../middlewares/authentication.js";
-
 const router = express.Router();
 
 router.post("/post/:id", isAuthenticated, isAuthorized("Job Seeker"), postApplication);

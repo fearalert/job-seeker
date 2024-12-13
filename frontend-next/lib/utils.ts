@@ -6,13 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-/**
- * Formats a date string to a desired format.
- * 
- * @param dateStr - The ISO date string to format.
- * @param dateFormat - The desired format (default is "yyyy-MM-dd").
- * @returns Formatted date string or a fallback message for invalid dates.
- */
 export const formatDate = (dateStr: string | null | undefined, dateFormat = "MMM dd, yyyy") => {
   try {
     if (!dateStr) {
