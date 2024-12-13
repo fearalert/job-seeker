@@ -21,6 +21,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { logout } from "@/store/slices/user.slice";
+import LogoutDialog from "../logout/LogoutDialog";
 
 const AppSidebar = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,11 +29,10 @@ const AppSidebar = () => {
   const router = useRouter();
   const currentPath = usePathname();
 
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  
   const [sidebarItems, setSidebarItems] = useState([
     { label: "Dashboard", url: "/dashboard", icon: HomeIcon },
-    // { label: "My Profile", url: "/profile", icon: User2Icon },
-    // { label: "Update Profile", url: "/update-profile", icon: EditIcon },
-    // { label: "Update Password", url: "/update-password", icon: LockIcon },
   ]);
 
   useEffect(() => {
@@ -62,6 +62,10 @@ const AppSidebar = () => {
   const handleLogout = () => {
     dispatch(logout());
     router.push("/");
+  };
+
+  const handleLogoutButton = () => {
+    setIsDialogOpen(true);
   };
 
   if (!user) {
@@ -109,7 +113,7 @@ const AppSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem key={"logout"}>
             <Button
-              onClick={handleLogout}
+              onClick={handleLogoutButton}
               className="bg-destructive text-white hover:bg-red-800 rounded-full text-center h-10 flex items-center justify-center w-full"
             >
               <LogOutIcon className="mr-2" />
@@ -118,6 +122,11 @@ const AppSidebar = () => {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
+      <LogoutDialog
+              isOpen={isDialogOpen}
+              onClose={() => setIsDialogOpen(false)}
+              handleLogout={handleLogout}
+            />
     </Sidebar>
   );
 };

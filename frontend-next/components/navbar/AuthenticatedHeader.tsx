@@ -2,20 +2,28 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
 import { Edit2Icon, FileIcon, HomeIcon, LockIcon, LogOutIcon, SheetIcon, ShieldHalfIcon, UserIcon } from "lucide-react";
 import { ROLES } from "@/constants";
+import { logout } from "@/store/slices/user.slice";
+import LogoutDialog from "../logout/LogoutDialog";
 
 const AuthHeader = ({ title }: {title:string }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+
   const router = useRouter();
 
   const { user } = useSelector((state: RootState) => state.user);
 
   const firstLetter = user?.name;
 
-  const slicedName = firstLetter?.slice(0, 1);
+  const slicedName = firstLetter?.charAt(0);
+
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const [items, setItems] = useState([
     { label: "Dashboard", url: "/dashboard", icon: HomeIcon },
@@ -48,8 +56,14 @@ const AuthHeader = ({ title }: {title:string }) => {
   }, [user]);
 
   const handleLogout = () => {
-    console.log("Logout CLiked")
+    dispatch(logout());
+    router.push("/");
   };
+
+  const handleLogoutButton = () => {
+    setIsDialogOpen(true);
+  };
+
 
   return (
     <header className="w-full bg-slate-50 flex flex-row justify-between items-center text-center px-4 md:px-12 py-4 z-10">
@@ -93,7 +107,7 @@ const AuthHeader = ({ title }: {title:string }) => {
               </li>
               <li
                 className="flex flex-row gap-2 px-4 py-2 text-destructive hover:bg-red-100 cursor-pointer"
-                onClick={handleLogout}
+                onClick={handleLogoutButton}
               >
                <LogOutIcon className="w-4 h-4"/> Logout
               </li>
@@ -101,6 +115,11 @@ const AuthHeader = ({ title }: {title:string }) => {
           </div>
         )}
       </div>
+      <LogoutDialog
+              isOpen={isDialogOpen}
+              onClose={() => setIsDialogOpen(false)}
+              handleLogout={handleLogout}
+            />
     </header>
   );
 };
