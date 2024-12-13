@@ -86,7 +86,7 @@ body {
 }
 
 .auth-form {
-  @apply flex max-h-[800px] w-full max-w-[580px] flex-col justify-center space-y-4 transition-all lg:h-full lg:space-y-3 !important;
+  @apply flex w-full max-w-[580px] flex-col justify-center space-y-4 transition-all bg-slate-50/10 border border-zinc-100 rounded-lg p-6 mb-4 h-auto shadow-sm lg:h-fit lg:space-y-3 !important;
 }
 
 .form-title{

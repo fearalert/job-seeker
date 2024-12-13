@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { NICHES, ROLES } from "@/constants";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { authFormSchema } from "@/schema/validation.schema";
+import { authFormSchema } from "@/schema/auth.validation";
 import { useDispatch, useSelector } from "react-redux";
 import { login, register } from "@/store/slices/user.slice";
 import { AppDispatch, RootState } from "@/store/store";
@@ -105,7 +105,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register"; role: string }) 
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form container">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form">
       <h1 className="form-title">
           {role} {type.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
         </h1>
@@ -283,7 +283,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register"; role: string }) 
           )
         }
 
-
+        <br />
         <Button type="submit" variant="primary">
           {type === "login" ? "Sign In" : "Sign Up"}
         </Button>

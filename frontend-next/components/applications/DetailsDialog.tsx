@@ -4,6 +4,7 @@ import { AppDispatch } from "@/store/store";
 import { useDispatch } from "react-redux";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import Link from "next/link";
 
 
 interface ApplicationDetailsDialogProps {
@@ -57,7 +58,7 @@ export function ApplicationDetailsDialog({ application, isOpen, onClose, userRol
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] flex flex-col">
         <DialogHeader>
           <DialogTitle>{application.jobInfo.jobTitle}</DialogTitle>
           <DialogDescription>
@@ -90,7 +91,23 @@ export function ApplicationDetailsDialog({ application, isOpen, onClose, userRol
               </Select>
             </div>
           )}
+           <div className="sm:col-span-2 bg-gray-50 p-3 rounded-lg">
+              <p className="font-bold text-zinc-900">Cover Letter:</p>
+              <p className="text-zinc-500 whitespace-pre-wrap">{application.jobSeekerInfo.coverLetter || "N/A"}</p>
+            </div>
         </div>
+        <div className="sm:col-span-2 bg-gray-50 p-3 rounded-lg">
+              <p className="font-bold text-zinc-900">Resume:</p>
+              <Link
+                href={application?.jobSeekerInfo.resume ? `${application?.jobSeekerInfo.resume.url}` : ""}
+                download={application?.jobSeekerInfo.resume && `${application?.jobSeekerInfo.name}_resume.pdf`}
+                target={application?.jobSeekerInfo.resume && "_blank"}
+                rel={application?.jobSeekerInfo.resume&& "noopener noreferrer"}
+                className= {`${application?.jobSeekerInfo.resume? "text-primary hover:underline" : "text-destructive"}`}
+              >
+              {application?.jobSeekerInfo.resume ? "Download Resume" : "No Resume Found"}
+              </Link>
+            </div>
       </DialogContent>
     </Dialog>
   );
