@@ -11,7 +11,7 @@ router.get("/logout", isAuthenticated, logout);
 router.post("/profile", isAuthenticated, getUser);
 router.put("/update/profile", isAuthenticated, updateProfile);
 router.put("/update/password", isAuthenticated, updatePassword);
-router.get("/forgotpassword", forgotPassword);
+router.post("/forgotpassword", forgotPassword);
 
 export default router;
 

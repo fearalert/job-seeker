@@ -4,6 +4,8 @@ import { User } from "../models/userSchema.js";
 import { v2 as cloudinary } from "cloudinary";
 import { sendjwtToken } from "../utils/sendjwtToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import generatePassword from "../utils/generatePassword.js";
+import bcrypt from "bcrypt";
 
 export const register = catchAsyncError(async (req, res, next) => {
   try {
@@ -228,30 +230,29 @@ export const forgotPassword = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("User not found.", 404));
   }
 
-  const resetToken = user.getResetPasswordToken();
+  const newPassword = generatePassword();
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  user.password = hashedPassword;
   await user.save({ validateBeforeSave: false });
 
-  const resetUrl = `${req.protocol}://${req.get('host')}/password/reset/${resetToken}`;
-
-  const message = `You are receiving this email because you (or someone else) have requested a password reset. Please enter the following link to put the new password.\n The link expires in 10 minutes: \n\n ${resetUrl}`;
-
+  const message = `Your new password is: ${newPassword}\n\nPlease log in and change your password immediately.`;
   try {
     await sendEmail({
       email: user.email,
-      subject: 'Password Reset Token',
+      subject: "Your New Password",
       message,
     });
 
     res.status(200).json({
       success: true,
-      message: `Email sent to ${user.email}`,
+      message: `New password has been sent to ${user.email}`,
     });
   } catch (error) {
-    console.error("Error sending email:", error); 
-
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-    await user.save({ validateBeforeSave: false });
+    console.error("Error sending email:", error);
+      user.password = undefined;
+      await user.save({ validateBeforeSave: false });
 
     return next(new ErrorHandler("Email could not be sent.", 500));
   }

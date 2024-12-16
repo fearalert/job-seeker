@@ -80,25 +80,25 @@ export default function ApplicationsPage() {
         <Table className="w-full rounded-sm overflow-x-auto">
           <TableHeader className="bg-primary hover:bg-primary">
             <TableRow>
-              <TableHead className="text-primary-foreground font-semibold">
+              <TableHead className="text-white font-semibold">
                 <div className="flex items-center space-x-2">
                   <Briefcase className="h-4 w-4" />
                   <span>Job Title</span>
                 </div>
               </TableHead>
-              <TableHead className="text-primary-foreground font-semibold">
+              <TableHead className="text-white font-semibold">
                 <div className="flex items-center space-x-2">
                   <User2 className="h-4 w-4" />
                   <span>{user?.role === ROLES.EMPLOYER ? 'Applicant' : 'Employer'}</span>
                 </div>
               </TableHead>
-              <TableHead className="text-primary-foreground font-semibold">
+              <TableHead className="text-white font-semibold">
                 <div className="flex items-center space-x-2">
                   <ClipboardCheck className="h-4 w-4" />
                   <span>Status</span>
                 </div>
               </TableHead>
-              <TableHead className="text-primary-foreground font-semibold text-center">Actions</TableHead>
+              <TableHead className="text-white font-semibold text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

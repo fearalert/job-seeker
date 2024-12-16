@@ -87,7 +87,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register"; role: string }) 
       setErrorMsg("An error occurred. Please try again.");
       toast({
         title: "Error",
-        description: error?.toString(),
+        description: error || e,
         className: "bg-red-600 text-white"
       });
       setLoadingHere(false);
@@ -283,6 +283,11 @@ const AuthForm = ({ type, role }: { type: "login" | "register"; role: string }) 
           )
         }
 
+        <br />
+        {
+          type === "login" &&
+          <Link className="text-end text-zinc-500 text-sm" href="/auth/forgot-password">Forgot Password?</Link>
+        }
         <br />
         <Button type="submit" variant="primary">
           {type === "login" ? "Sign In" : "Sign Up"}

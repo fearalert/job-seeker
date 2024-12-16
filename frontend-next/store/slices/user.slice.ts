@@ -1,7 +1,9 @@
 import { HOSTNAME } from "@/constants";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, ThunkAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { Resume } from "./application.slice";
+import { RootState } from "../store";
+import updateProfileSlice from "./update-profile.slice";
 
 // Define User and Slice State Types
 export interface User {
@@ -115,6 +117,21 @@ const userSlice = createSlice({
             state.isAuthenticated = true;
             state.error = action.payload;
         },
+        forgotPasswordRequest(state) {
+            state.loading = true;
+            state.error = null;
+            state.message = null;
+        },
+        forgotPasswordSuccess(state, action: PayloadAction<string>) {
+            state.loading = false;
+            state.error = null;
+            state.message = action.payload;
+        },
+        forgotPasswordFailed(state, action: PayloadAction<string>) {
+            state.loading = false;
+            state.error = action.payload;
+            state.message = null;
+        },
         clearAllErrors(state) {
             state.error = null;
         },
@@ -214,5 +231,22 @@ export const logout = () => async (dispatch: any) => {
         dispatch(userSlice.actions.logoutFailed(error.response?.data.message || "Logout failed"));
     }
 };
+
+export const forgotPassword = (email: string) => async (dispatch: any) => {
+    dispatch(userSlice.actions.forgotPasswordRequest());
+    try {
+        const response = await axios.post(`${HOSTNAME}/api/v1/user/forgotpassword`, { email }, {
+            headers: { "Content-Type": "application/json" },
+        });
+        dispatch(userSlice.actions.forgotPasswordSuccess(response.data.message));
+    } catch (error: any) {
+        dispatch(userSlice.actions.forgotPasswordFailed(error.response?.data.message || "Password reset failed"));
+    }
+};
+
+export const clearAllUserErrors = (): ThunkAction<void, RootState, unknown, PayloadAction<void>> => 
+    (dispatch) => {
+      dispatch(userSlice.actions.clearAllErrors());
+    };
 
 export default userSlice.reducer;
