@@ -14,14 +14,14 @@ body {
     --card-foreground: 230 15% 20%; /* Deep Gray */
     --popover: 0 0% 98%; /* Light Gray */
     --popover-foreground: 230 15% 20%; /* Deep Gray */
-    --primary: 240 40% 55%; /* Indigo */
-    --primary-foreground: 0 0% 100%; /* Pure White */
+    --primary: 281 100% 22%; /* Purple */
+    --primary-foreground: 280, 48%, 4%; /* Light Purple */
     --secondary: 215 15% 90%; /* Light Blue */
     --secondary-foreground: 230 15% 20%; /* Deep Gray */
     --muted: 220 15% 95%; /* Very Light Gray */
     --muted-foreground: 220 10% 45%; /* Subtle Gray */
-    --accent: 174 60% 50%; /* Teal Green */
-    --accent-foreground: 0 0% 100%; /* Pure White */
+    --accent: 44 89% 24%; /* Complementary Brown */
+    --accent-foreground: 43 65% 27%; /* accent light */
     --destructive: 0 80% 50%; /* Bright Red */
     --destructive-foreground: 0 0% 100%; /* Pure White */
     --border: 220 15% 90%; /* Soft Gray */
@@ -50,14 +50,14 @@ body {
     --card-foreground: 210 20% 95%; /* Light Gray */
     --popover: 220 25% 15%; /* Deep Gray */
     --popover-foreground: 210 20% 95%; /* Light Gray */
-    --primary: 226 60% 40%; /* Dark Indigo */
-    --primary-foreground: 210 20% 95%; /* Light Gray */
-    --secondary: 215 20% 25%; /* Muted Blue */
-    --secondary-foreground: 210 20% 95%; /* Light Gray */
-    --muted: 220 20% 20%; /* Muted Gray */
-    --muted-foreground: 220 10% 65%; /* Soft Gray */
-    --accent: 174 50% 40%; /* Dark Teal Green */
-    --accent-foreground: 210 20% 95%; /* Light Gray */
+    --primary: 281 100% 22%; /* Purple */
+    --primary-foreground: 280, 48%, 4%; /* Light Purple */
+    --secondary: 215 15% 90%; /* Light Blue */
+    --secondary-foreground: 230 15% 20%; /* Deep Gray */
+    --muted: 220 15% 95%; /* Very Light Gray */
+    --muted-foreground: 220 10% 45%; /* Subtle Gray */
+    --accent: 44 89% 24%; /* Complementary Brown */
+    --accent-foreground: 43 65% 27%; /* accent light */
     --destructive: 0 70% 40%; /* Dark Red */
     --destructive-foreground: 210 20% 95%; /* Light Gray */
     --border: 220 20% 20%; /* Muted Gray */

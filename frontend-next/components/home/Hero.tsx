@@ -23,7 +23,7 @@ const Hero = () => {
       <h1 className='text-3xl md:text-5xl font-bold text-primary'>
         {typedText.split('Best Job').map((part, index) => (
           <React.Fragment key={index}>
-            {index > 0 && <span className="bg-accent font-bold text-white px-2 rounded-sm">Best Job</span>}
+            {index > 0 && <span className="font-bold text-accent rounded-sm">Best Job</span>}
             {part}
           </React.Fragment>
         ))}
@@ -42,7 +42,7 @@ const Hero = () => {
         transition={{ delay: 0.6, duration: 0.5 }}
         className='w-full max-w-3xl'
       >
-        <Card className='bg-primary/70 text-primary-foreground hover:bg-primary/90 shadow-xs transition-colors duration-300 cursor-pointer'>
+        <Card className='bg-primary/70 text-white/80 hover:bg-primary/90 shadow-xs transition-colors duration-300 cursor-pointer'>
           <CardContent className='p-6 md:p-8'>
             <p className='text-lg md:text-xl'>
               We encourage you to explore the diverse range of jobs available and find the perfect fit for your professional journey. 

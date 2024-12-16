@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Link from "next/link";
 
@@ -13,7 +13,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { Navbar } from "@/components/navbar/Navbar";
 import { NICHES } from "@/constants";
 
-import { MapPin, DollarSign, Clock, TypeIcon, Eye } from "lucide-react";
+import { MapPin, DollarSign, Clock, TypeIcon, Eye, AlertCircle } from "lucide-react";
 import Filters from "@/components/jobs/filters";
 import { checkJobValidity, formatDate } from "@/lib/utils";
 import LoadingView from "@/app/loading";
@@ -47,9 +47,7 @@ export default function JobsPage() {
   const cities = ["all", ...new Set(jobs.map((job: Job) => job.location))];
   const niches = ["all", ...new Set(NICHES)];
 
-  const handleSearch = (e: FormEvent) => {
-    e.preventDefault();
-
+  const handleSearch = () => {
     dispatch(
       fetchJobs({
         searchKeyword: searchKeyword.trim(),
@@ -60,11 +58,30 @@ export default function JobsPage() {
       })
     );
   };
+  
+  useEffect(() => {
+    handleSearch();
+  }, [searchKeyword, selectedCity, selectedNiche, salaryRange]);
 
   const sortedJobs = [...jobs].sort((a, b) => {
     return new Date(b.jobPostedOn).getTime() - new Date(a.jobPostedOn).getTime();
   });
 
+  const JobNotFound = () => {
+    return (
+      <div className="flex flex-col items-center justify-center my-auto bg-background">
+        <AlertCircle className="text-destructive w-24 h-24 mb-6" />
+        <h2 className="text-xl font-bold text-zinc-500 mb-4">Jobs Not Found</h2>
+        <Button
+          onClick={() => window.location.reload()}
+          variant="primary"
+          className="px-6 py-3 text-lg rounded-lg"
+        >
+          Refresh Page
+        </Button>
+    </div>
+    );
+  }
 
 
   const JobCard = ({ job }: { job: Job }) => 
@@ -129,48 +146,45 @@ export default function JobsPage() {
     <>
       {(!isAuthenticated || !user)&& <Navbar />}
       {(isAuthenticated && user) && <AuthHeader title={"Browse Jobs"}/>}
-      <div className={`flex flex-col md:flex-row px-4 py-8 ${isAuthenticated ? "md:px-4 md:flex-row-reverse" : "md:px-24"} w-full gap-8`}>
-        <Filters
-          selectedCity={selectedCity}
-          setSelectedCity={setSelectedCity}
-          selectedNiche={selectedNiche}
-          setSelectedNiche={setSelectedNiche}
-          salaryRange={salaryRange}
-          setSalaryRange={setSalaryRange}
-          cities={cities}
-          niches={niches}
-        />
+        <div className={`flex flex-col md:flex-row px-4 py-8 ${isAuthenticated ? "md:px-4 md:flex-row-reverse" : "md:px-24"} w-full h-full gap-8`}>
+          <Filters
+            selectedCity={selectedCity}
+            setSelectedCity={setSelectedCity}
+            selectedNiche={selectedNiche}
+            setSelectedNiche={setSelectedNiche}
+            salaryRange={salaryRange}
+            setSalaryRange={setSalaryRange}
+            cities={cities}
+            niches={niches}
+          />
 
-        <section className="flex flex-col w-full">
-          <form onSubmit={handleSearch} className="mb-6">
-            <div className="flex items-center space-x-4">
+          <section className="flex flex-col w-full">
+            <form onSubmit={handleSearch} className="mb-6">
+              <div className="flex items-center space-x-4">
               <Input
                 placeholder="Search for Jobs"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 className="w-full bg-zinc-100 border-none rounded-lg"
               />
-              <Button variant="primary" type="submit">
-                Find Job
-              </Button>
-            </div>
-          </form>
+              </div>
+            </form>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {loading ? (
-              <div className="col-span-full flex justify-center items-center h-64">
-              <LoadingView />
-              </div>
-            ) : sortedJobs.length > 0 ? (
-              sortedJobs.map((job) => <JobCard key={job.id} job={job} />)
-            ) : (
-              <div className="col-span-full text-center text-zinc-500">
-                {searchTriggered ? "No Jobs Found" : "Start searching for jobs"}
-              </div>
-            )}
-          </div>
-        </section>
-      </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {loading ? (
+                <div className="col-span-full flex justify-center items-center h-64">
+                <LoadingView />
+                </div>
+              ) : sortedJobs.length > 0 ? (
+                sortedJobs.map((job) => <JobCard key={job.id} job={job} />)
+              ) : (
+                <div className="col-span-full text-center text-zinc-500">
+                  {searchTriggered ? <JobNotFound /> : "Start searching for jobs"}
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
     </>
   );
 }

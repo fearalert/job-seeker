@@ -40,7 +40,9 @@ export default function DetailSingleJobCard() {
   useEffect(() => {
     if (id) {
       dispatch(fetchSingleJob(id));
-      dispatch(fetchJobSeekerApplications());
+      if(isAuthenticated) {
+        dispatch(fetchJobSeekerApplications());
+      }
     }
 
     return () => {
@@ -89,24 +91,20 @@ export default function DetailSingleJobCard() {
     const jobID = job?.id || "";
   
     try {
-      // Make the API call and capture the response
       const response: any = await dispatch(postApplication(formData, jobID));
   
-      // Assuming the response contains a `message` field for feedback
       const successMessage = response?.data?.message;
   
-      // Handle success with the message from the backend
       setIsModalOpen(false);
       toast({
+        variant: "success",
         title: response,
         description: successMessage,
       });
     } catch (error: any) {
-      // Extract error message from the backend response
       const errorMessage =
         error?.response?.data?.message;
   
-      // Handle error with the message from the backend
       toast({
         variant: "destructive",
         title: "Error",
