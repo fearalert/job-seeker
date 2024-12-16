@@ -9,7 +9,7 @@ import { useTypingEffect } from '@/hooks/use-typing-effect'
 import { useRouter } from 'next/navigation'
 
 const Hero = () => {
-  const typedText = useTypingEffect("Find the Best Job that Fits Your Career", 50);
+  const typedText = useTypingEffect(`Find the Best Job that Fits Your Career`, 50);
   const router = useRouter();
 
   return (
@@ -18,10 +18,15 @@ const Hero = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       id="hero" 
-      className='flex flex-col justify-center items-center text-center gap-6 md:gap-10 py-12 md:py-24 px-4 md:px-16 md:pt-32 max-w-5xl mx-auto'
+      className='flex flex-col justify-center items-center text-center gap-6 md:gap-10 py-12 md:py-24 px-4 md:px-16 md:pt-32 max-w-7xl mx-auto'
     >
       <h1 className='text-3xl md:text-5xl font-bold text-primary'>
-        {typedText}
+        {typedText.split('Best Job').map((part, index) => (
+          <React.Fragment key={index}>
+            {index > 0 && <span className="bg-accent font-bold text-white px-2 rounded-sm">Best Job</span>}
+            {part}
+          </React.Fragment>
+        ))}
       </h1>
       <motion.h2 
         initial={{ opacity: 0, y: 20 }}
@@ -37,7 +42,7 @@ const Hero = () => {
         transition={{ delay: 0.6, duration: 0.5 }}
         className='w-full max-w-3xl'
       >
-        <Card className='bg-primary/70 text-primary-foreground hover:bg-primary/90 transition-colors duration-300 cursor-pointer'>
+        <Card className='bg-primary/70 text-primary-foreground hover:bg-primary/90 shadow-xs transition-colors duration-300 cursor-pointer'>
           <CardContent className='p-6 md:p-8'>
             <p className='text-lg md:text-xl'>
               We encourage you to explore the diverse range of jobs available and find the perfect fit for your professional journey. 

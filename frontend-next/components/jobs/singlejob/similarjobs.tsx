@@ -17,7 +17,6 @@ const SimilarJobs = () => {
     (job) => job.jobNiche === singleJob.jobNiche && job.id !== singleJob.id
   );
 
-  // Limit to 4 jobs
   const displayedJobs = similarJobs.slice(0, 4);
 
   if (loading) {

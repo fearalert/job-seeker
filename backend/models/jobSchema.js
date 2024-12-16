@@ -39,7 +39,7 @@ const jobSchema = new mongoose.Schema({
     },
     jobValidThrough:{
         type: Date,
-        default: () => Date.now() + 21 * 24 * 60 * 60 * 1000, // Valid for 21 days in Default
+        default: () => Date.now() + 7 * 24 * 60 * 60 * 1000, // Valid for 7 days in Default
     },
     
     jobBenefits:{
@@ -58,7 +58,7 @@ const jobSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-      personalWebsite: {
+    personalWebsite: {
         title: String,
         url: String
       },

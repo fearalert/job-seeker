@@ -27,14 +27,15 @@ export default function DetailSingleJobCard() {
   const { isAuthenticated, user } = useSelector((state: RootState) => state.user);
   const { applications } = useSelector((state: RootState) => state.application);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [coverLetterFile, setCoverLetterFile] = useState<string | undefined>(user?.coverLetter);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   const router = useRouter();
 
   const hasApplied = !!applications.find((app) => app.jobInfo.jobId === job?.id);
+  const isDeleted = !!applications.find((app) => app.deletedBy.jobSeeker);
 
   useEffect(() => {
     if (id) {
@@ -61,22 +62,22 @@ export default function DetailSingleJobCard() {
 
   const handleApply = async () => {
     if (hasApplied || isLoading) return;
-
+  
     setIsLoading(true);
-
+  
     const formData = new FormData();
-
+  
     const applicationData = {
       name: user?.name,
       email: user?.email,
       coverLetter: coverLetterFile ? coverLetterFile : user?.coverLetter,
       phone: user?.phone,
-      resume: resumeFile? resumeFile : user?.resume,
+      resume: resumeFile ? resumeFile : user?.resume,
       address: user?.address,
       niches: user?.niches,
       jobID: job?.id,
     };
-
+  
     Object.entries(applicationData).forEach(([key, value]) => {
       if (Array.isArray(value)) {
         value.forEach((item, index) => formData.append(`${key}[${index}]`, item));
@@ -84,21 +85,38 @@ export default function DetailSingleJobCard() {
         formData.append(key, value.toString());
       }
     });
-
-    const jobID = job?.id || ""
+  
+    const jobID = job?.id || "";
+  
     try {
-      await dispatch(postApplication(formData, jobID));
+      // Make the API call and capture the response
+      const response: any = await dispatch(postApplication(formData, jobID));
+  
+      // Assuming the response contains a `message` field for feedback
+      const successMessage = response?.data?.message;
+  
+      // Handle success with the message from the backend
       setIsModalOpen(false);
-    } catch (error) {
+      toast({
+        title: response,
+        description: successMessage,
+      });
+    } catch (error: any) {
+      // Extract error message from the backend response
+      const errorMessage =
+        error?.response?.data?.message;
+  
+      // Handle error with the message from the backend
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to apply for the job.",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   if (loading) {
     return <LoadingView />;
@@ -136,7 +154,7 @@ export default function DetailSingleJobCard() {
                 type="button"
                 variant="primary"
                 onClick={() => setIsModalOpen(true)}
-                disabled={isExpired || hasApplied || isLoading}
+                disabled={isExpired || hasApplied || isLoading || isDeleted}
               >
                 {isExpired
                   ? "Expired"
@@ -154,13 +172,11 @@ export default function DetailSingleJobCard() {
                 <span>{job.organizationType}</span>
                 <Separator className="w-1 h-4 bg-zinc-500" />
                 <span>
-                  {
-                    isExpired ? (
-                      <span className="text-red-600 font-bold">Expired</span>
-                    ) : (
-                      <span>Validity: {formatDate(job.jobValidThrough)}</span>
-                    )
-                  }
+                  {isExpired ? (
+                    <span className="text-red-600 font-bold">Expired</span>
+                  ) : (
+                    <span>Validity: {formatDate(job.jobValidThrough)}</span>
+                  )}
                 </span>
               </div>
               <p className="text-zinc-500 mt-4">
@@ -268,22 +284,24 @@ export default function DetailSingleJobCard() {
                         <Info className="h-4 w-4 ml-1 inline" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        Please upload .pdf, .doc or .docx as your updated resume.
+                        Attach your updated Resume/CV
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
           </Label>
-          <Input
+          <input
             type="file"
             accept=".pdf,.doc,.docx"
             onChange={(e) => handleFileChange(e, setResumeFile)}
+            className="border p-2 mt-2"
           />
           <DialogFooter>
-            <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="primary" onClick={handleApply} disabled={isLoading}>
-              {isLoading ? "Submitting..." : "Submit"}
+            <Button
+              variant="primary"
+              onClick={handleApply}
+              disabled={isLoading || isDeleted}
+            >
+              {isLoading ? "Applying..." : "Submit Application"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -291,3 +309,4 @@ export default function DetailSingleJobCard() {
     </>
   );
 }
+

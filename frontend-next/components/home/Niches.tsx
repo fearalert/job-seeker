@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card, CardContent, CardHeader } from '../ui/card'
 import { motion } from 'framer-motion'
+import { useTypingEffect } from '@/hooks/use-typing-effect';
 
 const Niches = () => {
     
@@ -134,16 +135,18 @@ const Niches = () => {
     }
   };
 
+  const typedText = useTypingEffect("Top Niches", 50);
+
   return (
     <motion.div
       id='niches'
-      className='flex flex-col justify-center items-center text-center gap-4 md:gap-8 py-6 md:py-12 px-4 md:px-16 max-w-5xl mx-auto'
+      className='flex flex-col justify-center items-center text-center gap-4 md:gap-8 py-6 md:py-12 px-4 md:px-16 max-w-7xl mx-auto'
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
       <motion.h2 className='text-3xl md:text-4xl font-bold text-primary' variants={itemVariants}>
-        Top Niches
+        {typedText}
       </motion.h2>
       <motion.div className='grid md:grid-cols-3 gap-4' variants={containerVariants}>
         {topNiches.map((niche) => (

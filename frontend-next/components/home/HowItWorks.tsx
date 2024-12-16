@@ -33,7 +33,7 @@ const HowItWorks = () => {
   return (
     <motion.div
       id="how-it-works"
-      className="py-16 bg-background max-w-6xl mx-auto"
+      className="py-16 bg-background max-w-7xl mx-auto"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
