@@ -89,14 +89,14 @@ export const login = catchAsyncError(async (req, res, next) => {
 
   const user = await User.findOne({ email }).select("+password");
 
-  if (!user) {
-    return next(new ErrorHandler("Invalid email or password.", 401));
+  if (user.email !== email) {
+    return next(new ErrorHandler("Invalid email.", 401));
   }
 
   const isPasswordMatched = await user.comparePassword(password);
 
   if (!isPasswordMatched) {
-    return next(new ErrorHandler("Invalid email or password.", 400));
+    return next(new ErrorHandler("Invalid password.", 400));
   }
 
   if (user.role !== role) {
@@ -232,10 +232,8 @@ export const forgotPassword = catchAsyncError(async (req, res, next) => {
 
   const newPassword = generatePassword();
 
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-  user.password = hashedPassword;
-  await user.save({ validateBeforeSave: false });
+  user.password = newPassword;
+  await user.save();
 
   const message = `Your new password is: ${newPassword}\n\nPlease log in and change your password immediately.`;
   try {

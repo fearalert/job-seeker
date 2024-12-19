@@ -87,7 +87,7 @@ const AuthForm = ({ type, role }: { type: "login" | "register"; role: string }) 
       setErrorMsg("An error occurred. Please try again.");
       toast({
         title: "Error",
-        description: error || e,
+        description: error || e.response.message,
         className: "bg-red-600 text-white"
       });
       setLoadingHere(false);

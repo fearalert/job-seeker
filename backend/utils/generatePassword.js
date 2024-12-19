@@ -9,7 +9,7 @@ const generatePassword = () => {
     password += numbers.charAt(Math.floor(Math.random() * numbers.length));
     password += specialChars.charAt(Math.floor(Math.random() * specialChars.length));
   
-    for (let i = 3; i < 12; i++) {
+    for (let i = 3; i < 9; i++) {
       password += allChars.charAt(Math.floor(Math.random() * allChars.length));
     }
   
@@ -18,5 +18,9 @@ const generatePassword = () => {
       .sort(() => Math.random() - 0.5)
       .join("");
   };
+
+
+  console.log(generatePassword())
+
   
   export default generatePassword
