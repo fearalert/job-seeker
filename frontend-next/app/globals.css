@@ -20,7 +20,7 @@ body {
     --secondary-foreground: 230 15% 20%; /* Deep Gray */
     --muted: 220 15% 95%; /* Very Light Gray */
     --muted-foreground: 220 10% 45%; /* Subtle Gray */
-    --accent: 44 69% 40%; /* Complementary Brown */
+    --accent: 44 69% 30%; /* Complementary Brown */
     --accent-foreground: 43 65% 27%; /* accent light */
     --destructive: 0 80% 50%; /* Bright Red */
     --destructive-foreground: 0 0% 100%; /* Pure White */
