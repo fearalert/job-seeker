@@ -62,8 +62,8 @@ app.use((req, res, next) => {
   res.status(404).json({ success: false, message: "Route not found" });
 });
 
-app.use((req, res) => {
-  res.status(200).json({ message: "Hello from the Node.js server!" });
+app.get("/", (req, res) => {
+  res.status(200).send({ message: "Hello from the Node.js server!" });
 });
 
 // Error handling middleware
