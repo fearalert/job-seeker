@@ -17,7 +17,7 @@ config({ path: "./config/config.env" });
 // Middleware for CORS
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URI, "http://localhost:5173", "http://localhost:3000"],
+    origin: [process.env.FRONTEND_URI, "http://localhost:5173", "http://localhost:3000", "http://192.168.0.111:3000"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true, // Allow cookies
   })
@@ -25,7 +25,7 @@ app.use(
 
 // Explicitly handle preflight OPTIONS requests
 app.options("*", (req, res) => {
-    res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URI || "http://localhost:5173" || "http://localhost:3000");
+    res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URI || "http://localhost:5173" || "http://localhost:3000" || "http://192.168.0.111:3000");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.header("Access-Control-Allow-Credentials", "true");
@@ -60,6 +60,10 @@ connection();
 // Handle undefined routes
 app.use((req, res, next) => {
   res.status(404).json({ success: false, message: "Route not found" });
+});
+
+app.use((req, res) => {
+  res.status(200).json({ message: "Hello from the Node.js server!" });
 });
 
 // Error handling middleware
