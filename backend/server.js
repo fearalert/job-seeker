@@ -7,6 +7,11 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server listening at port ${process.env.PORT}`)
-})
+// Export the handler for Vercel
+export default (req, res) => {
+    app(req, res);
+  };
+  
+// app.listen(process.env.PORT, () => {
+//     console.log(`Server listening at port ${process.env.PORT}`)
+// })
