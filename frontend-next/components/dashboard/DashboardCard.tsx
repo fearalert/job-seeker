@@ -62,10 +62,9 @@ const DashboardCards = () => {
       <Card>
         <CardHeader>
           <CardTitle>
-            {user?.role === ROLES.EMPLOYER 
-              ? 'Applications Received' 
-              : 'My Applications'
-            }
+            {user?.role === ROLES.EMPLOYER
+              ? 'Applications Received'
+              : 'My Applications'}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -100,21 +99,6 @@ const DashboardCards = () => {
           </CardDescription>
         </CardContent>
       </Card>
-
-      {/* Additional cards for different user roles */}
-      {user?.role === ROLES.JOB_SEEKER && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Profile Views</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-6xl font-bold text-zinc-600">
-              {/* You can add profile views data from your store */}
-              {user?.email || 0}
-            </CardDescription>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Active Jobs card for employers */}
       {user?.role === ROLES.EMPLOYER && (

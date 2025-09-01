@@ -1,4 +1,6 @@
 /** @format */
+
+// components/dashboard/JobPostsCard.tsx
 'use client';
 import {
   Chart as ChartJS,
@@ -10,9 +12,8 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import React from 'react';
-import { RootState } from '@/store/store';
 import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 import { ROLES } from '@/constants';
 
 ChartJS.register(
@@ -24,7 +25,11 @@ ChartJS.register(
   Legend
 );
 
-const JobPostChart = () => {
+interface JobPostChartProps {
+  selectedYear: number;
+}
+
+const JobPostChart = ({ selectedYear }: JobPostChartProps) => {
   const { myJobs, loading: jobsLoading } = useSelector(
     (state: RootState) => state.jobs
   );
@@ -32,25 +37,16 @@ const JobPostChart = () => {
     (state: RootState) => state.user
   );
 
-  const calculateMonthlyFrequency = (dates: string[]) => {
-    const months = Array(12).fill(0);
-    dates.forEach((date) => {
-      const month = new Date(date).getMonth();
-      months[month]++;
-    });
-    return months;
-  };
+  if (jobsLoading || userLoading)
+    return <p className="text-center text-gray-500">Loading Chart...</p>;
 
-  if (jobsLoading || userLoading) {
-    return (
-      <div className="text-center text-lg font-semibold">Loading Data...</div>
-    );
-  }
+  const filteredJobs = myJobs.filter(
+    (job) => new Date(job.jobPostedOn).getFullYear() === selectedYear
+  );
+  const months = Array(12).fill(0);
+  filteredJobs.forEach((job) => months[new Date(job.jobPostedOn).getMonth()]++);
 
-  const dates = myJobs.map((job) => job.jobPostedOn);
-  const frequency = calculateMonthlyFrequency(dates);
-
-  const chartData = {
+  const data = {
     labels: [
       'Jan',
       'Feb',
@@ -68,10 +64,10 @@ const JobPostChart = () => {
     datasets: [
       {
         label: 'Job Post Frequency',
-        data: frequency,
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
+        data: months,
+        backgroundColor: 'rgba(79, 70, 229, 0.3)',
+        borderColor: 'rgba(79, 70, 229, 1)',
+        borderWidth: 2,
       },
     ],
   };
@@ -79,12 +75,18 @@ const JobPostChart = () => {
   return (
     <>
       {user?.role === ROLES.EMPLOYER && (
-        <div className="mt-8 w-full">
-          <h3 className="text-lg font-semibold text-primary mb-6">
-            Jobs Frequency
+        <div className="mt-8 w-full bg-white p-6 rounded-xl shadow">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Jobs Frequency - {selectedYear}
           </h3>
           <div className="h-[300px]">
-            <Bar data={chartData} />
+            <Bar
+              data={data}
+              options={{
+                responsive: true,
+                plugins: { legend: { display: true } },
+              }}
+            />
           </div>
         </div>
       )}

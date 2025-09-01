@@ -5,6 +5,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,11 @@ import { fetchJobs, clearAllError, Job } from '@/store/slices/job.slice';
 import { AppDispatch, RootState } from '@/store/store';
 import { Navbar } from '@/components/navbar/Navbar';
 import { NICHES } from '@/constants';
-
+import Filters from '@/components/jobs/filters';
+import { checkJobValidity, formatDate } from '@/lib/utils';
+import LoadingView from '@/app/loading';
+import AuthHeader from '@/components/navbar/AuthenticatedHeader';
+import { useDebounce } from '@/hooks/use-debounce';
 import {
   MapPin,
   DollarSign,
@@ -23,11 +28,6 @@ import {
   Eye,
   AlertCircle,
 } from 'lucide-react';
-import Filters from '@/components/jobs/filters';
-import { checkJobValidity, formatDate } from '@/lib/utils';
-import LoadingView from '@/app/loading';
-import AuthHeader from '@/components/navbar/AuthenticatedHeader';
-import { useDebounce } from '@/hooks/use-debounce';
 
 export default function JobsPage() {
   const [searchKeyword, setSearchKeyword] = useState<string>('');
@@ -35,7 +35,6 @@ export default function JobsPage() {
   const [selectedNiche, setSelectedNiche] = useState<string>('all');
   const [salaryRange, setSalaryRange] = useState<[number, number]>([0, 300000]);
 
-  // Debounce all filters
   const debouncedSearch = useDebounce(searchKeyword, 300);
   const debouncedCity = useDebounce(selectedCity, 300);
   const debouncedNiche = useDebounce(selectedNiche, 300);
@@ -55,15 +54,12 @@ export default function JobsPage() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (error) {
-      dispatch(clearAllError());
-    }
+    if (error) dispatch(clearAllError());
   }, [error, dispatch]);
 
   const cities = ['all', ...new Set(jobs.map((job: Job) => job.location))];
   const niches = ['all', ...new Set(NICHES)];
 
-  // Trigger search when debounced filters change
   useEffect(() => {
     dispatch(
       fetchJobs({
@@ -87,107 +83,98 @@ export default function JobsPage() {
       new Date(b.jobPostedOn).getTime() - new Date(a.jobPostedOn).getTime()
   );
 
-  const JobNotFound = () => {
-    return (
-      <div className="flex flex-col items-center justify-center my-auto bg-background">
-        <AlertCircle className="text-destructive w-24 h-24 mb-6" />
-        <h2 className="text-xl font-bold text-zinc-500 mb-4">Jobs Not Found</h2>
-        <Button
-          onClick={() => window.location.reload()}
-          variant="primary"
-          className="px-6 py-3 text-lg rounded-lg">
-          Refresh Page
-        </Button>
-      </div>
-    );
-  };
+  const JobNotFound = () => (
+    <div className="flex flex-col items-center justify-center py-20">
+      <AlertCircle className="text-red-400 w-24 h-24 mb-6 animate-pulse" />
+      <h2 className="text-2xl font-bold text-zinc-500 mb-4">Jobs Not Found</h2>
+      <Button
+        onClick={() => window.location.reload()}
+        variant="primary"
+        className="px-8 py-3 rounded-xl shadow-lg hover:scale-105 transition-transform">
+        Refresh Page
+      </Button>
+    </div>
+  );
 
   const JobCard = ({ job }: { job: Job }) => {
-    const result = checkJobValidity(job.jobValidThrough);
-
-    const { isExpired, daysLeft } = result;
+    const { isExpired, daysLeft } = checkJobValidity(job.jobValidThrough);
 
     return (
-      <Card
-        key={job.id}
-        className="bg-background shadow-xs rounded-lg hover:shadow-md hover:bg-background transition-all duration-300">
-        <CardHeader className="mb-0 pb-0 flex flex-col">
-          <div className="mb-0 pb-0 flex flex-row text-center justify-between">
-            <CardTitle className="text-primary text-xl mb-0 pb-0">
+      <motion.div
+        whileHover={{ scale: 1.03, boxShadow: '0px 20px 40px rgba(0,0,0,0.1)' }}
+        transition={{ type: 'spring', stiffness: 300 }}
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+        <CardHeader className="flex flex-col gap-1 pb-0">
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-primary text-lg font-bold">
               {job.jobTitle}
             </CardTitle>
             {isExpired ? (
-              <span className="text-red-400 text-sm font-semibold">
+              <span className="text-red-500 text-sm font-semibold">
                 Expired
               </span>
             ) : (
-              <span className="text-sm font-semibold text-zinc-500">
+              <span className="text-sm font-semibold text-green-500">
                 🔥 {daysLeft} days left
               </span>
             )}
           </div>
-          <p className="text-ellipsis font-semibold max-w-60 text-zinc-400">
+          <p className="text-zinc-400 text-sm font-medium truncate">
             {job.organizationName}
           </p>
         </CardHeader>
-        <CardContent className="pt-2">
-          <div className="space-y-1">
-            <div className="flex items-center text-zinc-500 space-x-2">
-              <TypeIcon
-                size={16}
-                className="text-primary"
-              />
-              <span>{job.jobType}</span>
-            </div>
 
-            <div className="flex items-center text-zinc-500 space-x-2">
-              <MapPin
-                size={16}
-                className="text-primary"
-              />
-              <span>{job.location}</span>
-            </div>
-
-            <div className="flex items-center text-zinc-500 space-x-2">
-              <Clock
-                size={16}
-                className="text-primary"
-              />
-              <span>{formatDate(job.jobValidThrough)}</span>
-            </div>
-
-            <div className="flex items-center text-zinc-500 space-x-2">
-              <DollarSign
-                size={16}
-                className="text-primary"
-              />
-              <span>Rs. {job.salary.toLocaleString()}</span>
-            </div>
-            {!isExpired && (
-              <div className="flex justify-end items-center mt-4">
-                <Link href={`/jobs/${job.id}`}>
-                  <Button
-                    variant="outline"
-                    className="text-zinc-500">
-                    <Eye className="mr-2 h-4 w-4" /> View Details
-                  </Button>
-                </Link>
-              </div>
-            )}
+        <CardContent className="pt-2 space-y-2">
+          <div className="flex items-center text-zinc-500 space-x-2">
+            <TypeIcon
+              size={16}
+              className="text-primary"
+            />
+            <span>{job.jobType}</span>
           </div>
+          <div className="flex items-center text-zinc-500 space-x-2">
+            <MapPin
+              size={16}
+              className="text-primary"
+            />
+            <span>{job.location}</span>
+          </div>
+          <div className="flex items-center text-zinc-500 space-x-2">
+            <Clock
+              size={16}
+              className="text-primary"
+            />
+            <span>{formatDate(job.jobValidThrough)}</span>
+          </div>
+          <div className="flex items-center text-zinc-500 space-x-2">
+            <DollarSign
+              size={16}
+              className="text-primary"
+            />
+            <span>Rs. {job.salary.toLocaleString()}</span>
+          </div>
+
+          {!isExpired && (
+            <div className="flex justify-end mt-4">
+              <Link href={`/jobs/${job.id}`}>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2 text-zinc-500 hover:bg-primary hover:text-white transition-all">
+                  <Eye className="h-4 w-4" /> View Details
+                </Button>
+              </Link>
+            </div>
+          )}
         </CardContent>
-      </Card>
+      </motion.div>
     );
   };
 
   return (
     <>
       {(!isAuthenticated || !user) && <Navbar />}
-      {isAuthenticated && user && <AuthHeader title={'Browse Jobs'} />}
-      <div
-        className={`flex flex-col md:flex-row px-4 py-8 ${
-          isAuthenticated ? 'md:px-4 md:flex-row-reverse' : 'md:px-24'
-        } w-full h-full gap-8`}>
+      {isAuthenticated && user && <AuthHeader title="Browse Jobs" />}
+      <div className="flex flex-col md:flex-row gap-8 px-4 md:px-8 py-8 w-full h-full">
         <Filters
           selectedCity={selectedCity}
           setSelectedCity={setSelectedCity}
@@ -199,15 +186,13 @@ export default function JobsPage() {
           niches={niches}
         />
 
-        <section className="flex flex-col w-full">
-          <div className="mb-6 flex items-center space-x-4">
-            <Input
-              placeholder="Search for Jobs"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="w-full bg-zinc-100 border-none rounded-lg"
-            />
-          </div>
+        <section className="flex-1 flex flex-col gap-6">
+          <Input
+            placeholder="Search for Jobs"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="w-full bg-zinc-100 dark:bg-gray-700 border-none rounded-xl px-4 py-2 text-gray-800 dark:text-gray-100 placeholder-gray-400"
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
@@ -222,7 +207,7 @@ export default function JobsPage() {
                 />
               ))
             ) : (
-              <div className="col-span-full text-center text-zinc-500">
+              <div className="col-span-full text-center">
                 {searchTriggered ? <JobNotFound /> : 'Start searching for jobs'}
               </div>
             )}
