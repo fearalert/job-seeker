@@ -1,19 +1,21 @@
-import { useState, useEffect } from 'react'
+/** @format */
+
+import { useState, useEffect } from 'react';
 
 export function useTypingEffect(text: string, delay: number = 100) {
-  const [currentText, setCurrentText] = useState('')
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentText, setCurrentText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     if (currentIndex < text.length) {
       const timeout = setTimeout(() => {
-        setCurrentText(prevText => prevText + text[currentIndex])
-        setCurrentIndex(prevIndex => prevIndex + 1)
-      }, delay)
+        setCurrentText((prevText) => prevText + text[currentIndex]);
+        setCurrentIndex((prevIndex) => prevIndex + 1);
+      }, delay);
 
-      return () => clearTimeout(timeout)
+      return () => clearTimeout(timeout);
     }
-  }, [currentIndex, delay, text])
+  }, [currentIndex, delay, text]);
 
-  return currentText
+  return currentText;
 }

@@ -1,22 +1,41 @@
-"use client";
+/** @format */
+'use client';
 
-import React, { useEffect } from "react";
-import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "../ui/card";
-import { AppDispatch, RootState } from "@/store/store";
-import { useDispatch, useSelector } from "react-redux";
-import { ROLES } from "@/constants";
-import { 
-  fetchEmployerApplicationsLength, 
-  fetchJobSeekerApplicationsLength 
-} from "@/store/slices/application.slice";
-import { fetchTotalJobsPosted, fetchTotalNiches } from "@/store/slices/job.slice";
+import React, { useEffect } from 'react';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from '../ui/card';
+import { AppDispatch, RootState } from '@/store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { ROLES } from '@/constants';
+import {
+  fetchEmployerApplicationsLength,
+  fetchJobSeekerApplicationsLength,
+} from '@/store/slices/application.slice';
+import {
+  fetchTotalJobsPosted,
+  fetchTotalNiches,
+} from '@/store/slices/job.slice';
 
 const DashboardCards = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { totalJobsPosted, totalNiches, loading: jobsLoading } = useSelector((state: RootState) => state.jobs);
-  const { user, loading: userLoading } = useSelector((state: RootState) => state.user);
-  const { totalApplications, loading: applicationsLoading } = useSelector((state: RootState) => state.application);
+  const {
+    totalJobsPosted,
+    totalNiches,
+    loading: jobsLoading,
+  } = useSelector((state: RootState) => state.jobs);
+  const { user, loading: userLoading } = useSelector(
+    (state: RootState) => state.user
+  );
+  const { totalApplications, loading: applicationsLoading } = useSelector(
+    (state: RootState) => state.application
+  );
 
+  // Fetch data based on user role
   useEffect(() => {
     if (user?.role === ROLES.EMPLOYER) {
       dispatch(fetchEmployerApplicationsLength());
@@ -24,11 +43,17 @@ const DashboardCards = () => {
       dispatch(fetchTotalNiches());
     } else if (user?.role === ROLES.JOB_SEEKER) {
       dispatch(fetchJobSeekerApplicationsLength());
+      // Fetch niches for job seekers too if needed
+      dispatch(fetchTotalNiches());
     }
   }, [dispatch, user?.role]);
 
-  if (jobsLoading || userLoading || applicationsLoading) {
-    return <div className="text-center text-lg font-semibold">Loading Data...</div>;
+  const isLoading = jobsLoading || userLoading || applicationsLoading;
+
+  if (isLoading) {
+    return (
+      <div className="text-center text-lg font-semibold">Loading Data...</div>
+    );
   }
 
   return (
@@ -36,11 +61,16 @@ const DashboardCards = () => {
       {/* Total Applications */}
       <Card>
         <CardHeader>
-          <CardTitle>Total Applications</CardTitle>
+          <CardTitle>
+            {user?.role === ROLES.EMPLOYER 
+              ? 'Applications Received' 
+              : 'My Applications'
+            }
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <CardDescription className="text-6xl font-bold text-zinc-600">
-            {applicationsLoading ? "Loading..." : totalApplications}
+            {totalApplications || 0}
           </CardDescription>
         </CardContent>
       </Card>
@@ -53,7 +83,7 @@ const DashboardCards = () => {
           </CardHeader>
           <CardContent>
             <CardDescription className="text-6xl font-bold text-zinc-600">
-              {jobsLoading ? "Loading..." : totalJobsPosted}
+              {totalJobsPosted || 0}
             </CardDescription>
           </CardContent>
         </Card>
@@ -66,15 +96,40 @@ const DashboardCards = () => {
         </CardHeader>
         <CardContent>
           <CardDescription className="text-6xl font-bold text-zinc-600">
-            {jobsLoading
-              ? "Loading..."
-              : user?.role === ROLES.EMPLOYER
-              ? totalNiches
-              : totalApplications // Default fallback for Job Seekers
-            }
+            {totalNiches || 0}
           </CardDescription>
         </CardContent>
       </Card>
+
+      {/* Additional cards for different user roles */}
+      {user?.role === ROLES.JOB_SEEKER && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Profile Views</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CardDescription className="text-6xl font-bold text-zinc-600">
+              {/* You can add profile views data from your store */}
+              {user?.email || 0}
+            </CardDescription>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Active Jobs card for employers */}
+      {user?.role === ROLES.EMPLOYER && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Active Job Postings</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CardDescription className="text-6xl font-bold text-zinc-600">
+              {/* You can add active jobs count from your store */}
+              {totalJobsPosted || 0}
+            </CardDescription>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
